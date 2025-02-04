@@ -134,7 +134,7 @@ CORS_ALLOWED_ORIGINS = [
 ---
 
 ## 🔗 Contacto
-Si tienes dudas o quieres contribuir al proyecto, contáctame en **tu_email@example.com** 🚀
+Si tienes dudas o quieres contribuir al proyecto, contáctame en **frarancibia.g@gmail.com** 🚀
 
 
 
