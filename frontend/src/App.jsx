@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getNoticias } from './services/api';
+import SpotifyPlaylist from './components/SpotifyPlaylist';
+import Footer from './components/Footer';
 
 function App() {
   const [noticias, setNoticias] = useState([]);
@@ -13,6 +15,7 @@ function App() {
   }, []);
 
   return (
+    <>
     <div className="bg-gray-900 text-white min-h-screen p-6">
       {/* Encabezado */}
       <h1 className="w-full rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-xl font-bold text-center shadow-md">
@@ -40,6 +43,11 @@ function App() {
         )}
       </div>
     </div>
+
+    <SpotifyPlaylist/>
+    <Footer/>
+
+    </>
   );
 }
 
