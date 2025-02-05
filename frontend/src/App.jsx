@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { getNoticias } from './services/api';
 import SpotifyPlaylist from './components/SpotifyPlaylist';
 import Footer from './components/Footer';
+import Header from './components/Header';
+
 
 function App() {
   const [noticias, setNoticias] = useState([]);
@@ -16,11 +18,9 @@ function App() {
 
   return (
     <>
-    <div className="bg-gray-900 text-white min-h-screen p-6">
+    <div className="bg-indigo-950 text-white min-h-screen p-6">
       {/* Encabezado */}
-      <h1 className="w-full rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-xl font-bold text-center shadow-md">
-        Noticias Música Techno
-      </h1>
+      <Header title={"Noticias Musica Techno"}/>
 
       {/* Contenedor de Noticias */}
       <div className="max-w-4xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

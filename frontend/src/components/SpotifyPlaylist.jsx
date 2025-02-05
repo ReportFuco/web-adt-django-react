@@ -1,4 +1,4 @@
-import fondo from "../assets/fondo.webp"; // Importa la imagen desde assets
+import fondo from "../assets/fondo.webp";
 
 export default function SpotifyPlaylist() {
   return (
