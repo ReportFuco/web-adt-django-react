@@ -7,7 +7,7 @@ export default function Header({ title }) {
   return (
     <>
       {/* Encabezado Principal */}
-      <header className="bg-gray-900 text-white p-4 shadow-md">
+      <header className="bg-gray-800 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           
           {/* Logo y título */}
