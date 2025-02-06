@@ -15,27 +15,23 @@ export default function MainPage() {
     return (
         <main className="max-w-6xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Sección principal de noticias */}
-            <div className="md:col-span-2 grid grid-cols-1 gap-6">
-                {noticias.length === 0 ? (
-                    <p className="text-center text-gray-400">Cargando noticias...</p>
-                ) : (
-                    noticias.map((noticia) => (
-                        <div key={noticia.id} className="bg-gray-800 rounded-none shadow-lg hover:scale-105 transition-transform duration-300 overflow-hidden">
-                            {noticia.imagen && (
-                                <img
-                                    src={noticia.imagen}
-                                    alt={noticia.titulo}
-                                    className="w-full h-60 object-cover"
-                                />
-                            )}
-                            <div className="p-5">
-                                <h2 className="text-xl font-semibold text-gray-300">{noticia.titulo}</h2>
-                                <p className="text-gray-300 mt-2">{noticia.contenido}</p>
-                            </div>
-                        </div>
-                    ))
-                )}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+    {noticias.map((noticia) => (
+        <div key={noticia.id} className="bg-gray-800 rounded-none shadow-lg hover:scale-105 transition-transform duration-300 overflow-hidden w-full min-h-[350px]">
+            {noticia.imagen && (
+                <img
+                    src={noticia.imagen}
+                    alt={noticia.titulo}
+                    className="w-full h-60 object-cover"
+                />
+            )}
+            <div className="p-5">
+                <h2 className="text-xl font-semibold text-gray-300">{noticia.titulo}</h2>
+                <p className="text-gray-300 mt-2">{noticia.contenido}</p>
             </div>
+        </div>
+    ))}
+</div>
 
             {/* Columna lateral con publicidad y redes sociales */}
             <aside className="p-4 shadow-md rounded-none md:col-span-1 md:row-auto order-last md:order-none">

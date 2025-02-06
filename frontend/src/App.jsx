@@ -9,7 +9,7 @@ function App() {
     <>
     <div className="bg-gray-900 text-white min-h-screen p-2">
       {/* Encabezado */}
-      <Header title={"Noticias Musica Techno"}/>
+      <Header title={"Adictos al Techno"}/>
 
       {/* Contenedor de Noticias */}
       <MainPage />
