@@ -49,7 +49,7 @@ export default function Header({ title }) {
       {/* Barra de Novedades */}
       <div className="bg-amber-300 text-black text-sm p-0.5 overflow-hidden">
         <marquee behavior="scroll" direction="left">
-          🔥 Últimas novedades: Nuevo evento de música Techno en Santiago | Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists disponibles.
+          🔥 Últimas novedades: Nuevo evento de música Techno en Santiago | Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists disponibles | El Fuco estuvo probando esta wea.
         </marquee>
       </div>
       <hr className="border-t-3 border-gray-700 my-3 mx-auto w-20/20 opacity-50" />

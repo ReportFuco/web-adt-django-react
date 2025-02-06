@@ -9,7 +9,7 @@ export default function SpotifyPlaylist() {
       </div>
 
       {/* Contenedor Principal */}
-      <div className="relative bg-gray-900/80 backdrop-blur-lg shadow-lg rounded-xl p-6 max-w-4xl w-full">
+      <div className="relative bg-gray-900/80 backdrop-blur-lg shadow-lg rounded-none p-6 max-w-4xl w-full">
         
         {/* Título con Decoración */}
         <h2 className="text-2xl font-bold text-white text-center mb-4">
