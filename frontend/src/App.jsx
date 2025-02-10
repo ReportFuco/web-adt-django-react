@@ -21,7 +21,7 @@ function App() {
           <Header title={"Adictos al Techno"} />
           <MainPage />
         </div>
-
+        
       </div>
 
       {/* Secciones adicionales */}
