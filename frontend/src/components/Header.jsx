@@ -1,18 +1,22 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import logo from '../assets/logo-adt.jpg';
+import RedesSociales from './RedesSociales';
 
 export default function Header({ title }) {
+
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       {/* Encabezado Principal */}
-      <header className="bg-gray-800 text-white p-4 shadow-md">
+      <header className="bg-black text-white p-2 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           
           {/* Logo y título */}
           <div className="flex items-center">
-            <img src={logo} alt="Logo" className="h-10 mr-3" />
+            <img src={logo} alt="Logo" className="h-10 mr-3" onClick={() => navigate("/")}/>
             <h1 className="text-xl font-bold">{title}</h1>
           </div>
 
@@ -28,31 +32,42 @@ export default function Header({ title }) {
           </button>
 
           {/* Navegación en pantallas grandes */}
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="hover:text-gray-300">Eventos</a>
-            <a href="#" className="hover:text-gray-300">Productos</a>
-            <a href="#" className="hover:text-gray-300">Contacto</a>
-            <a href="#" className="hover:text-gray-300">Iniciar sesión</a>
-          </nav>
+          <nav className="hidden md:flex space-x-8">
+            <button onClick={() => navigate("/Noticias")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Noticias</button>
+            <button onClick={() => navigate("/Lanzamientos")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Lanzamientos</button>
+            <button onClick={() => navigate("/entrevistas")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Entrevistas</button>
+            <button onClick={() => navigate("/eventos")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Eventos</button>
+            <button onClick={() => navigate("/tienda")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Tienda</button>
+            <button onClick={() => navigate("/contacto")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Contacto</button>
+            <button onClick={() => navigate("/login")} className="p-2 hover:text-neutral-950 hover:bg-amber-300">Iniciar sesión</button>
+        </nav>
         </div>
 
         {/* Menú desplegable en móviles */}
-        <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-gray-800 p-4`}>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Inicio</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Noticias</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Enventos</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Entrevistas</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Iniciar sesión</a>
+        <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-neutral-900 p-4`}>
+          <button onClick={() => navigate("/Noticias")} className="block py-1 px-4 hover:bg-neutral-950">Noticias</button>
+          <button onClick={() => navigate("/Lanzamientos")} className="block py-1 px-4 hover:bg-neutral-950">Lanzamientos</button>
+          <button onClick={() => navigate("/entrevistas")} className="block py-1 px-4 hover:bg-neutral-950">Entrevistas</button>
+          <button onClick={() => navigate("/eventos")} className="block py-1 px-4 hover:bg-neutral-950">Eventos</button>
+          <button onClick={() => navigate("/tienda")} className="block py-1 px-4 hover:bg-neutral-950">Tienda</button>
+          <button onClick={() => navigate("/contacto")} className="block py-1 px-4 hover:bg-neutral-950">Contacto</button>
+          <button onClick={() => navigate("/login")} className="block py-1 px-4 hover:bg-neutral-950">Iniciar sesión</button>
         </div>
       </header>
 
       {/* Barra de Novedades */}
-      <div className="bg-amber-300 text-black text-sm p-0.5 overflow-hidden">
-        <marquee behavior="scroll" direction="left">
-          🔥 Últimas novedades: Nuevo evento de música Techno en Santiago | Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists disponibles | El Fuco estuvo probando esta wea.
-        </marquee>
+      <div className="bg-neutral-950 text-white text-sm p-0 flex justify-between items-center shadow-md">
+        <div className="flex-1 overflow-hidden">
+          <marquee behavior="scroll" direction="left" className="text-gray-300">
+            🔥 Últimas novedades: Nuevo evento de música Techno en Santiago | Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists disponibles | El Fuco estuvo probando esta wea.
+          </marquee>
+        </div>
+        
+        <div className="flex space-x-3 items-center bg-neutral-900 px-4 py-2">
+          <RedesSociales />
+        </div>
       </div>
-      <hr className="border-t-3 border-gray-700 my-3 mx-auto w-20/20 opacity-50" />
+
     </>
   );
 }

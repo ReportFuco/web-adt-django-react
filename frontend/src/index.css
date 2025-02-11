@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+
+@layer components {
+    @keyframes scroll {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  
+    .scrolling-text {
+      @apply whitespace-nowrap overflow-hidden block;
+      animation: scroll 10s linear infinite;
+    }
+  }
+  
+
+body {
+  background-color: rgb(16, 23, 39);
+}
