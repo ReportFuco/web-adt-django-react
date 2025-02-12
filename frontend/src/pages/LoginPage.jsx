@@ -9,8 +9,9 @@ function Container() {
   const navigate = useNavigate()
 
   return (
-    <div className="bg-neutral-900 min-h-screen flex items-center justify-center">
-      <div className="bg-neutral-800 p-8 rounded-lg shadow-lg text-white w-96">
+    <div className="min-h-screen flex items-center justify-center bg-[url('.\assets\fondo.webp')] bg-cover bg-fixed opacity-60">
+      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0"></div>
+      <div className="absolute bg-black p-8 rounded-lg shadow-lg text-white w-96">
         <h2 className="text-2xl font-bold text-center mb-4">Iniciar Sesión</h2>
 
         <div className="space-y-4">

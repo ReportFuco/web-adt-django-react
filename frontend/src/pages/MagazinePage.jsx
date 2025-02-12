@@ -18,7 +18,7 @@ function MagazinePage() {
   return (
     <>
       <div className="relative bg-gray-900 text-white min-h-screen">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('.\assets\fondo.webp')] bg-cover bg-fixed opacity-15 z-0"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('.\assets\fondo.webp')] bg-cover bg-fixed opacity-60 z-0"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0"></div>
         <div className="relative z-10 p-2">
           <Header title={"Adictos al Techno"} />

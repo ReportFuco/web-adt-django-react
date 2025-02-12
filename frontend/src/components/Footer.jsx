@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Redes Sociales y Contacto */}
         <div>
           <h3 className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">Síguenos</h3>
-          <RedesSociales classNameDiseño="" />
+              <RedesSociales classNameDiseño="mt-3" />
           <p className="mt-4 text-gray-400">Contacto: contacto@techno.com</p>
         </div>
       </div>
