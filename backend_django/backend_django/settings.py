@@ -45,12 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'noticias',
-    'autenticacion',
+    'users',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
     'django_filters',
-
 ]
 
 MIDDLEWARE = [
@@ -164,3 +163,4 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
