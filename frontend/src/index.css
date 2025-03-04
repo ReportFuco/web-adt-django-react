@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 @layer components {
     @keyframes scroll {
@@ -19,5 +19,6 @@
   
 
 body {
-  background-color: rgb(16, 23, 39);
+  background-color: white;
+  font-family: "Orbitron", sans-serif;
 }

@@ -4,16 +4,20 @@ import NewsPage from "./pages/NewsPage";
 import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import Register from "./pages/Register";
+import TestingPage from "./pages/TestingPage";
+import NewsGrid from "./pages/NewsGrid";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MagazinePage />} />
+        <Route path="/Prueba" element={<TestingPage />} />
         <Route path="/eventos/" element={<NewsPage />} />
         <Route path="/login/" element={<LoginPage />} />
-        <Route path="/register/" element={<Register/>} />
+        <Route path="/register/" element={<Register />} />
         <Route path="/contacto/" element={<ContactPage />} />
+        <Route path="/Pruebados" element={<NewsGrid />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
