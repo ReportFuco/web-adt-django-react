@@ -1,6 +1,8 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from rest_framework import serializers
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -25,3 +27,25 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         attrs["username"] = user.username
         
         return super().validate(attrs)
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="Este correo ya está en uso.")]
+    )
+    password2 = serializers.CharField(write_only=True, label="Confirm password")
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password', 'password2')
+        extra_kwargs = {'password': {'write_only': True}}
+    
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("Las contraseñas deben coincidir.")
+        return data
+    
+    def create(self, validated_data):
+        validated_data.pop('password2')
+        user = User.objects.create_user(**validated_data)
+        return user

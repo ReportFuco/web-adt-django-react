@@ -1,77 +1,140 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../services/api";
 import userIcon from "../assets/icons/user-solid.svg";
 import lockIcon from "../assets/icons/lock-solid.svg";
 import googleIcon from "../assets/icons/google-brands-solid.svg";
 import facebookIcon from "../assets/icons/facebook-f-brands-solid.svg";
 import xIcon from "../assets/icons/x-twitter-brands-solid black.svg";
 
-function Container() {
+// Componente reutilizable para inputs con ícono
+const InputWithIcon = ({ icon, type, placeholder, value, onChange }) => (
+  <div className="relative hover:scale-105 transition-transform duration-300">
+    <img
+      src={icon}
+      alt={placeholder}
+      className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+    />
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className="w-full pl-10 p-3 bg-neutral-700 border border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+);
+
+function LoginContainer() {
   const navigate = useNavigate();
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Función para manejar el login y mostrar un único mensaje de error en caso de fallo
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!identifier || !password) {
+      setError("Por favor, complete todos los campos.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const result = await login(identifier, password);
+      if (result.success) {
+        navigate("/");
+      } else {
+        setError("Usuario o contraseña incorrectos.");
+      }
+    } catch (err) {
+      setError("Usuario o contraseña incorrectos.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('.\assets\fondo.webp')] bg-cover bg-fixed opacity-60">
+    <div className="min-h-screen flex items-center justify-center bg-[url('./assets/fondo.webp')] bg-cover bg-fixed opacity-60">
       <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0"></div>
-      <div className="absolute bg-black p-8 rounded-lg shadow-lg text-white w-96">
+      <div className="absolute bg-black p-8 rounded-lg shadow-lg text-white w-96 z-10">
         <h2 className="text-2xl font-bold text-center mb-8">Iniciar Sesión</h2>
-        <div className="space-y-4">
-          {/* Input con Icono de Usuario */}
-          <div className="relative hover:scale-105 transition-transform duration-300">
-            <img
-              src={userIcon}
-              alt="Usuario"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
-            />
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <InputWithIcon
+            icon={userIcon}
+            type="text"
+            placeholder="Usuario o Email"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+          />
+          <InputWithIcon
+            icon={lockIcon}
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="flex items-center">
             <input
-              type="text"
-              placeholder="Usuario"
-              className="w-full pl-10 p-3 bg-neutral-700 border border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="mr-2"
             />
+            <label htmlFor="rememberMe" className="text-sm text-gray-300">
+              Recordarme
+            </label>
           </div>
-
-          {/* Input con Icono de Contraseña */}
-          <div className="relative hover:scale-105 transition-transform duration-300">
-            <img
-              src={lockIcon}
-              alt="Contraseña"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              className="w-full pl-10 p-3 bg-neutral-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* Botón estilizado */}
           <button
             type="submit"
-            className="w-full bg-neutral-900 hover:bg-neutral-500 py-3 rounded-lg text-white font-semibold hover:scale-105 transition-transform duration-300"
-            onClick={() => navigate("/")}
+            className={`w-full bg-neutral-900 py-3 rounded-lg text-white font-semibold transition-transform duration-300 ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-neutral-500 hover:scale-105"
+            }`}
+            disabled={loading}
           >
-            Iniciar Sesión
+            {loading ? "Iniciando..." : "Iniciar Sesión"}
           </button>
-        </div>
-        <br />
+        </form>
         <div className="flex items-center my-4">
           <div className="flex-grow border-t border-gray-500"></div>
-          <h2 className="mx-3 text-gray-400">Or sign in with</h2>
+          <h2 className="mx-3 text-gray-400">O inicia sesión con</h2>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
         <div className="flex justify-center space-x-4 mt-4">
-          <button className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300">
+          <button
+            type="button"
+            className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300"
+          >
             <img src={googleIcon} alt="Google" className="w-8 h-8" />
           </button>
-          <button className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300">
+          <button
+            type="button"
+            className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300"
+          >
             <img src={facebookIcon} alt="Facebook" className="w-8 h-8" />
           </button>
-          <button className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300">
-            <img src={xIcon} alt="x" className="w-8 h-8" />
+          <button
+            type="button"
+            className="p-3 bg-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300"
+          >
+            <img src={xIcon} alt="Otra red social" className="w-8 h-8" />
           </button>
+        </div>
+        <div className="mt-4 text-center flex justify-center gap-4">
+          <a href="/forgot-password" className="text-blue-400 hover:underline">
+            ¿Olvidaste tu contraseña?
+          </a>
+          <Link to="/register" className="text-blue-400 hover:underline">
+            Crear cuenta
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default Container;
+export default LoginContainer;
