@@ -36,7 +36,7 @@ export const register = async (userData) => {
 export const getNoticias = async () => {
   try {
     const response = await axios.get(`${API_URL}noticias/`);
-    return response.data;
+    return response
   } catch (error) {
     console.error("Error al obtener noticias:", error);
     return [];
