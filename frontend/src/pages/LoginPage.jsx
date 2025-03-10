@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../services/api";
+import { jwtDecode } from "jwt-decode";
 import userIcon from "../assets/icons/user-solid.svg";
 import lockIcon from "../assets/icons/lock-solid.svg";
 import googleIcon from "../assets/icons/google-brands-solid.svg";
 import facebookIcon from "../assets/icons/facebook-f-brands-solid.svg";
 import xIcon from "../assets/icons/x-twitter-brands-solid black.svg";
 
+
+console.log(jwtDecode(localStorage.getItem("access_token")))
 // Componente reutilizable para inputs con ícono
 const InputWithIcon = ({ icon, type, placeholder, value, onChange }) => (
   <div className="relative hover:scale-105 transition-transform duration-300">
@@ -33,7 +36,7 @@ function LoginContainer() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Función para manejar el login y mostrar un único mensaje de error en caso de fallo
+  // Función para manejar el login
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!identifier || !password) {
@@ -42,10 +45,24 @@ function LoginContainer() {
     }
     setError("");
     setLoading(true);
+
     try {
-      const result = await login(identifier, password);
+      const result = await login(identifier, password); // Petición al backend
+
       if (result.success) {
+        const token = result.token; // Extraer el token del resultado
+        localStorage.setItem("access_token", token);
+        console.log(result.username)
+        console.log(result.is_superuser)
+
+        // Decodificar el token para obtener el username
+        const decoded = jwtDecode(token);
+        console.log("Usuario autenticado:", decoded.username);
+        console.log("Es superusuario:", decoded.is_superuser);
+
         navigate("/");
+        window.location.reload(); // Recargar la app para actualizar el estado global
+
       } else {
         setError("Usuario o contraseña incorrectos.");
       }
@@ -136,5 +153,7 @@ function LoginContainer() {
     </div>
   );
 }
+
+
 
 export default LoginContainer;

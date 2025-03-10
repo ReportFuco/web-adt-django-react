@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { getNoticias } from "../services/api";
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export default function NewsGrid() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [noticias, setNoticias] = useState([]);
 
@@ -25,8 +24,8 @@ export default function NewsGrid() {
           <div
             key={news.id}
             className="relative group overflow-hidden shadow-lg cursor-pointer"
-            onClick={()=> {
-              navigate(`/noticias/${news.id}`)
+            onClick={() => {
+              navigate(`/noticias/${news.id}`);
             }}
           >
             <img
@@ -39,7 +38,9 @@ export default function NewsGrid() {
               <h3 className="text-sm font-semibold leading-tight">
                 {news.titulo}
               </h3>
-              <p className="text-xs opacity-80">{news.contenido.slice(0, 100)}...</p>
+              <p className="text-xs opacity-80">
+                {news.contenido.slice(0, 100)}...
+              </p>
             </div>
           </div>
         ))}
