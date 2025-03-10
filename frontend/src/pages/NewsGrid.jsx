@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { getNoticias } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom"
 
 export default function NewsGrid() {
+
+  const navigate = useNavigate()
+
   const [noticias, setNoticias] = useState([]);
 
   useEffect(() => {
     async function loadNews() {
       const res = await getNoticias();
-      console.log(res);
       setNoticias(res.data.slice(0, 4));
     }
     loadNews();
@@ -22,6 +25,9 @@ export default function NewsGrid() {
           <div
             key={news.id}
             className="relative group overflow-hidden shadow-lg cursor-pointer"
+            onClick={()=> {
+              navigate(`/noticias/${news.id}`)
+            }}
           >
             <img
               src={news.imagen}
@@ -33,7 +39,7 @@ export default function NewsGrid() {
               <h3 className="text-sm font-semibold leading-tight">
                 {news.titulo}
               </h3>
-              <p className="text-xs opacity-80">{news.contenido}</p>
+              <p className="text-xs opacity-80">{news.contenido.slice(0, 100)}...</p>
             </div>
           </div>
         ))}

@@ -1,80 +1,49 @@
+import React from "react";
+import Header from "../components/Header";
 import SpotifyPlaylist from "../components/SpotifyPlaylist";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
-import React, { useState, useEffect } from "react";
-import { getNoticias } from "../services/api";
-import RedesSociales from "../components/RedesSociales";
+import NewsGrid from "./NewsGrid"
 
-function MagazinePage() {
-  const [noticias, setNoticias] = useState([]);
-
-  useEffect(() => {
-    const fetchNoticias = async () => {
-      const data = await getNoticias();
-      setNoticias(data.slice(0, 4));
-    };
-    fetchNoticias();
-  }, []);
+function TestingPage() {
   return (
-    <>
-      <div className="relative bg-gray-900 text-white min-h-screen">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('.\assets\fondo.webp')] bg-cover bg-fixed opacity-60 z-0"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0"></div>
-        <div className="relative z-10 p-2">
-          <Header title={"Adictos al Techno"} />
-          <main className="max-w-6xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Sección principal de noticias */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
-              {noticias.map((noticia) => (
-                <div
-                  key={noticia.id}
-                  className="bg-gray-800 rounded-none shadow-lg hover:scale-105 transition-transform duration-300 overflow-hidden w-full min-h-[350px]"
-                >
-                  {noticia.imagen && (
-                    <img
-                      src={noticia.imagen}
-                      alt={noticia.titulo}
-                      className="w-full h-60 object-cover"
-                    />
-                  )}
-                  <div className="p-5">
-                    <h2 className="text-xl font-semibold text-gray-300">
-                      {noticia.titulo}
-                    </h2>
-                    <p className="text-gray-300 mt-2">{noticia.contenido}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="min-h-screen flex flex-col">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 flex-grow">
 
-            {/* Columna lateral con publicidad y redes sociales */}
-            <aside className="p-4 shadow-md rounded-none md:col-span-1 md:row-auto order-last md:order-none">
-              {/* Sección de publicidad */}
-              <div className="mb-6 bg-amber-50 rounded-none shadow-md md:col-span-1 md:row-auto order-last md:order-none">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Publicidad
-                </h3>
-                <div className="w-full h-40 bg-gray-300 flex items-center justify-center">
-                  <span className="text-gray-600">Espacio Publicitario</span>
-                </div>
-              </div>
+        <div className="bg-amber-100 p-4 rounded-lg shadow-md md:col-span-1 hidden md:flex">
+          Lateral Izquierdo
+        </div>
 
-              <div className="bg-gray-900 p-4 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Síguenos en redes
-                </h3>
-                <div className="flex space-x-3 items-center">
-                  <RedesSociales />
-                </div>
-              </div>
-            </aside>
-          </main>
+        <div className="md:col-span-4 flex flex-col gap-4">
+          <div className="flex flex-col justify-center items-center">
+            <NewsGrid/>
+            
+          </div>
+          <div className="bg-amber-300 p-6 shadow-lg rounded-lg flex flex-col justify-center items-center">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cupiditate eos vitae similique, ex est maiores debitis libero illum molestiae facilis ut consequatur fugiat cumque, quisquam, accusamus quia deleniti repellat! Cupiditate.
+            Illum deleniti expedita magnam cupiditate iusto doloremque. Atque quae qui vero temporibus, error quos totam voluptatibus ducimus facilis sint veniam voluptate similique quia, exercitationem delectus amet, beatae vitae optio maiores.
+            Dolor vitae aliquam in consequatur eveniet quod. Alias pariatur nemo perspiciatis quaerat. Velit laudantium cupiditate, quam accusantium incidunt quos veritatis distinctio debitis nemo quia odit aspernatur quidem, doloremque repellendus placeat!
+          </div>
+        </div>
+
+        {/* Lateral Derecho */}
+        <div className="bg-amber-700 p-4 rounded-lg shadow-md md:col-span-1 hidden md:flex">
+          Lateral Derecho
         </div>
       </div>
-      <SpotifyPlaylist />
-      <Footer />
-    </>
+
+      {/* Laterales para pantallas pequeñas */}
+      <div className="md:hidden flex gap-4 p-4">
+        <div className="bg-amber-100 p-4 rounded-lg shadow-md flex-1">
+          Lateral Izquierdo
+        </div>
+        <div className="bg-amber-700 p-4 rounded-lg shadow-md flex-1">
+          Lateral Derecho
+        </div>
+      </div>
+    </div>
+
+
   );
 }
 
-export default MagazinePage;
+export default TestingPage;

@@ -42,3 +42,5 @@ export const getNoticias = async () => {
     return [];
   }
 };
+
+export const getNews = async (id) => await axios.get(`${API_URL}noticias/${id}`)
