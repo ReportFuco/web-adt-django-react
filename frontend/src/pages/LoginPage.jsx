@@ -8,9 +8,6 @@ import googleIcon from "../assets/icons/google-brands-solid.svg";
 import facebookIcon from "../assets/icons/facebook-f-brands-solid.svg";
 import xIcon from "../assets/icons/x-twitter-brands-solid black.svg";
 
-
-console.log(jwtDecode(localStorage.getItem("access_token")))
-// Componente reutilizable para inputs con ícono
 const InputWithIcon = ({ icon, type, placeholder, value, onChange }) => (
   <div className="relative hover:scale-105 transition-transform duration-300">
     <img
@@ -47,22 +44,20 @@ function LoginContainer() {
     setLoading(true);
 
     try {
-      const result = await login(identifier, password); // Petición al backend
+      const result = await login(identifier, password);
 
       if (result.success) {
-        const token = result.token; // Extraer el token del resultado
+        const token = result.token;
         localStorage.setItem("access_token", token);
-        console.log(result.username)
-        console.log(result.is_superuser)
+        console.log(result.username);
+        console.log(result.is_superuser);
 
-        // Decodificar el token para obtener el username
         const decoded = jwtDecode(token);
         console.log("Usuario autenticado:", decoded.username);
         console.log("Es superusuario:", decoded.is_superuser);
 
         navigate("/");
-        window.location.reload(); // Recargar la app para actualizar el estado global
-
+        window.location.reload();
       } else {
         setError("Usuario o contraseña incorrectos.");
       }
@@ -109,7 +104,9 @@ function LoginContainer() {
           <button
             type="submit"
             className={`w-full bg-neutral-900 py-3 rounded-lg text-white font-semibold transition-transform duration-300 ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-neutral-500 hover:scale-105"
+              loading
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-neutral-500 hover:scale-105"
             }`}
             disabled={loading}
           >
@@ -153,7 +150,5 @@ function LoginContainer() {
     </div>
   );
 }
-
-
 
 export default LoginContainer;

@@ -56,12 +56,12 @@ function NewsPage() {
       {/* CONTENIDO PRINCIPAL */}
       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sección de texto de la noticia */}
-        <article className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg prose prose-lg">
+        <article className="lg:col-span-2 bg-white p-6 rounded-sm shadow-lg prose prose-lg">
           <ReactMarkdown>{noticia.contenido}</ReactMarkdown>
         </article>
 
         {/* Noticias relacionadas */}
-        <aside className="bg-white p-6 rounded-lg shadow-lg">
+        <aside className="bg-white p-6 rounded-sm shadow-lg">
           <h2 className="text-xl font-semibold mb-4 text-red-600">Actualidad</h2>
           <ul className="space-y-4">
             {noticia.relacionadas?.map((news, index) => (

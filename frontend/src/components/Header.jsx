@@ -1,21 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
-import logo from "../assets/logo-adt.jpg";
+import logo from "../assets/ADT logo.jpg";
 import RedesSociales from "./RedesSociales";
 import Marquee from "react-fast-marquee";
+import { useAuth } from "../context/AuthContext";
 
-export default function Header({ title }) {
+export default function Header() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const menuItems = [
-    { label: "Noticias", path: "/Noticias" },
-    { label: "Lanzamientos", path: "/Lanzamientos" },
+    { label: "Noticias", path: "/noticias" },
+    { label: "Lanzamientos", path: "/lanzamientos" },
     { label: "Entrevistas", path: "/entrevistas" },
     { label: "Eventos", path: "/eventos" },
     { label: "Tienda", path: "/tienda" },
-    { label: "Contacto", path: "/contacto" },
-    { label: "Iniciar sesión", path: "/login" },
   ];
 
   return (
@@ -25,11 +25,11 @@ export default function Header({ title }) {
           <div className="flex items-center">
             <img
               src={logo}
+
               alt="Logo"
-              className="h-10 mr-3 cursor-pointer"
+              className="h-15 mr-3 cursor-pointer"
               onClick={() => navigate("/")}
             />
-            <h1 className="text-xl font-bold hidden md:block">{title}</h1>
           </div>
 
           <button
@@ -45,25 +45,85 @@ export default function Header({ title }) {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </button>
 
-          {/* Navegación en pantallas grandes */}
           <nav className="hidden md:flex space-x-6">
-            {menuItems.map((item, index) => (
-              <a
-                key={index}
-                onClick={() => navigate(item.path)}
-                className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
-              >
-                {item.label}
-              </a>
-            ))}
+            <ul className="flex space-x-6 items-center">
+              <li>
+                <Link
+                  to={"/noticias"}
+                  className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                >
+                  Noticias
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/lanzamientos"}
+                  className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                >
+                  Lanzamientos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/entrevistas"}
+                  className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                >
+                  Entrevistas
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/eventos"}
+                  className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                >
+                  Eventos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/tienda"}
+                  className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                >
+                  Tienda
+                </Link>
+              </li>
+
+              {user ? (
+                <li>
+                  <div className="flex items-center gap-6">
+                    <span className="cursor-pointer p-2 font-bold text-white">
+                      {user.username}
+                    </span>
+                    <button
+                      onClick={logout}
+                      className="cursor-pointer p-2 bg-red-600 text-white hover:bg-red-700 font-bold transition duration-200 rounded"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </li>
+              ) : (
+                <li>
+                  <Link
+                    to={"/login"}
+                    className="cursor-pointer p-2 hover:text-neutral-950 hover:bg-amber-300 font-bold transition duration-200 rounded"
+                  >
+                    Login
+                  </Link>
+                </li>
+              )}
+            </ul>
           </nav>
         </div>
 
-        {/* Menú desplegable en móviles (animado con transición) */}
         <div
           className={`absolute top-16 left-0 w-full bg-neutral-900 md:hidden overflow-hidden transition-all duration-300 ${
             isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
@@ -77,7 +137,7 @@ export default function Header({ title }) {
                     navigate(item.path);
                     setIsOpen(false);
                   }}
-                  className="block py-2 px-4 text-white hover:bg-neutral-950 transition duration-200 rounded cursor-pointer"
+                  className="flex justify-center py-2 px-4 text-white hover:bg-neutral-950 transition duration-200 rounded cursor-pointer"
                 >
                   {item.label}
                 </a>
@@ -90,7 +150,9 @@ export default function Header({ title }) {
       <div className="fixed top-16 left-0 w-full bg-neutral-800 text-white text-sm flex justify-between items-center shadow-md z-40">
         <div className="flex-1 overflow-hidden space-x-3">
           <Marquee speed={75} className="bg-neutral-800 text-white py-1.5">
-            🔥 Últimas novedades: Nuevo evento de música Techno en Santiago | Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists disponibles | El Fuco estuvo probando esta wea.
+            🔥 Últimas novedades: Nuevo evento de música Techno en Santiago |
+            Descuento del 20% en productos exclusivos | 🎶 Nuevas playlists
+            disponibles | El Fuco estuvo probando esta wea.
           </Marquee>
         </div>
 
