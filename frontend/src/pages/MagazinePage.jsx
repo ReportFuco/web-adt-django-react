@@ -2,6 +2,7 @@ import React from "react";
 import SpotifyPlaylist from "../components/SpotifyPlaylist";
 import NewsGrid from "./NewsGrid";
 import technoImage from "../assets/techno 7.jpg";
+import Interview from "../components/Interview";
 
 function MagazinePage() {
   return (
@@ -17,17 +18,7 @@ function MagazinePage() {
             <NewsGrid />
           </div>
           <div className="p-6 shadow-lg flex flex-col justify-center items-center">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cupiditate
-            eos vitae similique, ex est maiores debitis libero illum molestiae
-            facilis ut consequatur fugiat cumque, quisquam, accusamus quia
-            deleniti repellat! Cupiditate. Illum deleniti expedita magnam
-            cupiditate iusto doloremque. Atque quae qui vero temporibus, error
-            quos totam voluptatibus ducimus facilis sint veniam voluptate
-            similique quia, exercitationem delectus amet, beatae vitae optio
-            maiores. Dolor vitae aliquam in consequatur eveniet quod. Alias
-            pariatur nemo perspiciatis quaerat. Velit laudantium cupiditate,
-            quam accusantium incidunt quos veritatis distinctio debitis nemo
-            quia odit aspernatur quidem, doloremque repellendus placeat!
+            <Interview/>
           </div>
         </div>
 

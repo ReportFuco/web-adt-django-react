@@ -7,6 +7,7 @@ import NewsGrid from "./pages/NewsGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AuthProvider } from "./context/AuthContext";
+import Interview from "./components/Interview";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/Pruebados" element={<NewsGrid />} />
           <Route path="/noticias/:id" element={<NewsPage />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/eventos" element={<Interview />} />
         </Routes>
         <Footer />
       </AuthProvider>
