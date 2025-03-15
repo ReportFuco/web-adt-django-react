@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getEvents } from "../services/event.api";
+import { useApi } from "../services/api"; // 👈 Importa la API centralizada
 
 function Interview() {
-  const navigate = useNavigate();
+  const { getEvents } = useApi(); // 👈 Extrae `getEvents` desde `useApi()`
   const [evento, setEvento] = useState([]);
 
   useEffect(() => {
     async function loadEvents() {
+      try {
         const res = await getEvents();
         setEvento(res.data);
-
+      } catch (error) {
+        console.error("Error cargando eventos:", error);
+      }
     }
     loadEvents();
   }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold">eventos</h2>
+      <h2 className="text-3xl font-bold">Eventos</h2>
       <div className="border-b-4 border-amber-300 w-30 my-3"></div>
-      <div className="grid md:grid-cols-4 gap-1">
+      <div className="flex flex-auto">
         {evento.map((news) => (
           <div
             key={news.id}

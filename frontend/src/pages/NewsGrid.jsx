@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
-import { getNoticias } from "../services/api";
+import { useApi } from "../services/api"; // Importar el hook con todas las APIs
 import { useNavigate } from "react-router-dom";
 
 export default function NewsGrid() {
   const navigate = useNavigate();
-
+  const { getNoticias } = useApi(); // Obtener la función desde useApi()
   const [noticias, setNoticias] = useState([]);
 
   useEffect(() => {
     async function loadNews() {
-      const res = await getNoticias();
-      setNoticias(res.data.slice(0, 4));
+      try {
+        const res = await getNoticias();
+        setNoticias(res.data.slice(0, 4));
+      } catch (error) {
+        console.error("Error cargando noticias:", error);
+      }
     }
     loadNews();
   }, []);

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import { getNews } from "../services/api";
+import { useApi } from "../services/api";
 
 function NewsPage() {
   const { id } = useParams();
   const [noticia, setNoticia] = useState(null);
-
+  const { getNews } = useApi()
+  
   useEffect(() => {
     async function loadNews() {
       try {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/api";
+import { useApi } from "../services/api"; // Ahora usamos useApi()
+import { useAuth } from "../context/AuthContext"; // Importamos AuthContext
 import { jwtDecode } from "jwt-decode";
 import userIcon from "../assets/icons/user-solid.svg";
 import lockIcon from "../assets/icons/lock-solid.svg";
@@ -27,11 +28,13 @@ const InputWithIcon = ({ icon, type, placeholder, value, onChange }) => (
 
 function LoginContainer() {
   const navigate = useNavigate();
+  const { login } = useApi(); // Usamos useApi() en lugar de importarlo directamente
+  const { setUser } = useAuth(); // Usamos AuthContext para actualizar el usuario autenticado
+
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   // Función para manejar el login
   const handleLogin = async (e) => {
@@ -49,28 +52,25 @@ function LoginContainer() {
       if (result.success) {
         const token = result.token;
         localStorage.setItem("access_token", token);
-        console.log(result.username);
-        console.log(result.is_superuser);
 
+        // Decodificar token y actualizar usuario en AuthContext
         const decoded = jwtDecode(token);
-        console.log("Usuario autenticado:", decoded.username);
-        console.log("Es superusuario:", decoded.is_superuser);
+        setUser(decoded); // Ahora el usuario queda actualizado sin recargar la página
 
         navigate("/");
-        window.location.reload();
       } else {
         setError("Usuario o contraseña incorrectos.");
       }
     } catch (err) {
-      setError("Usuario o contraseña incorrectos.");
+      setError("Error en el login, intenta de nuevo.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('./assets/fondo.webp')] bg-cover bg-fixed opacity-60">
-      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[url('./assets/fondo.webp')] bg-cover bg-fixed">
+      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80"></div>
       <div className="absolute bg-black p-8 rounded-lg shadow-lg text-white w-96 z-10">
         <h2 className="text-2xl font-bold text-center mb-8">Iniciar Sesión</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -89,18 +89,6 @@ function LoginContainer() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="mr-2"
-            />
-            <label htmlFor="rememberMe" className="text-sm text-gray-300">
-              Recordarme
-            </label>
-          </div>
           <button
             type="submit"
             className={`w-full bg-neutral-900 py-3 rounded-lg text-white font-semibold transition-transform duration-300 ${

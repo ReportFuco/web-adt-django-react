@@ -1,46 +1,113 @@
-import axios, { mergeConfig } from "axios";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-const API_URL = "/api/";
+const API_BASE_URL = "/api/";
 
-export const login = async (identifier, password) => {
-  try {
-      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
-          username: identifier,
-          password: password,
+// Crear una única instancia de axios
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
+// Hook para manejar la API con autenticación
+export const useApi = () => {
+  const { token } = useAuth();
+
+  // Función para obtener headers de autenticación automáticamente
+  const getAuthHeaders = () => ({
+    Authorization: token ? `Bearer ${token}` : "",
+    "Content-Type": "application/json",
+  });
+
+  return {
+    // 🔹 Login (autenticación)
+    login: async (identifier, password) => {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}token/`,
+          {
+            username: identifier,
+            password: password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const { access, refresh } = response.data;
+        localStorage.setItem("accessToken", access);
+        localStorage.setItem("refreshToken", refresh);
+
+        return { success: true, token: access };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.response?.data?.detail || "Error en el login",
+        };
+      }
+    },
+
+    // 🔹 Registro de usuario
+    register: async (userData) => {
+      try {
+        const response = await axios.post(`${API_BASE_URL}register/`, userData);
+        return { success: true, data: response.data };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.response?.data || "Error en el registro",
+        };
+      }
+    },
+
+    // 🔹 Noticias
+    getNoticias: async () => {
+      try {
+        return await axiosInstance.get("/noticias/");
+      } catch (error) {
+        console.error("Error al obtener noticias:", error);
+        return [];
+      }
+    },
+
+    getNews: async (id) => {
+      return await axiosInstance.get(`/noticias/${id}`);
+    },
+
+    // 🔹 Comentarios
+    getComments: async (noticiaId) => {
+      return await axiosInstance.get(`/comentarios/?noticia_id=${noticiaId}`, {
+        headers: getAuthHeaders(),
       });
+    },
 
-      const { access, refresh } = response.data;
+    postComment: async (noticiaId, contenido) => {
+      return await axiosInstance.post(
+        "/comentarios/",
+        { noticia: noticiaId, contenido },
+        { headers: getAuthHeaders() }
+      );
+    },
 
-      // Guardar tokens en localStorage
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
+    deleteComment: async (comentarioId) => {
+      return await axiosInstance.delete(`/comentarios/${comentarioId}/`, {
+        headers: getAuthHeaders(),
+      });
+    },
 
-      console.log("Autenticación exitosa:", response.data);
-      return { success: true, token: access };
-  } catch (error) {
-      console.error("Error en la autenticación:", error.response?.data || error.message);
-      return { success: false, error: error.response?.data?.detail || "Error en el login" };
-  }
+    updateComment: async (comentarioId, contenido) => {
+      return await axiosInstance.put(
+        `/comentarios/${comentarioId}/`,
+        { contenido },
+        { headers: getAuthHeaders() }
+      );
+    },
+
+    // 🔹 Eventos
+    getEvents: async () => {
+      return await axiosInstance.get("/eventos/");
+    },
+  };
 };
-
-export const register = async (userData) => {
-  try {
-    const response = await axios.post("http://127.0.0.1:8000/api/register/", userData);
-    return { success: true, data: response.data };
-  } catch (error) {
-    return { success: false, error: error.response.data };
-  }
-};
-
-
-export const getNoticias = async () => {
-  try {
-    const response = await axios.get(`${API_URL}noticias/`);
-    return response
-  } catch (error) {
-    console.error("Error al obtener noticias:", error);
-    return [];
-  }
-};
-
-export const getNews = async (id) => await axios.get(`${API_URL}noticias/${id}`)

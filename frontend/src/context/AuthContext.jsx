@@ -8,10 +8,10 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("access_token") || ""); // 🔥 Agregamos token
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -21,17 +21,25 @@ export const AuthProvider = ({ children }) => {
         logout();
       }
     }
-  }, []);
+  }, [token]); // 🔥 Ahora se actualiza cuando cambia el token
+
+  const login = (newToken) => {
+    localStorage.setItem("access_token", newToken);
+    setToken(newToken); // 🔥 Guardar token en el estado
+    const decoded = jwtDecode(newToken);
+    setUser(decoded);
+  };
 
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    setToken(""); // 🔥 Resetear el token
     setUser(null);
     navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
