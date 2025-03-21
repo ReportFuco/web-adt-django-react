@@ -1,45 +1,37 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { createContext, useState, useEffect, useContext } from "react";
 
-const AuthContext = createContext();
+
+export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("access_token") || ""); // 🔥 Agregamos token
-  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("accessToken") || null);
 
   useEffect(() => {
     if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-      } catch (error) {
-        console.error("Error decodificando el token:", error);
-        logout();
-      }
+      localStorage.setItem("accessToken", token);
+    } else {
+      localStorage.removeItem("accessToken");
     }
-  }, [token]); // 🔥 Ahora se actualiza cuando cambia el token
+  }, [token]);
 
-  const login = (newToken) => {
-    localStorage.setItem("access_token", newToken);
-    setToken(newToken); // 🔥 Guardar token en el estado
-    const decoded = jwtDecode(newToken);
-    setUser(decoded);
+  const loginUser = async (username, password) => {
+    const response = await login(username, password);
+    if (response.success) {
+      setToken(response.token);
+    }
+    return response;
   };
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setToken(""); // 🔥 Resetear el token
-    setUser(null);
-    navigate("/");
+  const logoutUser = () => {
+    setToken(null);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ token, loginUser, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );

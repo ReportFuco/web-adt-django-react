@@ -1,113 +1,100 @@
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
 
-const API_BASE_URL = "/api/";
+const apiBaseUrl = "http://127.0.0.1:8000/api/";
 
-// Crear una única instancia de axios
-const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+export const api = axios.create({
+  baseURL: apiBaseUrl,
   headers: { "Content-Type": "application/json" },
 });
 
-// Hook para manejar la API con autenticación
-export const useApi = () => {
-  const { token } = useAuth();
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("accessToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
-  // Función para obtener headers de autenticación automáticamente
-  const getAuthHeaders = () => ({
-    Authorization: token ? `Bearer ${token}` : "",
-    "Content-Type": "application/json",
-  });
+export const register = async (userData) => {
+  try {
+    const response = await api.post("register/", userData);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: error.response.data };
+  }
+};
 
-  return {
-    // 🔹 Login (autenticación)
-    login: async (identifier, password) => {
-      try {
-        const response = await axios.post(
-          `${API_BASE_URL}token/`,
-          {
-            username: identifier,
-            password: password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+export const login = async (identifier, password) => {
+  try {
+    const response = await api.post("token/", {
+      username: identifier,
+      password: password,
+    });
 
-        const { access, refresh } = response.data;
-        localStorage.setItem("accessToken", access);
-        localStorage.setItem("refreshToken", refresh);
+    const { access, refresh } = response.data;
 
-        return { success: true, token: access };
-      } catch (error) {
-        return {
-          success: false,
-          error: error.response?.data?.detail || "Error en el login",
-        };
-      }
-    },
+    localStorage.setItem("accessToken", access);
+    localStorage.setItem("refreshToken", refresh);
 
-    // 🔹 Registro de usuario
-    register: async (userData) => {
-      try {
-        const response = await axios.post(`${API_BASE_URL}register/`, userData);
-        return { success: true, data: response.data };
-      } catch (error) {
-        return {
-          success: false,
-          error: error.response?.data || "Error en el registro",
-        };
-      }
-    },
+    return { success: true, token: access };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.detail || "Error en el login",
+    };
+  }
+};
 
-    // 🔹 Noticias
-    getNoticias: async () => {
-      try {
-        return await axiosInstance.get("/noticias/");
-      } catch (error) {
-        console.error("Error al obtener noticias:", error);
-        return [];
-      }
-    },
+export const getNoticia = async (id) => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}noticias/${id}/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener la noticia:", error);
+    throw error;
+  }
+};
 
-    getNews: async (id) => {
-      return await axiosInstance.get(`/noticias/${id}`);
-    },
+export const getNoticias = async () => {
+  try {
+    const response = await api.get("noticias/");
+    return response;
+  } catch {
+    console.error("Error al obtener las noticias");
+    return [];
+  }
+};
 
-    // 🔹 Comentarios
-    getComments: async (noticiaId) => {
-      return await axiosInstance.get(`/comentarios/?noticia_id=${noticiaId}`, {
-        headers: getAuthHeaders(),
-      });
-    },
+export const getInterview = async () => {
+  try {
+    const response = await api.get("entrevistas/");
+    return response;
+  } catch {
+    console.error("Error al obtener las entrevistas");
+    return [];
+  }
+};
 
-    postComment: async (noticiaId, contenido) => {
-      return await axiosInstance.post(
-        "/comentarios/",
-        { noticia: noticiaId, contenido },
-        { headers: getAuthHeaders() }
-      );
-    },
+export const getComments = async (id) => {
+  try {
+    return (await api.get(`comentarios/?noticia=${id}`)).data;
+  } catch {
+    console.error("Error al obtener los comentarios");
+    return [];
+  }
+};
 
-    deleteComment: async (comentarioId) => {
-      return await axiosInstance.delete(`/comentarios/${comentarioId}/`, {
-        headers: getAuthHeaders(),
-      });
-    },
-
-    updateComment: async (comentarioId, contenido) => {
-      return await axiosInstance.put(
-        `/comentarios/${comentarioId}/`,
-        { contenido },
-        { headers: getAuthHeaders() }
-      );
-    },
-
-    // 🔹 Eventos
-    getEvents: async () => {
-      return await axiosInstance.get("/eventos/");
-    },
-  };
+export const postComment = async (noticiaId, contenido) => {
+  try {
+    const response = await api.post(
+      "comentarios/",
+      { noticia: noticiaId, contenido },
+      { headers: getAuthHeaders() }
+    );
+    return { success: true, data: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.detail || "Error al comentar",
+    };
+  }
 };

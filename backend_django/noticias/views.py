@@ -21,11 +21,12 @@ class AnuncioViewSet(viewsets.ModelViewSet):
 class ComentarioViewSet(viewsets.ModelViewSet):
     serializer_class = ComentarioSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_fields = ['noticia']
 
     def get_queryset(self):
-        noticia_id = self.request.query_params.get('noticia_id', None)
+        noticia_id = self.request.query_params.get('noticia', None)
         if noticia_id:
-            return Comentario.objects.filter(noticia_id=noticia_id, aprobado=True)
+            return Comentario.objects.filter(noticia_id=noticia_id)
         return Comentario.objects.all()
 
     def perform_create(self, serializer):

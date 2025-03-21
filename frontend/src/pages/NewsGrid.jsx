@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useApi } from "../services/api"; // Importar el hook con todas las APIs
+import { getNoticias } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function NewsGrid() {
   const navigate = useNavigate();
-  const { getNoticias } = useApi(); // Obtener la función desde useApi()
   const [noticias, setNoticias] = useState([]);
 
   useEffect(() => {

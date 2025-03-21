@@ -3,7 +3,6 @@ import MagazinePage from "./pages/MagazinePage";
 import NewsPage from "./pages/NewsPage";
 import LoginPage from "./pages/LoginPage";
 import Register from "./pages/Register";
-import NewsGrid from "./pages/NewsGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AuthProvider } from "./context/AuthContext";
@@ -18,10 +17,9 @@ function App() {
           <Route path="/" element={<MagazinePage />} />
           <Route path="/login/" element={<LoginPage />} />
           <Route path="/register/" element={<Register />} />
-          <Route path="/Pruebados" element={<NewsGrid />} />
           <Route path="/noticias/:id" element={<NewsPage />} />
-          <Route path="*" element={<Navigate to="/" />} />
           <Route path="/eventos" element={<Interview />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Footer />
       </AuthProvider>
