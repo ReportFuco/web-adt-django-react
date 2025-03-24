@@ -16,7 +16,7 @@ function Comments({ id }) {
 
   if (!comentarios.length) {
     return (
-      <p className="text-center text-gray-600 mt-10">Cargando comentarios...</p>
+      <p className="text-center text-gray-600 mt-10">Sin comentarios</p>
     );
   }
 

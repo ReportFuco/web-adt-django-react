@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AuthProvider } from "./context/AuthContext";
 import Interview from "./components/Interview";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/noticias/:id" element={<NewsPage />} />
           <Route path="/eventos" element={<Interview />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/loginprueba" element={<Login />} />
         </Routes>
         <Footer />
       </AuthProvider>
