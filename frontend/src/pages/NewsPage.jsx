@@ -1,15 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
-import { getNoticia } from "../services/api";
-import Comments from "../components/Comments";
 import SpotifyPlaylist from "../components/SpotifyPlaylist";
+import React, { useEffect, useState } from "react";
+import Comments from "../components/Comments";
+import { getNoticia } from "../services/api";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useForm } from "react-hook-form";
+import { IoSend } from "react-icons/io5";
+import { useAuth } from "../context/AuthContext";
+import { postComment } from "../services/api";
 
 function NewsPage() {
+  const navigate = useNavigate()
+  const { token } = useAuth();
   const { id } = useParams();
   const [noticia, setNoticia] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    const response = await postComment(id, data.comments);
+
+    if (response.success) {
+      setRefresh((prev) => !prev);
+    } else {
+      console.error("Error al enviar comentario ❌", response.error);
+    }
+
+    reset();
+  };
 
   useEffect(() => {
     async function loadNews() {
@@ -50,13 +75,12 @@ function NewsPage() {
         {/* Imagen a la derecha */}
         {noticia.imagen && (
           <div className="aspect-[4/3] w-full lg:w-[500px] overflow-hidden rounded-lg shadow-lg">
-          <img
-            src={noticia.imagen}
-            alt={noticia.titulo}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
+            <img
+              src={noticia.imagen}
+              alt={noticia.titulo}
+              className="w-full h-full object-cover"
+            />
+          </div>
         )}
       </section>
 
@@ -66,12 +90,50 @@ function NewsPage() {
           <p className="m-2">Fuente: {noticia.fuente}</p>
         </article>
 
-        {/* Noticias relacionadas */}
-        <aside className="bg-white p-6 rounded-lg shadow-lg">
+        <aside className="bg-white p-6 rounded-lg shadow-lg flex flex-col h-[400px]">
           <h2 className="text-xl font-semibold mb-4 text-neutral-950 text-center">
             Comentarios
           </h2>
-          <Comments id={id} />
+          <div className="flex-grow overflow-y-auto pr-2">
+            <Comments id={id} key={refresh} />
+          </div>
+          {token ? (
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex items-center gap-2 mt-4"
+            >
+              <input
+                type="text"
+                placeholder="Escribe un comentario..."
+                className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                {...register("comments", {
+                  required: {
+                    value: true,
+                    message: "Debes escribir algo para comentar",
+                  },
+                })}
+              />
+              <button type="submit" className="text-black text-2xl p-2">
+                <IoSend />
+              </button>
+              {errors.comments && (
+                <p className="text-red-500 text-sm mt-1 text-center w-full">
+                  {errors.comments.message}
+                </p>
+              )}
+            </form>
+          ) : (
+            <p className="text-center text-sm text-red-500 mt-4">
+              Debes{" "}
+              <Link
+                className="text-blue-500 underline hover:text-blue-700"
+                to={"/login"}
+              >
+                iniciar sesión
+              </Link>{" "}
+              para comentar.
+            </p>
+          )}
         </aside>
       </div>
 

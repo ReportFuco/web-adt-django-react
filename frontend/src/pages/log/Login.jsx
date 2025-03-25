@@ -1,14 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLogin } from "../../services/api";
-import { jwtDecode } from "jwt-decode";
 import userIcon from "../../assets/icons/user-solid.svg";
 import lockIcon from "../../assets/icons/lock-solid.svg";
 import googleIcon from "../../assets/icons/google-brands-solid.svg";
 import facebookIcon from "../../assets/icons/facebook-f-brands-solid.svg";
 import xIcon from "../../assets/icons/x-twitter-brands-solid black.svg";
 import backgroundImage from "../../assets/fondo.webp";
+import { useAuth } from "../../context/AuthContext";
 
 const InputWithIcon = ({ icon, placeholder, type, name, register, error }) => (
   <div className="relative hover:scale-105 transition-transform duration-300">
@@ -38,28 +37,21 @@ function Login() {
   } = useForm();
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const onSubmit = async (data) => {
     setLoginError("");
 
-    const response = await getLogin(data.username, data.password);
+    const response = await loginUser(data.username, data.password);
 
     if (!response.success) {
       setLoginError(response.error || "Credenciales inválidas");
       return;
     }
 
-    localStorage.setItem("accessToken", response.access);
-    localStorage.setItem("refreshToken", response.refresh);
-
-    const decoded = jwtDecode(response.access);
-    console.log("Usuario autenticado:", decoded.username);
-    console.log("Es superusuario:", decoded.is_superuser);
-    console.log(localStorage.getItem("accessToken"));
     reset();
     navigate("/");
-    window.location.reload();
-  };
+  };  
 
   return (
     <div

@@ -1,9 +1,9 @@
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import backgroundImage from "../../assets/fondo.webp";
+import { registerUser } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../../services/api";
-import backgroundImage from "../../assets/fondo.webp";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 const InputWithIcon = ({
   icon: Icon,

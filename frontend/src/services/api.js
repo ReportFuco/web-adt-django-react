@@ -1,7 +1,7 @@
 import axios from "axios";
 import { data } from "react-router-dom";
 
-const apiBaseUrl = "http://127.0.0.1:8000/api/";
+const apiBaseUrl = "http://172.20.10.5:8000/api/";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
