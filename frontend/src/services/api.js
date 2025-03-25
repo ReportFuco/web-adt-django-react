@@ -1,4 +1,5 @@
 import axios from "axios";
+import { data } from "react-router-dom";
 
 const apiBaseUrl = "http://127.0.0.1:8000/api/";
 
@@ -21,7 +22,7 @@ export const register = async (userData) => {
   }
 };
 
-export const login = async (identifier, password) => {
+export const getLogin = async (identifier, password) => {
   try {
     const response = await api.post("token/", {
       username: identifier,
@@ -30,10 +31,11 @@ export const login = async (identifier, password) => {
 
     const { access, refresh } = response.data;
 
-    localStorage.setItem("accessToken", access);
-    localStorage.setItem("refreshToken", refresh);
-
-    return { success: true, token: access };
+    return {
+      success: true,
+      access,
+      refresh,
+    };
   } catch (error) {
     return {
       success: false,
@@ -41,6 +43,7 @@ export const login = async (identifier, password) => {
     };
   }
 };
+
 
 export const getNoticia = async (id) => {
   try {
@@ -95,6 +98,18 @@ export const postComment = async (noticiaId, contenido) => {
     return {
       success: false,
       error: error.response?.data?.detail || "Error al comentar",
+    };
+  }
+};
+
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post("register/", userData);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data || "Error desconocido",
     };
   }
 };

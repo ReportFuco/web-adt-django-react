@@ -3,10 +3,13 @@ import SpotifyPlaylist from "../components/SpotifyPlaylist";
 import NewsGrid from "./NewsGrid";
 import technoImage from "../assets/techno 7.jpg";
 import Interview from "../components/Interview";
+import Header from "../components/Header"
+import Footer from "../components/Footer"
 
 function MagazinePage() {
   return (
     <div className="min-h-screen flex flex-col">
+      <Header />
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2 flex-grow">
         <div
           className="bg-cover bg-center bg-no-repeat"
@@ -18,7 +21,7 @@ function MagazinePage() {
             <NewsGrid />
           </div>
           <div className="p-6 shadow-lg flex flex-col justify-center items-center">
-            <Interview/>
+            <Interview />
           </div>
         </div>
 
@@ -40,6 +43,7 @@ function MagazinePage() {
       <div className="w-full mt-10">
         <SpotifyPlaylist />
       </div>
+      <Footer/>
     </div>
   );
 }

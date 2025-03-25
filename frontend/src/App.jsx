@@ -1,29 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MagazinePage from "./pages/MagazinePage";
 import NewsPage from "./pages/NewsPage";
-import LoginPage from "./pages/LoginPage";
-import Register from "./pages/Register";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import { AuthProvider } from "./context/AuthContext";
 import Interview from "./components/Interview";
-import Login from "./pages/Login";
+import Login from "./pages/log/Login";
+import Register from "./pages/log/register";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Header />
         <Routes>
           <Route path="/" element={<MagazinePage />} />
-          <Route path="/login/" element={<LoginPage />} />
-          <Route path="/register/" element={<Register />} />
           <Route path="/noticias/:id" element={<NewsPage />} />
           <Route path="/eventos" element={<Interview />} />
           <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/loginprueba" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-        <Footer />
       </AuthProvider>
     </BrowserRouter>
   );

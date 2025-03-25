@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getNoticia } from "../services/api";
 import Comments from "../components/Comments";
-import SpotifyPlaylist from "../components/SpotifyPlaylist"
+import SpotifyPlaylist from "../components/SpotifyPlaylist";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function NewsPage() {
   const { id } = useParams();
@@ -25,7 +27,8 @@ function NewsPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-gray-900 text-white p-6 lg:p-12">
+      <Header />
+      <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
         {/* Texto a la izquierda */}
         <div className="lg:w-1/2 flex flex-col justify-center px-6">
           <p className="uppercase text-sm font-semibold text-gray-400">
@@ -46,13 +49,14 @@ function NewsPage() {
 
         {/* Imagen a la derecha */}
         {noticia.imagen && (
-          <div className="lg:w-1/2 flex justify-center">
-            <img
-              src={noticia.imagen}
-              alt={noticia.titulo}
-              className="object-cover w-full lg:w-auto h-80 lg:h-full rounded-lg shadow-lg"
-            />
-          </div>
+          <div className="aspect-[4/3] w-full lg:w-[500px] overflow-hidden rounded-lg shadow-lg">
+          <img
+            src={noticia.imagen}
+            alt={noticia.titulo}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
         )}
       </section>
 
@@ -74,6 +78,7 @@ function NewsPage() {
       <div>
         <SpotifyPlaylist />
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/api";
+import { getLogin } from "../services/api";
 import { jwtDecode } from "jwt-decode";
 import userIcon from "../assets/icons/user-solid.svg";
 import lockIcon from "../assets/icons/lock-solid.svg";
@@ -44,13 +44,12 @@ function LoginContainer() {
     setLoading(true);
 
     try {
-      const result = await login(identifier, password);
+      const result = await getLogin(identifier, password);
 
       if (result.success) {
         const token = result.token;
         localStorage.setItem("access_token", token);
-        console.log(result.username);
-        console.log(result.is_superuser);
+
 
         const decoded = jwtDecode(token);
         console.log("Usuario autenticado:", decoded.username);
