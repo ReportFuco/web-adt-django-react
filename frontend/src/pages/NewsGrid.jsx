@@ -19,14 +19,12 @@ export default function NewsGrid() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold">Noticias</h2>
-      <div className="border-b-4 border-amber-300 w-30 my-3"></div>
+    <div className="max-w-6xl px-1 py-2">
       <div className="grid md:grid-cols-4 gap-1">
         {noticias.map((news) => (
           <div
             key={news.id}
-            className="relative group overflow-hidden shadow-lg cursor-pointer"
+            className="relative group overflow-hidden shadow-lg cursor-pointer m-0.5"
             onClick={() => {
               navigate(`/noticias/${news.id}`);
             }}

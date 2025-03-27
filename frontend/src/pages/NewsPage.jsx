@@ -2,7 +2,7 @@ import SpotifyPlaylist from "../components/SpotifyPlaylist";
 import React, { useEffect, useState } from "react";
 import Comments from "../components/Comments";
 import { getNoticia } from "../services/api";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -12,7 +12,6 @@ import { useAuth } from "../context/AuthContext";
 import { postComment } from "../services/api";
 
 function NewsPage() {
-  const navigate = useNavigate()
   const { token } = useAuth();
   const { id } = useParams();
   const [noticia, setNoticia] = useState(null);

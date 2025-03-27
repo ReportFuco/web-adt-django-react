@@ -44,7 +44,6 @@ export const getLogin = async (identifier, password) => {
   }
 };
 
-
 export const getNoticia = async (id) => {
   try {
     const response = await axios.get(`${apiBaseUrl}noticias/${id}/`, {
@@ -111,5 +110,14 @@ export const registerUser = async (userData) => {
       success: false,
       error: error.response?.data || "Error desconocido",
     };
+  }
+};
+
+export const getEvents = async () => {
+  try {
+    const response = await api.get("eventos/");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los datos", error);
   }
 };

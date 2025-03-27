@@ -1,50 +1,67 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import SpotifyPlaylist from "../components/SpotifyPlaylist";
+import { getEvents } from "../services/api";
 import NewsGrid from "./NewsGrid";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import technoImage from "../assets/techno 7.jpg";
-import Interview from "../components/Interview";
-import Header from "../components/Header"
-import Footer from "../components/Footer"
+import EventCard from "../components/EventCard";
 
 function MagazinePage() {
+  const [evento, setEvento] = useState([]);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const rest = await getEvents();
+        setEvento(rest);
+      } catch (error) {
+        console.error("Error al obtener los datos", error);
+      }
+    };
+    loadEvents();
+  }, []);
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Header />
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2 flex-grow">
-        <div
-          className="bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${technoImage})` }}
-        ></div>
+      <main className="min-h-screen flex flex-col">
+        <section className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 flex-grow">
+          {/* Lateral izquierdo (imagen) */}
+          <aside
+            className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
+            style={{ backgroundImage: `url(${technoImage})` }}
+          ></aside>
 
-        <div className="md:col-span-4 flex flex-col gap-4">
-          <div className="flex shadow-lg flex-col justify-center items-center">
-            <NewsGrid />
-          </div>
-          <div className="p-6 shadow-lg flex flex-col justify-center items-center">
-            <Interview />
-          </div>
-        </div>
+          {/* Contenido central */}
+          <section className="md:col-span-4 flex flex-col gap-4">
+            <article className="p-0.5">
+              <h2 className="text-3xl font-bold">Noticias</h2>
+              <div className="border-b-4 border-neutral-500 w-35 mb-4 mt-1"></div>
+              <NewsGrid />
+            </article>
+            <article>
+              <h2 className="text-3xl font-bold">Eventos</h2>
+              <div className="border-b-4 border-neutral-500 w-35 mb-4 mt-1"></div>
+              <div className="">
+                {evento.map((evento) => (
+                  <EventCard key={evento.id} evento={evento} />
+                ))}
+              </div>
+            </article>
+          </section>
 
-        {/* Lateral Derecho */}
-        <div className="bg-neutral-800 justify-center items-center text-white p-2 shadow-md md:col-span-1 hidden md:flex">
-          Lateral Derecho
-        </div>
-      </div>
+          <aside
+            className="bg-cover bg-center bg-no-repeat h-30 my-2 md:h-auto md:col-span-1"
+            style={{ backgroundImage: `url(${technoImage})` }}
+          ></aside>
+        </section>
 
-      {/* Laterales para pantallas pequeñas */}
-      <div className="md:hidden flex gap-4 p-4">
-        <div className="bg-amber-100 p-4 shadow-md flex-1">
-          Lateral Izquierdo
+        <div className="w-full mt-10">
+          <SpotifyPlaylist />
         </div>
-        <div className="bg-amber-700 p-4 rounded-lg shadow-md flex-1">
-          Lateral Derecho
-        </div>
-      </div>
-      <div className="w-full mt-10">
-        <SpotifyPlaylist />
-      </div>
-      <Footer/>
-    </div>
+        <Footer />
+      </main>
+    </>
   );
 }
 
