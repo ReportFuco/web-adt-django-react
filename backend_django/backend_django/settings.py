@@ -47,10 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'noticias',
     'users',
+    'store',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
