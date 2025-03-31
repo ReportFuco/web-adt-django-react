@@ -26,13 +26,10 @@ function MagazinePage() {
       <Header />
       <main className="min-h-screen flex flex-col">
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 flex-grow">
-          {/* Lateral izquierdo (imagen) */}
           <aside
             className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
             style={{ backgroundImage: `url(${technoImage})` }}
           ></aside>
-
-          {/* Contenido central */}
           <section className="md:col-span-4 flex flex-col gap-4">
             <article className="p-0.5">
               <h2 className="text-3xl font-bold">Noticias</h2>
