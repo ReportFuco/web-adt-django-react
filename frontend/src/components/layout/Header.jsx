@@ -1,9 +1,9 @@
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
-import logo from "../assets/ADT logo.jpg";
-import RedesSociales from "./RedesSociales";
+import logo from "../../assets/ADT logo.jpg";
+import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Header() {
   const navigate = useNavigate();

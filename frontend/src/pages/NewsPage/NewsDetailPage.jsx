@@ -1,17 +1,16 @@
-import SpotifyPlaylist from "../components/SpotifyPlaylist";
+import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import React, { useEffect, useState } from "react";
-import Comments from "../components/Comments";
-import { getNoticia } from "../services/api";
+import Comments from "../../components/features/Comments";
+import { getNoticia, postComment } from "../../services/api";
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 import { useForm } from "react-hook-form";
 import { IoSend } from "react-icons/io5";
-import { useAuth } from "../context/AuthContext";
-import { postComment } from "../services/api";
+import { useAuth } from "../../context/AuthContext";
 
-function NewsPage() {
+function NewsDetailPage() {
   const { token } = useAuth();
   const { id } = useParams();
   const [noticia, setNoticia] = useState(null);
@@ -144,4 +143,4 @@ function NewsPage() {
   );
 }
 
-export default NewsPage;
+export default NewsDetailPage;

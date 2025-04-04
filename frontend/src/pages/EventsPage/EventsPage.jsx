@@ -1,9 +1,9 @@
-import { getEvents } from "../services/api";
-import Header from "../components/Header";
+import { getEvents } from "../../services/api";
+import Header from "../../components/layout/Header";
 import { useEffect, useState } from "react";
-import EventCard from "../components/EventCard";
-import SpotifyPlaylist from "../components/SpotifyPlaylist";
-import Footer from "../components/Footer";
+import EventCard from "../../components/EventCard";
+import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
+import Footer from "../../components/layout/Footer";
 
 function EventsPage() {
   const [evento, setEvento] = useState([]);
@@ -35,8 +35,8 @@ function EventsPage() {
           </div>
         </section>
       </main>
-      <SpotifyPlaylist/>
-      <Footer/>
+      <SpotifyPlaylist />
+      <Footer />
     </>
   );
 }

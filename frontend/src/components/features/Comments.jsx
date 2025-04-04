@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getComments } from "../services/api";
+import { getComments } from "../../services/api";
 
 function Comments({ id }) {
   const [comentarios, setComentarios] = useState([]);

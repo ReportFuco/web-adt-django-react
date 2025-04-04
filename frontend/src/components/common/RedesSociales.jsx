@@ -1,8 +1,8 @@
-import instagramIcon from "../assets/icons/instagram-brands-solid.svg";
-import facebookIcon from "../assets/icons/square-facebook-brands-solid.svg";
-import xIcon from "../assets/icons/x-twitter-brands-solid.svg"
-import tiktokIcon from "../assets/icons/tiktok-brands-solid.svg"
-import spotifyIcon from "../assets/icons/spotify-brands-solid.svg"
+import instagramIcon from "../../assets/icons/instagram-brands-solid.svg";
+import facebookIcon from "../../assets/icons/square-facebook-brands-solid.svg";
+import xIcon from "../../assets/icons/x-twitter-brands-solid.svg"
+import tiktokIcon from "../../assets/icons/tiktok-brands-solid.svg"
+import spotifyIcon from "../../assets/icons/spotify-brands-solid.svg"
 import React from 'react'
 
 export default function RedesSociales({classNameDiseño}) {

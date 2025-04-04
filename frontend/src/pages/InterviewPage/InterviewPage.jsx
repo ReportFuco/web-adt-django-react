@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getInterview } from "../services/api";
-import Header from "./Header";
+import { getInterview } from "../../services/api";
+import Header from "../../components/layout/Header";
 
-function Interview() {
+function InterviewPage() {
   const [evento, setEvento] = useState([]);
 
   useEffect(() => {
-    async function loadEvents() {
+    async function loadInterview() {
       try {
         const res = await getInterview();
         setEvento(res.data);
@@ -14,7 +14,7 @@ function Interview() {
         console.error("Error cargando eventos:", error);
       }
     }
-    loadEvents();
+    loadInterview();
   }, []);
 
   return (
@@ -52,4 +52,4 @@ function Interview() {
   );
 }
 
-export default Interview;
+export default InterviewPage;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getNoticias } from "../services/api";
+import { getNoticias } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function NewsGrid() {

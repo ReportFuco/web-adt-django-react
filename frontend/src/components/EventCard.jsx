@@ -1,6 +1,9 @@
-import Maps from "./Maps";
+import { useNavigate } from "react-router-dom";
 
 function EventCard({ evento }) {
+
+  const navigate = useNavigate()
+  
   return (
     <div className="max-w-6xl px-1 py-2">
       <div className="grid md:grid-cols-4 gap-1">
