@@ -1,5 +1,4 @@
 import axios from "axios";
-import { data } from "react-router-dom";
 
 const apiBaseUrl = "http://10.0.161.25:8000/api/";
 
