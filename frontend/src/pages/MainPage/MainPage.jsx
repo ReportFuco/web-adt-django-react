@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import SpotifyPlaylist from "../components/SpotifyPlaylist";
-import { getEvents } from "../services/api";
-import NewsGrid from "./NewsGrid";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import technoImage from "../assets/techno 7.jpg";
-import EventCard from "../components/EventCard";
+import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
+import { getEvents } from "../../services/api";
+import NewsGrid from "../NewsPage/NewsGrid";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
+import technoImage from "../../assets/techno 7.jpg";
+import EventCard from "../../components/EventCard";
 
-function MagazinePage() {
+function MainPage() {
   const [evento, setEvento] = useState([]);
 
   useEffect(() => {
@@ -62,4 +62,4 @@ function MagazinePage() {
   );
 }
 
-export default MagazinePage;
+export default MainPage;

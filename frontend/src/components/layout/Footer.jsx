@@ -1,5 +1,4 @@
-import React from "react";
-import RedesSociales from "./RedesSociales";
+import RedesSociales from "../common/RedesSociales";
 
 const Footer = () => {
   return (
