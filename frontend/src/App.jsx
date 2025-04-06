@@ -8,7 +8,8 @@ import InterviewPage from "./pages/InterviewPage/InterviewPage";
 import EventsPage from "./pages/EventsPage/EventsPage";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import EventsDetailPage from "./pages/EventsPage/EventsDetailPage";
-import InterviewDetailPage from "./pages/InterviewPage/InterviewDetailPage"
+import InterviewDetailPage from "./pages/InterviewPage/InterviewDetailPage";
+import StoreCard from "./components/StoreComponents/StoreCard";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           {/* Login y Register */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          {/* Tienda */}
+          <Route path="/tienda" element={<StoreCard />} />
           {/* Errores */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
