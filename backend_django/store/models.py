@@ -16,7 +16,7 @@ class Categoria(models.Model):
 class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=True)
     nombre = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
     descripcion = models.TextField(blank=True)
     precio = models.PositiveIntegerField()
     stock = models.PositiveIntegerField()

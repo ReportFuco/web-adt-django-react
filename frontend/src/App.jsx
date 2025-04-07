@@ -9,7 +9,8 @@ import EventsPage from "./pages/EventsPage/EventsPage";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import EventsDetailPage from "./pages/EventsPage/EventsDetailPage";
 import InterviewDetailPage from "./pages/InterviewPage/InterviewDetailPage";
-import StoreCard from "./components/StoreComponents/StoreCard";
+import ProductDetailPage from "./pages/store/ProductDetailPage";
+import StorePage from "./pages/store/StorePage";
 
 function App() {
   return (
@@ -30,7 +31,11 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           {/* Tienda */}
-          <Route path="/tienda" element={<StoreCard />} />
+          <Route path="/tienda" element={<StorePage />} />
+          <Route
+            path="/tienda/productos/:slug"
+            element={<ProductDetailPage />}
+          />
           {/* Errores */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
