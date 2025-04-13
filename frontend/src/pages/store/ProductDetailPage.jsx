@@ -7,8 +7,11 @@ import ProductInfo from "../../components/features/store/ProductInfo";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Header from "../../components/layout/Header";
+import { useCart} from "../../context/CartContext"
+
 
 const ProductDetailPage = () => {
+  
   const { slug } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);

@@ -11,35 +11,38 @@ import EventsDetailPage from "./pages/EventsPage/EventsDetailPage";
 import InterviewDetailPage from "./pages/InterviewPage/InterviewDetailPage";
 import ProductDetailPage from "./pages/store/ProductDetailPage";
 import StorePage from "./pages/store/StorePage";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          {/* Noticias */}
-          <Route path="/noticias" element={<NewsPage />} />
-          <Route path="/noticias/:id" element={<NewsDetailPage />} />
-          {/* Eventos */}
-          <Route path="/eventos" element={<EventsPage />} />
-          <Route path="/eventos/:id" element={<EventsDetailPage />} />
-          {/* Entrevistas */}
-          <Route path="/entrevistas" element={<InterviewPage />} />
-          <Route path="/entrevistas/:id" element={<InterviewDetailPage />} />
-          {/* Login y Register */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          {/* Tienda */}
-          <Route path="/tienda" element={<StorePage />} />
-          <Route
-            path="/tienda/productos/:slug"
-            element={<ProductDetailPage />}
-          />
-          {/* Errores */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </AuthProvider>
+      <CartProvider>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            {/* Noticias */}
+            <Route path="/noticias" element={<NewsPage />} />
+            <Route path="/noticias/:id" element={<NewsDetailPage />} />
+            {/* Eventos */}
+            <Route path="/eventos" element={<EventsPage />} />
+            <Route path="/eventos/:id" element={<EventsDetailPage />} />
+            {/* Entrevistas */}
+            <Route path="/entrevistas" element={<InterviewPage />} />
+            <Route path="/entrevistas/:id" element={<InterviewDetailPage />} />
+            {/* Login y Register */}
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            {/* Tienda */}
+            <Route path="/tienda" element={<StorePage />} />
+            <Route
+              path="/tienda/productos/:slug"
+              element={<ProductDetailPage />}
+            />
+            {/* Errores */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </AuthProvider>
+      </CartProvider>
     </BrowserRouter>
   );
 }
