@@ -12,6 +12,7 @@ import InterviewDetailPage from "./pages/InterviewPage/InterviewDetailPage";
 import ProductDetailPage from "./pages/store/ProductDetailPage";
 import StorePage from "./pages/store/StorePage";
 import { CartProvider } from "./context/CartContext";
+import CartPage from "./pages/store/CartPage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
               path="/tienda/productos/:slug"
               element={<ProductDetailPage />}
             />
+            <Route path="/carrito" element={<CartPage />} />
             {/* Errores */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
