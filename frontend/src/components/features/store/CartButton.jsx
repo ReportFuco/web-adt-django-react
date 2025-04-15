@@ -99,7 +99,7 @@ const CartButton = ({
       {isCartOpen && (
         <div
           className={`
-            bg-gray-800 rounded-lg shadow-xl z-50 border border-gray-700
+            bg-neutral-900 rounded-lg shadow-xl z-50 border border-gray-700
             ${
               mobileVersion
                 ? "fixed inset-x-0 bottom-0 w-full max-h-[60vh] rounded-b-none overflow-y-auto"
@@ -126,7 +126,7 @@ const CartButton = ({
                 <p className="text-gray-400">Tu carrito está vacío</p>
                 <button
                   onClick={() => navigateAndClose("/tienda")}
-                  className="mt-4 inline-block text-purple-400 hover:underline"
+                  className="mt-4 inline-block text-white hover:underline"
                 >
                   Ir a la tienda
                 </button>
@@ -158,9 +158,11 @@ const CartButton = ({
                               updateQuantity(item.id, item.quantity - 1)
                             }
                             disabled={item.quantity <= 1}
-                            className="w-6 h-6 flex items-center justify-center border border-gray-600 rounded text-gray-300 disabled:opacity-30 hover:bg-gray-700"
+                            className="w-6 h-6 flex items-center justify-center border border-white rounded text-gray-300 disabled:opacity-30 hover:bg-gray-700"
                             aria-label="Reducir cantidad"
-                          ></button>
+                          >
+                            -
+                          </button>
                           <span className="mx-2 text-sm text-white">
                             {item.quantity}
                           </span>
@@ -168,7 +170,7 @@ const CartButton = ({
                             onClick={() =>
                               updateQuantity(item.id, item.quantity + 1)
                             }
-                            className="w-6 h-6 flex items-center justify-center border border-gray-600 rounded text-gray-300 hover:bg-gray-700"
+                            className="w-6 h-6 flex items-center justify-center border border-white rounded text-gray-300 hover:bg-gray-700"
                             aria-label="Aumentar cantidad"
                           >
                             +
@@ -208,7 +210,7 @@ const CartButton = ({
                   ))}
                 </div>
 
-                <div className="border-t border-gray-700 pt-4 mt-4">
+                <div className="border-t border-white pt-4 mt-4">
                   <div className="flex justify-between font-semibold text-lg mb-4 text-white">
                     <span>Total:</span>
                     <span>${calculateTotal().toLocaleString("es-CL")}</span>
@@ -216,7 +218,7 @@ const CartButton = ({
 
                   <button
                     onClick={() => navigateAndClose("/carrito")}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md transition-colors"
+                    className="w-full bg-neutral-600 hover:bg-neutral-700 text-white py-2 rounded-md transition-colors"
                   >
                     Ver carrito completo
                   </button>
