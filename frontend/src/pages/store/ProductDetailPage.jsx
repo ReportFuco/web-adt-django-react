@@ -186,6 +186,7 @@ const ProductDetailPage = () => {
 
               {/* Mensaje de stock */}
               {isInCart(producto.id) && realStock > 0 && (
+                
                 <p className="mt-4 text-sm text-orange-600">
                   Tienes {cartItem.quantity}{" "}
                   {cartItem.quantity > 1 ? "unidades" : "unidad"} en tu carrito.
