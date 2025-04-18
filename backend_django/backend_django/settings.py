@@ -145,7 +145,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://172.20.10.2:5173"
+    "http://192.168.1.90:5173"
 ]
 
 STATICFILES_DIRS = [Path(BASE_DIR, 'static')]

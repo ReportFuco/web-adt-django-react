@@ -1,26 +1,11 @@
-import { useState, useEffect } from "react";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import { getEvents } from "../../services/api";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import technoImage from "../../assets/techno 7.jpg";
-import EventCard from "../../components/EventCard";
 import NewsSection from "../NewsPage/NewsSection";
+import EventSections from "../EventsPage/EventSection";
 
 function MainPage() {
-  const [evento, setEvento] = useState([]);
-
-  useEffect(() => {
-    const loadEvents = async () => {
-      try {
-        const rest = await getEvents();
-        setEvento(rest);
-      } catch (error) {
-        console.error("Error al obtener los datos", error);
-      }
-    };
-    loadEvents();
-  }, []);
   return (
     <>
       <Header />
@@ -48,13 +33,20 @@ function MainPage() {
               />
             </article>
             <article>
-              <h2 className="text-3xl font-bold">Eventos</h2>
-              <div className="border-b-4 border-neutral-500 w-35 mb-4 mt-1"></div>
-              <div className="">
-                {evento.map((evento) => (
-                  <EventCard key={evento.id} evento={evento} />
-                ))}
-              </div>
+              <EventSections
+                destacadas={true}
+                limit={2}
+                gridCols="md:grid-cols-2"
+                cardHeight="h-90"
+              />
+            </article>
+            <article className="p-0.5">
+              <EventSections
+                destacadas={false}
+                limit={4}
+                gridCols="md:grid-cols-4"
+                cardHeight="h-80"
+              />
             </article>
           </section>
 
