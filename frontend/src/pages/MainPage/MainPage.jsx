@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import { getEvents } from "../../services/api";
-import NewsGrid from "../NewsPage/NewsGrid";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import technoImage from "../../assets/techno 7.jpg";
 import EventCard from "../../components/EventCard";
+import NewsSection from "../NewsPage/NewsSection";
 
 function MainPage() {
   const [evento, setEvento] = useState([]);
@@ -32,9 +32,20 @@ function MainPage() {
           ></aside>
           <section className="md:col-span-4 flex flex-col gap-4">
             <article className="p-0.5">
-              <h2 className="text-3xl font-bold">Noticias</h2>
-              <div className="border-b-4 border-neutral-500 w-35 mb-4 mt-1"></div>
-              <NewsGrid />
+              <NewsSection
+                destacadas={true}
+                limit={2}
+                gridCols="md:grid-cols-2"
+                cardHeight="h-90"
+              />
+            </article>
+            <article className="p-0.5">
+              <NewsSection
+                destacadas={false}
+                limit={4}
+                gridCols="md:grid-cols-4"
+                cardHeight="h-80"
+              />
             </article>
             <article>
               <h2 className="text-3xl font-bold">Eventos</h2>

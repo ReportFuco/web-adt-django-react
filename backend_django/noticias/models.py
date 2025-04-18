@@ -39,6 +39,7 @@ class Evento(models.Model):
     descripcion = models.TextField()
     fecha_hora = models.DateTimeField()
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
+    destacado = models.BooleanField(default=False)
     website = models.CharField(max_length=255, blank=True, null=True)
     lugar = models.CharField(max_length=255)
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
