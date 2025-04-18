@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Categoria(models.Model):
@@ -34,3 +35,23 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Pedido(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    total = models.PositiveIntegerField()
+    status = models.CharField(max_length=20, default='pending')
+    payment_id = models.CharField(max_length=100, blank=True)
+    shipping_address = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Order #{self.id} by {self.user.username}"
+
+class ItemPedido(models.Model):
+    order = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    product = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} in Order #{self.order.id}"
