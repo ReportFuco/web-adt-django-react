@@ -1,1 +1,3 @@
-secrets*
+secrets
+*.pyc
+__pycache__/
