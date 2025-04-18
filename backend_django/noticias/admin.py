@@ -1,9 +1,20 @@
 from django.contrib import admin
+from ckeditor.widgets import CKEditorWidget
+from django import forms
 from .models import *
+
+class NoticiaAdminForm(forms.ModelForm):
+    class Meta:
+        model = Noticia
+        fields = '__all__'
+        widgets = {
+            'contenido': CKEditorWidget(config_name='default')  # 👈 Aquí va el cambio
+        }
 
 
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
+    form = NoticiaAdminForm
     list_display = ["titulo", "autor"]
     prepopulated_fields = {"slug": ("titulo",)}
     list_filter = ("autor",)
@@ -24,3 +35,4 @@ class ComentarioAdmin(admin.ModelAdmin):
     list_filter = ("autor",)
 
 admin.site.register(Anuncio)
+

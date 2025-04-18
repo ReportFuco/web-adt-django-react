@@ -1,25 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:opsz,wght@10..72,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Orbitron:wght@600&family=Rubik+Spray+Paint&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:opsz,wght@10..72,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Orbitron:wght@600&family=Rubik+Spray+Paint&display=swap");
 @import "tailwindcss";
 
 @layer components {
-    @keyframes scroll {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
+  @keyframes scroll {
+    0% {
+      transform: translateX(100%);
     }
-  
-    .scrolling-text {
-      @apply whitespace-nowrap overflow-hidden block;
-      animation: scroll 10s linear infinite;
+    100% {
+      transform: translateX(-100%);
     }
   }
-  
+
+  .scrolling-text {
+    @apply whitespace-nowrap overflow-hidden block;
+    animation: scroll 10s linear infinite;
+  }
+}
 
 body {
   background-color: white;
-  font-family: 'Kanit', sans-serif;
+  font-family: "Kanit", sans-serif;
 }
 
+.ckeditor-content {
+  /* Estilos para encabezados */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 1rem 0;
+    font-weight: bold;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Estilos para tablas */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+  }
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  /* Centrado y responsividad para iframes */
+  iframe {
+    display: block !important;
+    margin: 1.5rem auto !important;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16/9; /* Para videos de YouTube */
+  }
+
+  /* Espaciado para párrafos */
+  p {
+    margin: 1rem 0;
+  }
+}

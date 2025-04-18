@@ -182,12 +182,18 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://172.20.10.5:5173"]
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'toolbar': 'Full',
+        'extraAllowedContent': 'iframe[*]',
+        'allowedContent': True,
+    },
+    'advanced': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
             ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList'],
             ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source']
-        ]
+            ['Source'],
+        ],
+        'extraAllowedContent': 'iframe[*]',  # 👈 Agrega esta
+        'allowedContent': True,              # 👈 Y esta también
     }
 }
