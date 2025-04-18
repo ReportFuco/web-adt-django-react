@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNoticias } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import parse from 'html-react-parser';
 
 export default function NewsSection({
   destacadas = false,
@@ -56,7 +57,7 @@ export default function NewsSection({
               </h3>
               {showExcerpt && (
                 <p className="text-xs opacity-80 mt-1">
-                  {news.contenido.slice(0, 100)}...
+                  {parse(news.contenido.slice(0, 100))}...
                 </p>
               )}
             </div>

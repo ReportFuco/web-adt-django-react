@@ -1,14 +1,14 @@
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import React, { useEffect, useState } from "react";
-import Comments from "../../components/features/Comments";
 import { getNoticia, postComment } from "../../services/api";
-import { Link, useParams } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import Comments from "../../components/features/Comments";
+import { useAuth } from "../../context/AuthContext";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { IoSend } from "react-icons/io5";
-import { useAuth } from "../../context/AuthContext";
+import parse from 'html-react-parser';
 
 function NewsDetailPage() {
   const { token } = useAuth();
@@ -84,7 +84,7 @@ function NewsDetailPage() {
 
       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <article className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg prose prose-lg">
-          <ReactMarkdown>{noticia.contenido}</ReactMarkdown>
+          {parse(noticia.contenido)}
           <p className="m-2">Fuente: {noticia.fuente}</p>
         </article>
 

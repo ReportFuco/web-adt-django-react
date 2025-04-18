@@ -11,6 +11,9 @@ class NoticiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Noticia
         fields = '__all__'
+        extra_kwargs = {
+            'contenido': {'allow_blank': True}
+        }
 
 class EventoSerializer(serializers.ModelSerializer):
     class Meta:
