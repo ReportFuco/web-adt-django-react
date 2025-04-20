@@ -24,14 +24,6 @@ function MainPage() {
                 cardHeight="h-90"
               />
             </article>
-            <article className="p-0.5">
-              <NewsSection
-                destacadas={false}
-                limit={4}
-                gridCols="md:grid-cols-4"
-                cardHeight="h-80"
-              />
-            </article>
             <article>
               <EventSections
                 destacadas={true}
@@ -40,6 +32,17 @@ function MainPage() {
                 cardHeight="h-90"
               />
             </article>
+
+            {/* Acá va la tienda  */}
+            <article className="p-0.5">
+              <NewsSection
+                destacadas={false}
+                limit={4}
+                gridCols="md:grid-cols-4"
+                cardHeight="h-80"
+              />
+            </article>
+            
             <article className="p-0.5">
               <EventSections
                 destacadas={false}

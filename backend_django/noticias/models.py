@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from ckeditor.fields import RichTextField
 from django.db import models
 
 
@@ -11,7 +10,7 @@ class Tag(models.Model):
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=255)
-    contenido = RichTextField()
+    contenido = models.TextField()
     imagen = models.ImageField(upload_to='noticias/', blank=True, null=True)
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE)

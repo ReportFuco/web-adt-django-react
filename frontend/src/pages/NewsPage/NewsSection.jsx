@@ -34,7 +34,7 @@ export default function NewsSection({
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
       <h2 className="flex items-center gap-2 text-2xl font-bold mb-2">
-        {destacadas ? "Noticias Destacadas" : "Últimas Noticias"}
+        {destacadas ? "Noticias Destacadas" : "Más Noticias"}
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
 
@@ -42,7 +42,7 @@ export default function NewsSection({
         {noticias.map((news) => (
           <div
             key={news.id}
-            className={`relative group overflow-hidden shadow-lg cursor-pointer m-0.5 ${cardHeight} rounded-md`}
+            className={`relative group overflow-hidden shadow-lg cursor-pointer m-0.5 ${cardHeight} rounded-xl`}
             onClick={() => navigate(`/noticias/${news.id}`)}
           >
             <img

@@ -13,6 +13,7 @@ const menuItems = [
   { label: "Lanzamientos", path: "/lanzamientos" },
   { label: "Entrevistas", path: "/entrevistas" },
   { label: "Eventos", path: "/eventos" },
+  {label: "Tienda", path: "/tienda"},
 ];
 
 const MarqueeText = memo(() => (

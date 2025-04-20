@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'django_countries',
-    'ckeditor',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -146,7 +146,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://192.168.1.2:5173"
+    "http://192.168.1.5:5173",
+    
 ]
 
 STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
@@ -180,20 +181,12 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://172.20.10.5:5173"]
 
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'Full',
-        'extraAllowedContent': 'iframe[*]',
-        'allowedContent': True,
-    },
-    'advanced': {
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['Link', 'Unlink'],
-            ['Source'],
-        ],
-        'extraAllowedContent': 'iframe[*]',  # 👈 Agrega esta
-        'allowedContent': True,              # 👈 Y esta también
-    }
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 500,
+    'width': '100%',
+    'menubar': True,
+    'plugins': 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+    'toolbar': 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+    'extended_valid_elements': 'iframe[src|width|height|frameborder|allowfullscreen]',
+    'valid_children': '+body[iframe]',
 }

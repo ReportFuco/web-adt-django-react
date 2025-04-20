@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ckeditor.widgets import CKEditorWidget
+from tinymce.widgets import TinyMCE
 from django import forms
 from .models import *
 
@@ -8,7 +8,7 @@ class NoticiaAdminForm(forms.ModelForm):
         model = Noticia
         fields = '__all__'
         widgets = {
-            'contenido': CKEditorWidget(config_name='default')  # 👈 Aquí va el cambio
+            'contenido': TinyMCE(),
         }
 
 
