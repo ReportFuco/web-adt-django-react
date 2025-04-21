@@ -26,7 +26,7 @@ function App() {
             <Route path="/noticias/:id" element={<NewsDetailPage />} />
             {/* Eventos */}
             <Route path="/eventos" element={<EventsPage />} />
-            <Route path="/eventos/:id" element={<EventsDetailPage />} />
+            <Route path="/eventos/:slug" element={<EventsDetailPage />} />
             {/* Entrevistas */}
             <Route path="/entrevistas" element={<InterviewPage />} />
             <Route path="/entrevistas/:id" element={<InterviewDetailPage />} />

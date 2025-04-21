@@ -34,8 +34,7 @@ function MainPage() {
               />
             </article>
 
-            {/* Acá va la tienda  */}
-            <article>
+            <article className="p-0.5">
               <StoreSection
                 destacadas={true}
                 limit={4}

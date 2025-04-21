@@ -42,7 +42,7 @@ export default function NewsSection({
           <div
             key={events.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
-            onClick={() => navigate(`/evento/${events.id}`)}
+            onClick={() => navigate(`/eventos/${events.slug}`)}
           >
             <img
               src={events.imagen}
@@ -51,7 +51,7 @@ export default function NewsSection({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-sm font-semibold leading-tight">
+              <h3 className="text-xl font-semibold leading-tight">
                 {events.nombre}
               </h3>
               <p className="text-xs opacity-80 mt-1">

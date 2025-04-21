@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiBaseUrl = "http://192.168.1.2:8000/api/";
+const apiBaseUrl = "http://10.0.162.196:8000/api/";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
@@ -118,5 +118,13 @@ export const getEvents = async () => {
     return response;
   } catch (error) {
     console.error("Error al obtener los datos", error);
+  }
+};
+
+export const getEventBySlug = async (slug) => {
+  try {
+    return await api.get(`eventos/${slug}`);
+  } catch (error) {
+    console.error("Error al obtener el evento", error);
   }
 };

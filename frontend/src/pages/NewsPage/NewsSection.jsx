@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNoticias } from "../../services/api";
 import { useNavigate } from "react-router-dom";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
 
 export default function NewsSection({
   destacadas = false,
@@ -37,12 +37,15 @@ export default function NewsSection({
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
 
-      <div className={`grid grid-cols-1 ${gridCols} sm:grid-cols-2 gap-1`}>
+      <div className={`grid grid-cols-1 ${gridCols} gap-1`}>
         {noticias.map((news) => (
           <div
             key={news.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
-            onClick={() => navigate(`/noticias/${news.id}`)}
+            onClick={() => {
+              navigate(`/noticias/${news.id}`);
+              window.scrollTo(0, 0);
+            }}
           >
             <img
               src={news.imagen}
@@ -52,7 +55,7 @@ export default function NewsSection({
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
               <h3 className="text-xl font-semibold leading-tight">
-                {news.titulo}
+                {news.titulo.slice(0, 60)}...
               </h3>
               {showExcerpt && (
                 <p className="text-xs opacity-80 mt-1">

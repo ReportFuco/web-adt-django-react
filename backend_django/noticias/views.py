@@ -14,6 +14,7 @@ class NoticiaViewSet(viewsets.ModelViewSet):
 class EventoViewSet(viewsets.ModelViewSet):
     queryset = Evento.objects.all().order_by('-fecha_hora')
     serializer_class = EventoSerializer
+    lookup_field = "slug"
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
