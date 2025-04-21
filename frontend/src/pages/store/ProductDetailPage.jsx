@@ -95,7 +95,7 @@ const ProductDetailPage = () => {
 
         {/* Botón de volver */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/tienda")}
           className="mb-6 flex items-center text-neutral-900 hover:text-black transition-colors"
           aria-label="Volver a la tienda"
         >

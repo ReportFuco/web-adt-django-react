@@ -24,6 +24,7 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='productos/', blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
+    destacado = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["nombre"]

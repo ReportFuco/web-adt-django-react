@@ -4,6 +4,7 @@ import Footer from "../../components/layout/Footer";
 import technoImage from "../../assets/techno 7.jpg";
 import NewsSection from "../NewsPage/NewsSection";
 import EventSections from "../EventsPage/EventSection";
+import StoreSection from "../store/StoreSection";
 
 function MainPage() {
   return (
@@ -34,19 +35,28 @@ function MainPage() {
             </article>
 
             {/* Acá va la tienda  */}
-            <article className="p-0.5">
-              <NewsSection
-                destacadas={false}
+            <article>
+              <StoreSection
+                destacadas={true}
                 limit={4}
                 gridCols="md:grid-cols-4"
                 cardHeight="h-80"
               />
             </article>
-            
+
+            <article className="p-0.5">
+              <NewsSection
+                destacadas={false}
+                limit={8}
+                gridCols="md:grid-cols-4"
+                cardHeight="h-80"
+              />
+            </article>
+
             <article className="p-0.5">
               <EventSections
                 destacadas={false}
-                limit={4}
+                limit={8}
                 gridCols="md:grid-cols-4"
                 cardHeight="h-80"
               />

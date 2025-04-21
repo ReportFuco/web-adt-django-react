@@ -1,62 +1,62 @@
 import { useEffect, useState } from "react";
-import { getNoticias } from "../../services/api";
+import { getProductos } from "../../services/store.api";
 import { useNavigate } from "react-router-dom";
 import parse from 'html-react-parser';
 
-export default function NewsSection({
+export default function StoreSection({
   destacadas = false,
   limit = 4,
   gridCols = "md:grid-cols-4",
   showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
+  titleSize = destacadas ? "text-xl" : "text-lg",
 }) {
   const navigate = useNavigate();
-  const [noticias, setNoticias] = useState([]);
+  const [producto, setProducto] = useState([]);
 
   useEffect(() => {
-    async function loadNews() {
+    async function loadProduct() {
       try {
-        const res = await getNoticias();
-        const filteredNews = res.data
-          .filter((news) => news.destacado === destacadas)
+        const res = await getProductos();
+        const filteredProduct = res.data
+          .filter((product) => product.destacado === destacadas)
           .slice(0, limit);
-        setNoticias(filteredNews);
+          setProducto(filteredProduct);
       } catch (error) {
         console.error("Error cargando noticias:", error);
       }
     }
-    loadNews();
+    loadProduct();
   }, [destacadas, limit]);
 
   return (
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
       <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
-        {destacadas ? "Noticias Destacadas" : "Más Noticias"}
+        {destacadas ? "Productos destacados" : "Más productos"}
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
 
-      <div className={`grid grid-cols-1 ${gridCols} sm:grid-cols-2 gap-1`}>
-        {noticias.map((news) => (
+      <div className={`grid grid-cols-1 ${gridCols} gap-1`}>
+        {producto.map((product) => (
           <div
-            key={news.id}
+            key={product.id}
             className={`relative group overflow-hidden shadow-lg cursor-pointer m-0.5 ${cardHeight} rounded-xl`}
-            onClick={() => navigate(`/noticias/${news.id}`)}
+            onClick={() => navigate(`/tienda/productos/${product.slug}`)}
           >
             <img
-              src={news.imagen}
-              alt={news.titulo}
+              src={product.imagen}
+              alt={product.nombre}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
               <h3 className="text-sm font-semibold leading-tight">
-                {news.titulo}
+                {product.nombre}
               </h3>
               {showExcerpt && (
                 <p className="text-xs opacity-80 mt-1">
-                  {parse(news.contenido.slice(0, 100))}...
+                  {parse(product.descripcion.slice(0, 100))}...
                 </p>
               )}
             </div>

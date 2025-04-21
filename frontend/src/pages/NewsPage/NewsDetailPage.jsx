@@ -10,6 +10,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Comments from "../../components/features/Comments";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
+import NewsSection from "./NewsSection";
 
 function NewsDetailPage() {
   const { token } = useAuth();
@@ -95,9 +96,8 @@ function NewsDetailPage() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <>
       <Header />
-
       {/* Sección de Encabezado */}
       <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
         <div className="lg:w-1/2 flex flex-col justify-center px-6">
@@ -130,71 +130,84 @@ function NewsDetailPage() {
 
       {/* Contenido Principal */}
       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Artículo con contenido renderizado */}
-        <article
-          className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg 
-          prose prose-lg max-w-none 
-          [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4
-          [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-100 [&_th]:p-2 [&_th]:text-left
-          [&_td]:p-2 [&_td]:border [&_td]:border-gray-200
-          [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg"
-        >
+        {/* --- Artículo --- */}
+        <article className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
           {parse(cleanContent)}
-          <p className="mt-4 text-sm text-gray-600">Fuente: {noticia.fuente}</p>
+          <p className="mt-4 text-sm text-gray-600 overflow-y-auto">
+            Fuente: {noticia.fuente}
+          </p>
         </article>
 
-        {/* Sección de Comentarios */}
-        <aside className="bg-white p-6 rounded-lg shadow-lg flex flex-col h-[400px]">
-          <h2 className="text-xl font-semibold mb-4 text-neutral-950 text-center">
-            Comentarios
-          </h2>
-          <div className="flex-grow overflow-y-auto pr-2">
-            <Comments id={id} key={refresh} />
-          </div>
-          {token ? (
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex items-center gap-2 mt-4"
-            >
-              <input
-                type="text"
-                placeholder="Escribe un comentario..."
-                className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                {...register("comments", {
-                  required: "Debes escribir algo para comentar",
-                })}
-              />
-              <button type="submit" className="text-black text-2xl p-2">
-                <IoSend />
-              </button>
-              {errors.comments && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.comments.message}
-                </p>
-              )}
-            </form>
-          ) : (
-            <p className="text-center text-sm text-red-500 mt-4">
-              Debes{" "}
-              <Link
-                to="/login"
-                className="text-blue-500 underline hover:text-blue-700"
+        {/* --- Columna derecha (solo escritorio) --- */}
+        <div className="lg:grid gap-8 lg:grid-rows-[auto_auto_1fr]">
+          {/* Comentarios (siempre visible) */}
+          <aside className="bg-white p-6 rounded-lg shadow-lg flex flex-col h-[550px]">
+            <h2 className="text-xl font-semibold mb-4 text-neutral-950 text-center">
+              Comentarios
+            </h2>
+            <div className="flex-grow overflow-y-auto">
+              <Comments id={id} key={refresh} />
+            </div>
+            {token ? (
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex items-center gap-2 mt-4"
               >
-                iniciar sesión
-              </Link>{" "}
-              para comentar.
-            </p>
-          )}
-        </aside>
+                <input
+                  type="text"
+                  placeholder="Escribe un comentario..."
+                  className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                  {...register("comments", {
+                    required: "Debes escribir algo para comentar",
+                  })}
+                />
+                <button type="submit" className="text-black text-2xl p-2">
+                  <IoSend />
+                </button>
+                {errors.comments && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.comments.message}
+                  </p>
+                )}
+              </form>
+            ) : (
+              <p className="text-center text-sm text-black mt-4">
+                Debes{" "}
+                <Link
+                  to="/login"
+                  className="text-blue-500 underline hover:text-blue-700"
+                >
+                  iniciar sesión
+                </Link>{" "}
+                para comentar.
+              </p>
+            )}
+          </aside>
+
+          {/* Anuncio (mismo componente para ambos casos) */}
+          <div className="bg-yellow-100 p-4 rounded-lg mt-8 lg:mt-0 h-[300px]">
+            <p className="text-center font-medium">Publicidad</p>
+          </div>
+
+          {/* Recomendados (mismo componente para ambos casos) */}
+          <div className="bg-white p-6 rounded-lg shadow-lg mt-8 lg:mt-0">
+            <NewsSection
+              gridCols="md:grid-cols-1"
+              limit={3}
+              destacadas={true}
+              cardHeight="h-64"
+          
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Playlist de Spotify (opcional) */}
       <div>
         <SpotifyPlaylist />
       </div>
 
       <Footer />
-    </div>
+    </>
   );
 }
 

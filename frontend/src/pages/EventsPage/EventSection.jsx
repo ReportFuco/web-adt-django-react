@@ -8,7 +8,7 @@ export default function NewsSection({
   gridCols = "md:grid-cols-4",
   showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-xl" : "text-lg",
+  titleSize = destacadas ? "text-2xl" : "text-xl",
 }) {
   const navigate = useNavigate();
   const [evento, setEvento] = useState([]);
@@ -32,7 +32,7 @@ export default function NewsSection({
   return (
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
-      <h2 className="flex items-center gap-2 text-2xl font-bold mb-2">
+      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
         {destacadas ? "Eventos Destacados" : "Más Eventos"}
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
