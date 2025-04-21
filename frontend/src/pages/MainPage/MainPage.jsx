@@ -16,19 +16,19 @@ function MainPage() {
             className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
             style={{ backgroundImage: `url(${technoImage})` }}
           ></aside>
-          <section className="md:col-span-4 flex flex-col gap-4">
+          <section className="md:col-span-4 flex flex-col gap-4 items-center">
             <article className="p-0.5">
               <NewsSection
                 destacadas={true}
-                limit={2}
+                limit={4}
                 gridCols="md:grid-cols-2"
                 cardHeight="h-90"
               />
             </article>
-            <article>
+            <article className="p-0.5">
               <EventSections
                 destacadas={true}
-                limit={2}
+                limit={4}
                 gridCols="md:grid-cols-2"
                 cardHeight="h-90"
               />

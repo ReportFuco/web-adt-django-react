@@ -41,7 +41,7 @@ export default function NewsSection({
         {noticias.map((news) => (
           <div
             key={news.id}
-            className={`relative group overflow-hidden shadow-lg cursor-pointer m-0.5 ${cardHeight} rounded-xl`}
+            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => navigate(`/noticias/${news.id}`)}
           >
             <img

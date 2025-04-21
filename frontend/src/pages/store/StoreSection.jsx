@@ -41,7 +41,7 @@ export default function StoreSection({
         {producto.map((product) => (
           <div
             key={product.id}
-            className={`relative group overflow-hidden shadow-lg cursor-pointer m-0.5 ${cardHeight} rounded-xl`}
+            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => navigate(`/tienda/productos/${product.slug}`)}
           >
             <img
