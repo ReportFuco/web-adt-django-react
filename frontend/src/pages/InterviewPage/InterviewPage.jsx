@@ -1,53 +1,52 @@
-import React, { useEffect, useState } from "react";
-import { getInterview } from "../../services/api";
 import Header from "../../components/layout/Header";
+import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
+import Footer from "../../components/layout/Footer";
+import technoImage from "../../assets/techno 7.jpg";
+import InterviewSection from "./InterviewSection";
 
 function InterviewPage() {
-  const [evento, setEvento] = useState([]);
-
-  useEffect(() => {
-    async function loadInterview() {
-      try {
-        const res = await getInterview();
-        setEvento(res.data);
-      } catch (error) {
-        console.error("Error cargando eventos:", error);
-      }
-    }
-    loadInterview();
-  }, []);
-
   return (
     <>
-      <Header/>
-      <div className="max-w-6xl px-4 py-8">
-        <h2 className="text-3xl font-bold">Entrevistas</h2>
-        <div className="border-b-4 border-amber-300 w-30 my-3"></div>
-        <div className="flex flex-auto">
-          {evento.map((news) => (
-            <div
-              key={news.id}
-              className="relative group overflow-hidden shadow-lg cursor-pointer"
-              onClick={() => {}}
-            >
-              <img
-                src={news.imagen_portada}
-                alt={news.artista}
-                className="w-full h-100 object-cover transition-transform duration-300 group-hover:scale-105"
+      <Header />
+      <main className="min-h-screen flex flex-col">
+        <section className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 flex-grow">
+          <aside
+            className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
+            style={{ backgroundImage: `url(${technoImage})` }}
+          ></aside>
+          {/* aca quiero colocar el h1 */}
+          <section className="md:col-span-4 flex flex-col gap-4 items-center">
+            <h1 className="text-3xl font-extrabold text-center my-4">Últimas noticias</h1>
+
+            <article className="p-0.5">
+              <InterviewSection
+                destacadas={true}
+                limit={10}
+                gridCols="md:grid-cols-2"
+                cardHeight="h-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-6 w-full text-white bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300">
-                <h3 className="text-sm font-semibold leading-tight">
-                  {news.artista}
-                </h3>
-                <p className="text-xs opacity-80">
-                  {news.contenido.slice(0, 100)}...
-                </p>
-              </div>
-            </div>
-          ))}
+            </article>
+            <article className="p-0.5">
+              <InterviewSection
+                destacadas={false}
+                limit={10}
+                gridCols="md:grid-cols-4"
+                cardHeight="h-80"
+              />
+            </article>
+          </section>
+
+          <aside
+            className="bg-cover bg-center bg-no-repeat h-30 my-2 md:h-auto md:col-span-1"
+            style={{ backgroundImage: `url(${technoImage})` }}
+          ></aside>
+        </section>
+
+        <div className="w-full mt-10">
+          <SpotifyPlaylist />
         </div>
-      </div>
+        <Footer />
+      </main>
     </>
   );
 }

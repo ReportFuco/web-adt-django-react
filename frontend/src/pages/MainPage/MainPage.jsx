@@ -5,6 +5,7 @@ import technoImage from "../../assets/techno 7.jpg";
 import NewsSection from "../NewsPage/NewsSection";
 import EventSections from "../EventsPage/EventSection";
 import StoreSection from "../store/StoreSection";
+import InterviewSection from "../InterviewPage/InterviewSection"
 
 function MainPage() {
   return (
@@ -19,6 +20,14 @@ function MainPage() {
           <section className="md:col-span-4 flex flex-col gap-4 items-center">
             <article className="p-0.5">
               <NewsSection
+                destacadas={true}
+                limit={4}
+                gridCols="md:grid-cols-2"
+                cardHeight="h-90"
+              />
+            </article>
+            <article className="p-0.5">
+              <InterviewSection
                 destacadas={true}
                 limit={4}
                 gridCols="md:grid-cols-2"
