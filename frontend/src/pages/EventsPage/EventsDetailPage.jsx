@@ -146,17 +146,12 @@ function EventsDetailPage() {
               </div>
             </div>
 
-            {/* Gallery Section (opcional) */}
-            {/* <div className="bg-white rounded-xl shadow-md overflow-hidden p-8">
-              <h3 className="text-2xl font-bold mb-6">Galería</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {[1,2,3,4,5,6].map((item) => (
-                  <div key={item} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                    <img src={`https://picsum.photos/300/300?random=${item}`} alt="" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-            </div> */}
+            <EventSection
+              gridCols="md:grid-cols-3"
+              limit={3}
+              destacadas={true}
+              cardHeight="h-80"
+            />
           </div>
 
           {/* Sidebar */}
@@ -222,13 +217,6 @@ function EventsDetailPage() {
                 </p>
               )}
             </div>
-
-            <EventSection
-              gridCols="md:grid-cols-1"
-              limit={3}
-              destacadas={true}
-              cardHeight="h-64"
-            />
           </div>
         </div>
       </div>
