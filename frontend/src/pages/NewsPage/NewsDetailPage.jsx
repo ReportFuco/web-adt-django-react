@@ -190,15 +190,13 @@ function NewsDetailPage() {
           </div>
 
           {/* Recomendados (mismo componente para ambos casos) */}
-          <div className="bg-white p-6 rounded-lg shadow-lg mt-8 lg:mt-0">
-            <NewsSection
-              gridCols="md:grid-cols-1"
-              limit={3}
-              destacadas={true}
-              cardHeight="h-64"
-          
-            />
-          </div>
+
+          <NewsSection
+            gridCols="md:grid-cols-1"
+            limit={3}
+            destacadas={true}
+            cardHeight="h-64"
+          />
         </div>
       </div>
 

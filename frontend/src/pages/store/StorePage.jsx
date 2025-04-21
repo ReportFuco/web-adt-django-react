@@ -9,7 +9,7 @@ const StorePage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        <h1 className="text-3xl font-bold text-black mb-6">
           Nuestros Productos
         </h1>
         <StoreGrid />

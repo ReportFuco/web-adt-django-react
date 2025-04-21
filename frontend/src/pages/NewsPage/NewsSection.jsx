@@ -51,7 +51,7 @@ export default function NewsSection({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-sm font-semibold leading-tight">
+              <h3 className="text-xl font-semibold leading-tight">
                 {news.titulo}
               </h3>
               {showExcerpt && (
