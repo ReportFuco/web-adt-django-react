@@ -14,9 +14,10 @@ function InterviewPage() {
             className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
             style={{ backgroundImage: `url(${technoImage})` }}
           ></aside>
-          {/* aca quiero colocar el h1 */}
           <section className="md:col-span-4 flex flex-col gap-4 items-center">
-            <h1 className="text-3xl font-extrabold text-center my-4">Últimas entrevistas</h1>
+            <h1 className="text-3xl font-extrabold text-center my-4">
+              Últimas entrevistas
+            </h1>
 
             <article className="p-0.5">
               <InterviewSection
