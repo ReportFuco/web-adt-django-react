@@ -147,7 +147,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://192.168.1.2:5173",
-    "http://10.0.162.196:5173"
     
 ]
 

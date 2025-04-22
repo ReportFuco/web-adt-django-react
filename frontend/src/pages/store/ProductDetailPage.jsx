@@ -10,6 +10,7 @@ import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "../../components/layout/Footer";
+import StoreSection from "./StoreSection";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -186,7 +187,6 @@ const ProductDetailPage = () => {
 
               {/* Mensaje de stock */}
               {isInCart(producto.id) && realStock > 0 && (
-                
                 <p className="mt-4 text-sm text-orange-600">
                   Tienes {cartItem.quantity}{" "}
                   {cartItem.quantity > 1 ? "unidades" : "unidad"} en tu carrito.
@@ -199,12 +199,18 @@ const ProductDetailPage = () => {
 
         {/* Sección adicional */}
         <section className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Productos relacionados</h2>
-          {/* Aquí podrías incluir un componente de productos relacionados */}
+          <StoreSection
+            destacadas={true}
+            limit={4}
+            gridCols="md:grid-cols-4"
+            cardHeight="h-80"
+            marquee={true}
+            marqueeDirection="right"
+          />
         </section>
       </div>
       <Footer />
-    </ main>
+    </main>
   );
 };
 

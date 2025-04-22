@@ -64,7 +64,7 @@ class Entrevista(models.Model):
     contenido = models.TextField()
     imagen_portada = models.ImageField(upload_to='entrevistas/', blank=True, null=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
-    video_url = models.URLField(blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
     periodista = models.CharField(max_length=255)
     tags = models.ManyToManyField('Tag', blank=True)
     destacado = models.BooleanField(default=False)

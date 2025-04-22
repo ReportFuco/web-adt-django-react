@@ -15,14 +15,6 @@ const ProductInfo = ({ producto }) => {
         <span className="px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
           {producto.categoria_nombre}
         </span>
-
-        <span
-          className={`text-sm ${
-            realStock > 0 ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {realStock > 0 ? `${realStock} disponibles` : "Agotado"}
-        </span>
       </div>
 
       <p className="text-2xl font-bold text-black">

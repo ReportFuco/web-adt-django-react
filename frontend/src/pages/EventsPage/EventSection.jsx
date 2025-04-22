@@ -17,11 +17,10 @@ export default function NewsSection({
     async function loadEvents() {
       try {
         const res = await getEvents();
-        // Filtramos por destacadas o no y aplicamos límite
         const filteredEvents = res.data
           .filter((envets) => envets.destacado === destacadas)
           .slice(0, limit);
-          setEvento(filteredEvents);
+        setEvento(filteredEvents);
       } catch (error) {
         console.error("Error cargando noticias:", error);
       }
@@ -55,8 +54,8 @@ export default function NewsSection({
                 {events.nombre}
               </h3>
               <p className="text-xs opacity-80 mt-1">
-              {new Date(events.fecha_hora).toLocaleDateString()}
-                </p>
+                {new Date(events.fecha_hora).toLocaleDateString()}
+              </p>
               {showExcerpt && (
                 <p className="text-xs opacity-80 mt-1">
                   {events.descripcion.slice(0, 100)}...

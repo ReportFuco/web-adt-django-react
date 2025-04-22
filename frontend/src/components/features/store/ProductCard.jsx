@@ -91,21 +91,6 @@ const ProductCard = ({ producto }) => {
                   : "Añadir"}
               </button>
             </div>
-
-            {/* Stock */}
-            {!outOfStock && (
-              <p className="text-xs mt-1">
-                <span
-                  className={
-                    alreadyInCart ? "text-orange-600" : "text-green-600"
-                  }
-                >
-                  {alreadyInCart
-                    ? `${producto.stock - currentItem.quantity} disponibles`
-                    : `${producto.stock} disponibles`}
-                </span>
-              </p>
-            )}
           </div>
         </div>
       </div>

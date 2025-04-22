@@ -24,6 +24,7 @@ class EventoViewSet(viewsets.ModelViewSet):
 class EntrevistaViewSet(viewsets.ModelViewSet):
     queryset = Entrevista.objects.all().order_by('-fecha_publicacion')
     serializer_class = EntrevistaSerializer
+    lookup_field = "slug"
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
