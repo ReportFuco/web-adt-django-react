@@ -41,7 +41,10 @@ export default function NewsSection({
           <div
             key={events.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
-            onClick={() => navigate(`/eventos/${events.slug}`)}
+            onClick={() => {
+              navigate(`/eventos/${events.slug}`);
+              window.scrollTo(0, 0);
+            }}
           >
             <img
               src={events.imagen}

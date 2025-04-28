@@ -29,7 +29,7 @@ function App() {
             <Route path="/eventos/:slug" element={<EventsDetailPage />} />
             {/* Entrevistas */}
             <Route path="/entrevistas" element={<InterviewPage />} />
-            <Route path="/entrevistas/:id" element={<InterviewDetailPage />} />
+            <Route path="/entrevistas/:slug" element={<InterviewDetailPage />} />
             {/* Login y Register */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />

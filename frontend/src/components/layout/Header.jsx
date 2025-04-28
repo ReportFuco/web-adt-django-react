@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import React, { useState, useCallback, memo, useEffect } from "react";
+import React, { useState, useCallback, memo } from "react";
 import logo from "../../assets/ADT logo.jpg";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
@@ -13,7 +13,7 @@ const menuItems = [
   { label: "Lanzamientos", path: "/lanzamientos" },
   { label: "Entrevistas", path: "/entrevistas" },
   { label: "Eventos", path: "/eventos" },
-  {label: "Tienda", path: "/tienda"},
+  { label: "Tienda", path: "/tienda" },
 ];
 
 const MarqueeText = memo(() => (

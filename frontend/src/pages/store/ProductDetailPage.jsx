@@ -203,7 +203,7 @@ const ProductDetailPage = () => {
             destacadas={true}
             limit={4}
             gridCols="md:grid-cols-4"
-            cardHeight="h-80"
+            cardHeight="h-60"
             marquee={true}
             marqueeDirection="right"
           />

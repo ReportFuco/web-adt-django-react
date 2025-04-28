@@ -21,7 +21,7 @@ export default function InterviewSection({
         const filteredInterview = res.data
           .filter((interview) => interview.destacado === destacadas)
           .slice(0, limit);
-          setInterview(filteredInterview);
+        setInterview(filteredInterview);
       } catch (error) {
         console.error("Error cargando las entrevistas:", error);
       }
@@ -43,7 +43,7 @@ export default function InterviewSection({
             key={interviews.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => {
-              navigate(`/eventos/${interviews.slug}`);
+              navigate(`/entrevistas/${interviews.slug}`);
               window.scrollTo(0, 0);
             }}
           >

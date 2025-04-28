@@ -157,7 +157,7 @@ function EventsDetailPage() {
           {/* Sidebar */}
           <div className="lg:w-1/3 space-y-6">
             {/* Ticket/Registration Box */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden sticky top-6">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden top-6">
               <div className="bg-black text-white p-4 text-center">
                 <h3 className="text-xl font-bold">¡No te lo pierdas!</h3>
               </div>

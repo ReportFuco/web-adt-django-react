@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiBaseUrl = "http://192.168.1.2:8000/api/";
+const apiBaseUrl = "http://192.168.1.83:8000/api/";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
@@ -72,6 +72,15 @@ export const getInterview = async () => {
   } catch {
     console.error("Error al obtener las entrevistas");
     return [];
+  }
+};
+
+export const getInterviewBySlug = async (slug) => {
+  try {
+    const response = await api.get(`entrevistas/${slug}`);
+    return response;
+  } catch (error) {
+    console.error("Error al extraer la entrevista", error);
   }
 };
 

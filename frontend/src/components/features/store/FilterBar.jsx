@@ -8,7 +8,7 @@ const FilterBar = ({ filters, setFilters, categories }) => {
       {/* Botón para móvil */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden w-full p-4 flex justify-between items-center font-medium text-gray-700"
+        className="md:hidden w-full p-4 flex justify-between items-center font-medium sticky text-gray-700"
       >
         <span>Filtros</span>
         <svg
