@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useCallback, memo } from "react";
-import logo from "../../assets/ADT logo.jpg";
+import logo from "../../assets/logo-adt.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
@@ -10,9 +10,9 @@ import CartButton from "../features/store/CartButton";
 
 const menuItems = [
   { label: "Noticias", path: "/noticias" },
-  { label: "Lanzamientos", path: "/lanzamientos" },
   { label: "Entrevistas", path: "/entrevistas" },
   { label: "Eventos", path: "/eventos" },
+  { label: "Contacto", path: "/contacto" },
   { label: "Tienda", path: "/tienda" },
 ];
 
@@ -61,11 +61,11 @@ const Header = () => {
     <>
       <header className="fixed top-0 left-0 w-full bg-black text-white p-2 z-50 h-16 shadow-lg">
         <div className="container mx-auto flex justify-between items-center h-full px-4">
-          <div className="flex items-center">
+          <div className="flex items-center h-full">
             <img
               src={logo}
               alt="Logo"
-              className="h-12 cursor-pointer transition-transform hover:scale-105"
+              className="h-20 cursor-pointer transition-transform hover:scale-105"
               onClick={() => navigate("/")}
               loading="lazy"
             />

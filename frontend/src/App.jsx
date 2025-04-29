@@ -13,6 +13,7 @@ import ProductDetailPage from "./pages/store/ProductDetailPage";
 import StorePage from "./pages/store/StorePage";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/store/CartPage";
+import ContactPage from "./pages/ContactPage/ContactPage";
 
 function App() {
   return (
@@ -23,13 +24,16 @@ function App() {
             <Route path="/" element={<MainPage />} />
             {/* Noticias */}
             <Route path="/noticias" element={<NewsPage />} />
-            <Route path="/noticias/:id" element={<NewsDetailPage />} />
+            <Route path="/noticias/:slug" element={<NewsDetailPage />} />
             {/* Eventos */}
             <Route path="/eventos" element={<EventsPage />} />
             <Route path="/eventos/:slug" element={<EventsDetailPage />} />
             {/* Entrevistas */}
             <Route path="/entrevistas" element={<InterviewPage />} />
-            <Route path="/entrevistas/:slug" element={<InterviewDetailPage />} />
+            <Route
+              path="/entrevistas/:slug"
+              element={<InterviewDetailPage />}
+            />
             {/* Login y Register */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -39,6 +43,7 @@ function App() {
               path="/tienda/productos/:slug"
               element={<ProductDetailPage />}
             />
+            <Route path="/contacto" element={<ContactPage />} />
             <Route path="/carrito" element={<CartPage />} />
             {/* Errores */}
             <Route path="*" element={<Navigate to="/" />} />

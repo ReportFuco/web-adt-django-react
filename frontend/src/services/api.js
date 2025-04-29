@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiBaseUrl = "http://10.0.163.62:8000/api/";
+const apiBaseUrl = "http://10.0.165.80:8000/api/";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
@@ -43,9 +43,9 @@ export const getLogin = async (identifier, password) => {
   }
 };
 
-export const getNoticia = async (id) => {
+export const getNoticia = async (slug) => {
   try {
-    const response = await axios.get(`${apiBaseUrl}noticias/${id}/`, {
+    const response = await axios.get(`${apiBaseUrl}noticias/${slug}/`, {
       withCredentials: true,
     });
     return response.data;

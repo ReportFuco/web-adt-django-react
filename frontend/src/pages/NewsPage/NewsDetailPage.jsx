@@ -14,7 +14,7 @@ import NewsSection from "./NewsSection";
 
 function NewsDetailPage() {
   const { token } = useAuth();
-  const { id } = useParams();
+  const { slug, id } = useParams();
   const [noticia, setNoticia] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const {
@@ -83,13 +83,13 @@ function NewsDetailPage() {
 
   useEffect(() => {
     async function loadNews() {
-      if (id) {
-        const res = await getNoticia(id);
+      if (slug) {
+        const res = await getNoticia(slug);
         setNoticia(res);
       }
     }
     loadNews();
-  }, [id]);
+  }, [slug]);
 
   if (!noticia) {
     return <p className="text-center text-gray-600 mt-10">Cargando...</p>;

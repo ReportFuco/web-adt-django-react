@@ -5,6 +5,7 @@ from .models import *
 class NoticiaViewSet(viewsets.ModelViewSet):
     queryset = Noticia.objects.all().order_by('-fecha_publicacion')
     serializer_class = NoticiaSerializer
+    lookup_field = "slug"
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:

@@ -90,10 +90,9 @@ const ProductDetailPage = () => {
   if (!producto) return <ErrorMessage message="Producto no disponible" />;
 
   return (
-    <main>
+    <>
+      <Header />
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <Header />
-
         {/* Botón de volver */}
         <button
           onClick={() => navigate("/tienda")}
@@ -210,7 +209,7 @@ const ProductDetailPage = () => {
         </section>
       </div>
       <Footer />
-    </main>
+    </>
   );
 };
 
