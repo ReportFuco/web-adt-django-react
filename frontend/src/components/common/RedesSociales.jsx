@@ -20,7 +20,7 @@ export default function RedesSociales({classNameDiseño}) {
         {referencias("https://www.instagram.com/adictos_al_techno/", "Instagram", instagramIcon)}
         {referencias("https://facebook.com", "Facebook", facebookIcon)}
         {referencias("https://www.x.com/", "x", xIcon)}
-        {referencias("https://www.tiktok.com/", "tiktok", tiktokIcon)}
+        {referencias("https://www.tiktok.com/@adictos.al.techno?_t=ZM-8vv8jszOOKz&_r=1", "tiktok", tiktokIcon)}
         {referencias("https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH?si=65BaoIh9RC-JPxE7NokKdQ", "spotify", spotifyIcon)}
     </div>
   )
