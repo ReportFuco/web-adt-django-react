@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { pagar } from "../../services/store.api";
+import { crearPreferenciaPago } from "../../services/store.api";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -10,7 +10,29 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
 
-  // Calcular totales
+  const handlePago = async () => {
+    try {
+      setLoading(true);
+
+      const carritoFormateado = cart.map((item) => ({
+        producto_id: item.id,
+        cantidad: item.quantity,
+      }));
+
+      const data = await crearPreferenciaPago(carritoFormateado);
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        setPaymentStatus("error");
+      }
+    } catch (err) {
+      console.error("Error en el pago:", err);
+      setPaymentStatus("error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const subtotal = cart.reduce(
     (sum, item) => sum + item.precio * item.quantity,
     0
@@ -167,7 +189,7 @@ const CartPage = () => {
           )}
 
           <button
-            onClick={() => setLoading(true)}
+            onClick={handlePago}
             disabled={loading}
             className={`w-full bg-neutral-800 hover:bg-neutral-900 text-white py-3 rounded-md font-medium transition-colors ${
               loading ? "opacity-70 cursor-not-allowed" : ""

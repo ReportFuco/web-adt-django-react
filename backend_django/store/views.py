@@ -48,9 +48,9 @@ def crear_preferencia_pago(request):
                 "email": request.user.email
     },
     "back_urls": {
-        "success": "http://192.168.1.5:5173/pago/exitoso",
-        "failure": "http://192.168.1.5:5173/pago/fallido",
-        "pending": "http://192.168.1.5:5173/pago/pendiente"
+        "success": "http://192.168.1.4:5173/pago/exitoso",
+        "failure": "http://192.168.1.4:5173/pago/fallido",
+        "pending": "http://192.168.1.4:5173/pago/pendiente"
     },
     # "auto_return": "approved"
 }

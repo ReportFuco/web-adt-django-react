@@ -14,6 +14,9 @@ import StorePage from "./pages/store/StorePage";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/store/CartPage";
 import ContactPage from "./pages/ContactPage/ContactPage";
+import PagoExitoso from "./pages/store/Pagos/PagoExitoso"
+import PagoFallido from "./pages/store/Pagos/PagoFallido"
+import PagoPendiente from "./pages/store/Pagos/PagoPendiente"
 
 function App() {
   return (
@@ -45,6 +48,11 @@ function App() {
             />
             <Route path="/contacto" element={<ContactPage />} />
             <Route path="/carrito" element={<CartPage />} />
+
+            {/* Pagos */}
+            <Route path="/pago/exitoso" element={<PagoExitoso />} />
+            <Route path="/pago/fallido" element={<PagoFallido />} />
+            <Route path="/pago/pendiente" element={<PagoPendiente />} />
             {/* Errores */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
