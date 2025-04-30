@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://10.0.165.80:8000/api/store/";
+const baseURL = "http://192.168.1.5:8000/api/store/";
 
 export const api = axios.create({
   baseURL: baseURL,
@@ -28,5 +28,26 @@ export const getProductoBySlug = async (slug) => {
     return await api.get(`productos/${slug}/`);
   } catch (error) {
     console.error("Error al leer los datos", error);
+  }
+};
+
+export const pagar = async (carrito) => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const response = await api.post(
+      "crear-pago/",
+      { carrito },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al crear preferencia de pago:",
+      error.response?.data || error.message
+    );
+    throw error;
   }
 };

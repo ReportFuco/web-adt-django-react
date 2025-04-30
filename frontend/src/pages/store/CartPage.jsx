@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { pagar } from "../../services/store.api";
 
 const CartPage = () => {
   const navigate = useNavigate();

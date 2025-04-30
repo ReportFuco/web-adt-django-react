@@ -6,6 +6,10 @@ router = DefaultRouter()
 router.register(r'categorias', CategoriaViewSet)
 router.register(r'productos', ProductoViewSet, basename="productos")
 
+
 urlpatterns = [
     path('api/store/', include(router.urls)),
+    path('api/crear-pago/', crear_preferencia_pago, name='crear_pago'),
 ]
+
+

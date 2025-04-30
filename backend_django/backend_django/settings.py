@@ -146,7 +146,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://10.0.165.80:5173",
+    "http://192.168.1.5:5173",
     
 ]
 
@@ -178,6 +178,11 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+MERCADO_PAGO = {
+    'ACCESS_TOKEN': 'TEST-5320300230425336-042817-124072ea7eaf42ceef8b35edcba627a0-2414508504',
+    'PUBLIC_KEY': 'TEST-7b6a42e1-ae4c-4cce-ab1c-bbb86325e7a3',
+}
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://172.20.10.5:5173"]
 
