@@ -27,7 +27,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             {/* Noticias */}
             <Route path="/noticias" element={<NewsPage />} />
-            <Route path="/noticias/:slug" element={<NewsDetailPage />} />
+            <Route path="/noticias/:id/:slug" element={<NewsDetailPage />} />
             {/* Eventos */}
             <Route path="/eventos" element={<EventsPage />} />
             <Route path="/eventos/:slug" element={<EventsDetailPage />} />

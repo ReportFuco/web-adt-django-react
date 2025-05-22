@@ -43,7 +43,7 @@ export default function NewsSection({
             key={news.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => {
-              navigate(`/noticias/${news.slug}`);
+              navigate(`/noticias/${news.id}/${news.slug}`);
               window.scrollTo(0, 0);
             }}
           >
