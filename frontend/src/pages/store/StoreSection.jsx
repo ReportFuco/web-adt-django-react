@@ -48,14 +48,14 @@ export default function StoreSection({
         alt={product.nombre}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
       <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-        <h3 className="text-xl text-center font-semibold leading-tight">
+        <h3 className="text-lg text-center font-semibold leading-tight">
           {product.nombre}
         </h3>
         {showExcerpt && (
           <p className="text-xs text-center opacity-80 mt-1">
-            {parse(product.descripcion.slice(0, 100))}...
+            {parse(product.descripcion.slice(0, 100))}
           </p>
         )}
       </div>
@@ -79,7 +79,7 @@ export default function StoreSection({
           ))}
         </Marquee>
       ) : (
-        <div className={`grid grid-cols-1 ${gridCols} gap-1`}>
+        <div className={`grid ${gridCols} gap-1`}>
           {producto.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

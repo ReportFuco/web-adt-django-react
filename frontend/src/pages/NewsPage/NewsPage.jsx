@@ -3,8 +3,43 @@ import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
 import technoImage from "../../assets/techno 7.jpg";
 import NewsSection from "../NewsPage/NewsSection";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { useState, useEffect } from "react";
+import { getNoticias } from "../../services/api";
+import Socialmedia from "../../components/common/socialMedia"
 
 function NewsPage() {
+  const [noticias, setNoticias] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadNews() {
+      try {
+        const res = await getNoticias();
+        setNoticias(res.data);
+      } catch (error) {
+        console.error("Error cargando noticias:", error);
+        setError("Error al cargar las noticias");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadNews();
+  }, []);
+
+  if (!noticias) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500 text-xl">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -14,24 +49,27 @@ function NewsPage() {
             className="bg-cover bg-center bg-no-repeat h-24 md:h-auto md:col-span-1"
             style={{ backgroundImage: `url(${technoImage})` }}
           ></aside>
-          {/* aca quiero colocar el h1 */}
           <section className="md:col-span-4 flex flex-col gap-4 items-center">
-            <h1 className="text-3xl font-extrabold text-center my-4">Últimas noticias</h1>
+            <h1 className="text-3xl font-extrabold text-center my-4">
+              Últimas noticias
+            </h1>
 
             <article className="p-0.5">
               <NewsSection
+                noticias={noticias}
                 destacadas={true}
                 limit={10}
-                gridCols="md:grid-cols-2"
-                cardHeight="h-90"
+                gridCols="grid-cols-2"
+                cardHeight="h-55 md:h-90"
               />
             </article>
             <article className="p-0.5">
               <NewsSection
+                noticias={noticias}
                 destacadas={false}
                 limit={10}
-                gridCols="md:grid-cols-4"
-                cardHeight="h-80"
+                gridCols="grid-cols-2 md:grid-cols-4"
+                cardHeight="h-55 md:h-90"
               />
             </article>
           </section>
@@ -42,9 +80,8 @@ function NewsPage() {
           ></aside>
         </section>
 
-        <div className="w-full mt-10">
-          <SpotifyPlaylist />
-        </div>
+        <Socialmedia />
+        <SpotifyPlaylist />
         <Footer />
       </main>
     </>

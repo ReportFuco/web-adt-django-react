@@ -1,45 +1,49 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { getEventBySlug } from "../../services/api";
+import { useParams } from "react-router-dom";
+import { getEventBySlug, getEvents } from "../../services/api";
 import { useState, useEffect } from "react";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import EventSection from "./EventSection";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { sanitizeHTML } from '../../utils/htmlSanitizer';
+import parse from "html-react-parser";
 import {
   FaCalendarAlt,
   FaMapMarkerAlt,
   FaLink,
-  FaTicketAlt,
   FaShareAlt,
 } from "react-icons/fa";
 
 function EventsDetailPage() {
   const { slug } = useParams();
   const [evento, setEvento] = useState(null);
-  const navigate = useNavigate();
+  const [eventos, setEventos] = useState(null);
+
+  const cleanContent = evento ? sanitizeHTML(evento.descripcion) : "";
 
   useEffect(() => {
-    async function loadEvent() {
-      if (slug) {
-        try {
+    async function loadEvents() {
+      try {
+        if (slug) {
           const res = await getEventBySlug(slug);
           setEvento(res.data);
-        } catch (error) {
-          navigate("/404");
         }
+
+        const resEventos = await getEvents();
+        setEventos(resEventos.data);
+      } catch (error) {
+        console.error("Error al cargar el evento:", error);
+        setError("Hubo un problema al cargar el evento");
       }
     }
-    loadEvent();
-  }, [slug, navigate]);
 
-  if (!evento) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl text-gray-600">
-          Cargando evento...
-        </div>
-      </div>
-    );
+    loadEvents();
+  }, [slug]);
+
+  if (!evento || !eventos) {
+    return <LoadingSpinner />;
   }
+
 
   const formatDate = (dateString) => {
     const options = {
@@ -93,11 +97,8 @@ function EventsDetailPage() {
           <div className="lg:w-2/3">
             <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
               <div className="p-8">
-                <h2 className="text-3xl font-bold mb-6 text-gray-800">
-                  Sobre el Evento
-                </h2>
                 <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                  {evento.descripcion}
+                  {parse(cleanContent)}
                 </p>
 
                 {/* Event Highlights */}
@@ -121,18 +122,6 @@ function EventsDetailPage() {
                   </div>
                 </div>
 
-                {/* Additional Info */}
-                {evento.detalles_adicionales && (
-                  <div className="mb-8">
-                    <h3 className="text-xl font-semibold mb-4">
-                      Detalles Adicionales
-                    </h3>
-                    <div className="prose max-w-none">
-                      {evento.detalles_adicionales}
-                    </div>
-                  </div>
-                )}
-
                 {/* Share Buttons */}
                 <div className="border-t pt-6">
                   <h4 className="font-medium mb-3">Compartir este evento:</h4>
@@ -140,49 +129,19 @@ function EventsDetailPage() {
                     <button className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200">
                       <FaShareAlt />
                     </button>
-                    {/* Agregar más botones de redes sociales aquí */}
                   </div>
                 </div>
               </div>
             </div>
-
-            <EventSection
-              gridCols="md:grid-cols-3"
-              limit={3}
-              destacadas={true}
-              cardHeight="h-80"
-            />
           </div>
 
-          {/* Sidebar */}
           <div className="lg:w-1/3 space-y-6">
             {/* Ticket/Registration Box */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden top-6">
               <div className="bg-black text-white p-4 text-center">
-                <h3 className="text-xl font-bold">¡No te lo pierdas!</h3>
+                <h3 className="text-xl font-bold">Más Información</h3>
               </div>
               <div className="p-6">
-                {evento.precio ? (
-                  <>
-                    <div className="text-center mb-4">
-                      <span className="text-3xl font-bold">
-                        ${evento.precio}
-                      </span>
-                      {evento.precio_descuento && (
-                        <span className="ml-2 text-sm text-gray-500 line-through">
-                          ${evento.precio_descuento}
-                        </span>
-                      )}
-                    </div>
-                    <button className="w-full bg-black hover:bg-gray-800 text-white py-3 px-4 rounded-lg font-semibold flex items-center justify-center">
-                      <FaTicketAlt className="mr-2" /> Comprar Entradas
-                    </button>
-                  </>
-                ) : (
-                  <button className="w-full bg-black hover:bg-gray-800 text-white py-3 px-4 rounded-lg font-semibold">
-                    Registrarse Gratis
-                  </button>
-                )}
 
                 {evento.website && (
                   <a
@@ -197,7 +156,7 @@ function EventsDetailPage() {
 
                 <div className="mt-6 pt-6 border-t">
                   <h4 className="font-semibold mb-2">Organizado por:</h4>
-                  <p>{evento.organizador || "Organización del evento"}</p>
+                  <p>{evento.organizacion || "Organización del evento"}</p>
                 </div>
               </div>
             </div>
@@ -217,6 +176,14 @@ function EventsDetailPage() {
                 </p>
               )}
             </div>
+
+            <EventSection
+              event={eventos}
+              gridCols="md:grid-cols-1"
+              limit={3}
+              destacadas={true}
+              cardHeight="h-80"
+            />
           </div>
         </div>
       </div>

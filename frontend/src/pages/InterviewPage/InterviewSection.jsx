@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
 
 export default function InterviewSection({
+  interview = [],
   destacadas = false,
   limit = 4,
   gridCols = "md:grid-cols-4",
@@ -12,22 +13,10 @@ export default function InterviewSection({
   titleSize = destacadas ? "text-2xl" : "text-xl",
 }) {
   const navigate = useNavigate();
-  const [interview, setInterview] = useState([]);
 
-  useEffect(() => {
-    async function loadinterviews() {
-      try {
-        const res = await getInterview();
-        const filteredInterview = res.data
-          .filter((interview) => interview.destacado === destacadas)
-          .slice(0, limit);
-        setInterview(filteredInterview);
-      } catch (error) {
-        console.error("Error cargando las entrevistas:", error);
-      }
-    }
-    loadinterviews();
-  }, [destacadas, limit]);
+  const filteredInterview = interview
+    .filter((news) => (destacadas ? news.destacado === true : true))
+    .slice(0, limit);
 
   return (
     <div className="max-w-6xl px-1 py-1">
@@ -37,8 +26,8 @@ export default function InterviewSection({
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
 
-      <div className={`grid grid-cols-1 ${gridCols} gap-1`}>
-        {interview.map((interviews) => (
+      <div className={`grid ${gridCols} gap-2`}>
+        {filteredInterview.map((interviews) => (
           <div
             key={interviews.id}
             className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
@@ -52,16 +41,11 @@ export default function InterviewSection({
               alt={interviews.artista}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-xl font-semibold leading-tight">
+              <h3 className="text-base font-semibold leading-tight">
                 Entrevista a {interviews.artista}
               </h3>
-              {showExcerpt && (
-                <p className="text-xs opacity-80 mt-1">
-                  {parse(interviews.contenido.slice(0, 100))}...
-                </p>
-              )}
             </div>
           </div>
         ))}
