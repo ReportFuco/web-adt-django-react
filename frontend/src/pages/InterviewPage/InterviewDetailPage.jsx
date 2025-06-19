@@ -1,44 +1,38 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getInterviewBySlug } from "../../services/api";
+import { getInterviewBySlug, getInterview } from "../../services/api";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import InterviewSection from "./InterviewSection";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 function InterviewDetailPage() {
   const { slug } = useParams();
   const [interview, setInterview] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const [interviews, setInterviews] = useState(null);
 
   useEffect(() => {
-    async function loadInterview() {
-      if (slug) {
-        try {
-          setIsLoading(true);
+    async function loadInterviews() {
+      try {
+        if (slug) {
           const res = await getInterviewBySlug(slug);
-          setInterview(res.data);
-        } catch {
-          navigate("/404");
-        } finally {
-          setIsLoading(false);
+          setInterview(res);
         }
+
+        const resInterviews = await getInterview();
+        setInterviews(resInterviews.data);
+      } catch (error) {
+        console.error("Error al cargar las noticias:", error);
+        setError("Hubo un problema al cargar las noticias");
       }
     }
-    loadInterview();
-  }, [slug, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-8 w-64 bg-gray-200 rounded"></div>
-          <div className="text-xl text-gray-500">Cargando entrevista...</div>
-        </div>
-      </div>
-    );
+    loadInterviews();
+  }, [slug]);
+
+  if (!interview || !interviews) {
+    return <LoadingSpinner />;
   }
-
   return (
     <>
       <Header />
@@ -111,7 +105,11 @@ function InterviewDetailPage() {
             </div>
           </div>
 
-          <InterviewSection destacadas={true} cardHeight="h-80" />
+          <InterviewSection
+            interview={interviews}
+            destacadas={true}
+            cardHeight="h-80"
+          />
         </div>
       </main>
       <Footer />

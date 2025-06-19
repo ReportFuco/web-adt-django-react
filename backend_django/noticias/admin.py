@@ -11,6 +11,13 @@ class NoticiaAdminForm(forms.ModelForm):
             'contenido': TinyMCE(),
         }
 
+class EventoAdminForm(forms.ModelForm):
+    class Meta:
+        model = Evento
+        fields = '__all__'
+        widgets = {
+            'descripcion': TinyMCE(),
+        }
 
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
@@ -21,6 +28,7 @@ class NoticiaAdmin(admin.ModelAdmin):
 
 @admin.register(Evento)
 class EventoAdmin(admin.ModelAdmin):
+    form = EventoAdminForm
     list_display = ["nombre", "lugar"]
     prepopulated_fields = {"slug": ("nombre",)}
 

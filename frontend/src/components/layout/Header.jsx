@@ -59,7 +59,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full bg-black text-white p-2 z-50 h-16 shadow-lg">
+      <header className="fixed top-0 left-0 w-full bg-black/97 backdrop-blur-lg text-white p-2 z-50 h-16 shadow-lg">
         <div className="container mx-auto flex justify-between items-center h-full px-4">
           <div className="flex items-center h-full">
             <img

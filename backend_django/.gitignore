@@ -1,0 +1,12 @@
+# Django
+.env
+env/
+staticfiles/
+media/
+*.pyc
+__pycache__/
+
+# Node.js (frontend)
+node_modules/
+dist/
+media/

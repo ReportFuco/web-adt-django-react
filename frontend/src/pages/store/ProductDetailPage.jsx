@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProductoBySlug } from "../../services/store.api";
 import ProductImageGallery from "../../components/features/store/ProductImageGallery";
 import ProductInfo from "../../components/features/store/ProductInfo";
-import Loader from "../../components/common/Loader";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Header from "../../components/layout/Header";
 import { useCart } from "../../context/CartContext";
@@ -85,7 +85,7 @@ const ProductDetailPage = () => {
   };
 
   // Render states
-  if (loading) return <Loader className="min-h-[50vh]" />;
+  if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} className="min-h-[50vh]" />;
   if (!producto) return <ErrorMessage message="Producto no disponible" />;
 

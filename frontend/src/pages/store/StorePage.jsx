@@ -1,10 +1,20 @@
-// pages/StorePage.jsx
-import React from "react";
 import Header from "../../components/layout/Header";
 import StoreGrid from "../../components/features/store/StoreGrid";
 import Footer from "../../components/layout/Footer";
+import LoadingSpinner from "../../components/common/LoadingSpinner"
+import { useState, useEffect } from "react";
 
 const StorePage = () => {
+
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />

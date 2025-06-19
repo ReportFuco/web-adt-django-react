@@ -6,7 +6,7 @@ import lockIcon from "../../assets/icons/lock-solid.svg";
 import googleIcon from "../../assets/icons/google-brands-solid.svg";
 import facebookIcon from "../../assets/icons/facebook-f-brands-solid.svg";
 import xIcon from "../../assets/icons/x-twitter-brands-solid black.svg";
-import backgroundImage from "../../assets/fondo.webp";
+import backgroundImage from "../../assets/fondo-web.jpg";
 import { useAuth } from "../../context/AuthContext";
 
 const InputWithIcon = ({ icon, placeholder, type, name, register, error }) => (

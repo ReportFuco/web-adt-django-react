@@ -3,8 +3,41 @@ import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
 import technoImage from "../../assets/techno 7.jpg";
 import InterviewSection from "./InterviewSection";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { useState, useEffect } from "react";
+import { getInterview } from "../../services/api";
+import Socialmedia from "../../components/common/socialMedia"
 
 function InterviewPage() {
+  const [interview, setInterview] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadNews() {
+      try {
+        const res = await getInterview();
+        setInterview(res.data);
+      } catch (error) {
+        console.error("Error cargando noticias:", error);
+        setError("Error al cargar las noticias");
+      }
+    }
+
+    loadNews();
+  }, []);
+
+  if (!interview) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500 text-xl">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -21,18 +54,20 @@ function InterviewPage() {
 
             <article className="p-0.5">
               <InterviewSection
+                interview={interview}
                 destacadas={true}
                 limit={10}
-                gridCols="md:grid-cols-2"
-                cardHeight="h-90"
+                gridCols="grid-cols-2"
+                cardHeight="h-55 md:h-90"
               />
             </article>
             <article className="p-0.5">
               <InterviewSection
+                interview={interview}
                 destacadas={false}
                 limit={10}
-                gridCols="md:grid-cols-4"
-                cardHeight="h-80"
+                gridCols="grid-cols-2 md:grid-cols-4"
+                cardHeight="h-55 md:h-90"
               />
             </article>
           </section>
@@ -43,9 +78,9 @@ function InterviewPage() {
           ></aside>
         </section>
 
-        <div className="w-full mt-10">
+          <Socialmedia />
           <SpotifyPlaylist />
-        </div>
+
         <Footer />
       </main>
     </>

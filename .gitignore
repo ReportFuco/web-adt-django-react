@@ -1,3 +1,6 @@
 secrets
 *.pyc
 __pycache__/
+.env
+env/
+staticfiles/

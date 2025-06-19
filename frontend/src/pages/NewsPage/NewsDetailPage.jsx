@@ -3,19 +3,21 @@ import { useParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { IoSend } from "react-icons/io5";
 import parse from "html-react-parser";
-import DOMPurify from "dompurify";
-import { getNoticia, postComment } from "../../services/api";
+import { getNoticia, getNoticias, postComment } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Comments from "../../components/features/Comments";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import NewsSection from "./NewsSection";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { sanitizeHTML } from "../../utils/htmlSanitizer";
 
 function NewsDetailPage() {
   const { token } = useAuth();
   const { slug, id } = useParams();
   const [noticia, setNoticia] = useState(null);
+  const [noticias, setNoticias] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const {
     register,
@@ -23,53 +25,6 @@ function NewsDetailPage() {
     formState: { errors },
     reset,
   } = useForm();
-
-  // Sanitizar y permitir elementos HTML clave
-  const cleanContent = noticia
-    ? DOMPurify.sanitize(noticia.contenido, {
-        ALLOWED_TAGS: [
-          "p",
-          "h1",
-          "h2",
-          "h3",
-          "h4",
-          "h5",
-          "h6",
-          "strong",
-          "em",
-          "ul",
-          "ol",
-          "li",
-          "a",
-          "table",
-          "tr",
-          "td",
-          "th",
-          "iframe",
-          "img",
-          "div",
-          "span",
-          "br",
-          "hr",
-          "blockquote",
-          "pre",
-          "code",
-        ],
-        ALLOWED_ATTR: [
-          "src",
-          "href",
-          "alt",
-          "width",
-          "height",
-          "frameborder",
-          "allowfullscreen",
-          "class",
-          "style",
-          "title",
-          "target",
-        ],
-      })
-    : "";
 
   const onSubmit = async (data) => {
     const response = await postComment(id, data.comments);
@@ -81,18 +36,29 @@ function NewsDetailPage() {
     }
   };
 
+  const cleanContent = noticia ? sanitizeHTML(noticia.contenido) : "";
+
   useEffect(() => {
     async function loadNews() {
-      if (slug) {
-        const res = await getNoticia(slug);
-        setNoticia(res);
+      try {
+        if (slug) {
+          const res = await getNoticia(slug);
+          setNoticia(res);
+        }
+
+        const resNoticias = await getNoticias();
+        setNoticias(resNoticias.data);
+      } catch (error) {
+        console.error("Error al cargar las noticias:", error);
+        setError("Hubo un problema al cargar las noticias");
       }
     }
+
     loadNews();
   }, [slug]);
 
-  if (!noticia) {
-    return <p className="text-center text-gray-600 mt-10">Cargando...</p>;
+  if (!noticia || !noticias) {
+    return <LoadingSpinner />;
   }
 
   return (
@@ -106,12 +72,6 @@ function NewsDetailPage() {
           </p>
           <h1 className="text-4xl font-bold mb-4">{noticia.titulo}</h1>
           <p className="text-lg italic text-gray-300">{noticia.subtitulo}</p>
-          <p className="text-gray-400 mt-4">
-            por{" "}
-            <span className="font-semibold text-white">
-              {noticia.autor_username}
-            </span>
-          </p>
           <p className="text-gray-400">
             {new Date(noticia.fecha_publicacion).toLocaleDateString()}
           </p>
@@ -183,16 +143,13 @@ function NewsDetailPage() {
               </p>
             )}
           </aside>
-
-          {/* Anuncio (mismo componente para ambos casos) */}
           <div className="bg-yellow-100 p-4 rounded-lg mt-8 lg:mt-0 h-[300px]">
             <p className="text-center font-medium">Publicidad</p>
           </div>
 
-          {/* Recomendados (mismo componente para ambos casos) */}
-
           <NewsSection
-            gridCols="md:grid-cols-1"
+            noticias={noticias}
+            gridCols="grid-cols-1"
             limit={3}
             destacadas={true}
             cardHeight="h-64"
