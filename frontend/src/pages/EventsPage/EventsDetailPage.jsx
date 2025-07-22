@@ -5,7 +5,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import EventSection from "./EventSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { sanitizeHTML } from '../../utils/htmlSanitizer';
+import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import parse from "html-react-parser";
 import {
   FaCalendarAlt,
@@ -13,6 +13,7 @@ import {
   FaLink,
   FaShareAlt,
 } from "react-icons/fa";
+import Maps from "../../components/features/Maps";
 
 function EventsDetailPage() {
   const { slug } = useParams();
@@ -43,7 +44,6 @@ function EventsDetailPage() {
   if (!evento || !eventos) {
     return <LoadingSpinner />;
   }
-
 
   const formatDate = (dateString) => {
     const options = {
@@ -97,9 +97,9 @@ function EventsDetailPage() {
           <div className="lg:w-2/3">
             <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
               <div className="p-8">
-                <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                <div className="prose max-w-none text-gray-700 text-lg leading-relaxed mb-6">
                   {parse(cleanContent)}
-                </p>
+                </div>
 
                 {/* Event Highlights */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -142,7 +142,6 @@ function EventsDetailPage() {
                 <h3 className="text-xl font-bold">Más Información</h3>
               </div>
               <div className="p-6">
-
                 {evento.website && (
                   <a
                     href={evento.website}
@@ -167,7 +166,7 @@ function EventsDetailPage() {
                 <FaMapMarkerAlt className="text-red-500 mr-2" /> Ubicación
               </h3>
               <div className="bg-gray-200 h-48 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Mapa interactivo</p>
+                <Maps direccion={evento.direccion} />
               </div>
               {evento.direccion && (
                 <p className="mt-3 text-sm text-gray-600">

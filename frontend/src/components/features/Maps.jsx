@@ -1,4 +1,3 @@
-import React from "react";
 
 function Maps({ direccion }) {
   return (
@@ -10,7 +9,7 @@ function Maps({ direccion }) {
           direccion
         )}&output=embed`}
         title="Mapa"
-        className="grid border-black border-1 rounded-sm"
+        
       ></iframe>
     </div>
   );

@@ -43,7 +43,7 @@ export default function NewsSection({
 
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
               <h3 className="text-base font-semibold leading-tight drop-shadow-md">
-                {news.titulo.slice(0, 50)}
+                {news.titulo}
               </h3>
             </div>
           </div>

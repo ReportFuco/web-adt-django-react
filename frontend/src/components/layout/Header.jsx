@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
-import React, { useState, useCallback, memo } from "react";
-import logo from "../../assets/logo-adt.png";
+import { useState, useCallback, memo } from "react";
+import logo from "../../assets/adt-logo.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
