@@ -17,16 +17,9 @@ export const allowedAttributes = {
   table: ["border", "cellpadding", "cellspacing"],
 };
 
-export const sanitizeHTML = (dirtyHTML) => {
-  let cleanedHTML = dirtyHTML;
-
-  cleanedHTML = cleanedHTML.replace(
-  /src="(?:\.\.\/)+media\//g,
-  'src="/media/'
-);
-
-  // 3. Sanitizar con DOMPurify
-  const sanitized = DOMPurify.sanitize(cleanedHTML, {
+export const sanitizeHTML = (dirtyHTML, baseUrl = 'https://api.adictosaltechno.com') => {
+  // Primero sanitiza el HTML
+  const sanitized = DOMPurify.sanitize(dirtyHTML, {
     ALLOWED_TAGS: allowedTags,
     ALLOWED_ATTRIBUTES: allowedAttributes,
     ADD_ATTR: ["target", "allowfullscreen", "data-*"],
@@ -36,5 +29,14 @@ export const sanitizeHTML = (dirtyHTML) => {
     KEEP_CONTENT: true,
   });
 
-  return sanitized;
+  // Luego procesa las imágenes para corregir las URLs
+  const doc = new DOMParser().parseFromString(sanitized, 'text/html');
+  
+  doc.querySelectorAll('img[src*="media/"]').forEach(img => {
+    // Elimina todos los ../ y reemplaza con la URL base correcta
+    const correctedSrc = img.src.replace(/\.\.\//g, '').replace(/\/media\//, 'media/');
+    img.src = `${baseUrl}/media/${correctedSrc.split('media/')[1]}`;
+  });
+
+  return doc.body.innerHTML;
 };

@@ -19,6 +19,14 @@ class EventoAdminForm(forms.ModelForm):
             'descripcion': TinyMCE(),
         }
 
+class EntrevistaAdminForm(forms.ModelForm):
+    class Meta:
+        model = Entrevista
+        fields = '__all__'
+        widgets = {
+            'contenido': TinyMCE(),
+        }
+
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
     form = NoticiaAdminForm
@@ -34,6 +42,7 @@ class EventoAdmin(admin.ModelAdmin):
 
 @admin.register(Entrevista)
 class EntrevistaAdmin(admin.ModelAdmin):
+    form = EntrevistaAdminForm
     list_display = ["artista", "periodista", "instagram"]
     prepopulated_fields = {"slug": ("artista",)}
 

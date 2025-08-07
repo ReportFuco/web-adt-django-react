@@ -1,7 +1,14 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from .serializers import *
 from .models import *
 
+CACHE_TTL = 60 * 5  # 5 minutos
+
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class NoticiaViewSet(viewsets.ModelViewSet):
     queryset = Noticia.objects.all().order_by('-fecha_publicacion')
     serializer_class = NoticiaSerializer
@@ -12,6 +19,21 @@ class NoticiaViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        cache.clear()
+
+
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class EventoViewSet(viewsets.ModelViewSet):
     queryset = Evento.objects.all().order_by('-fecha_hora')
     serializer_class = EventoSerializer
@@ -21,6 +43,19 @@ class EventoViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
+
+    def perform_create(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        cache.clear()
+
 
 class EntrevistaViewSet(viewsets.ModelViewSet):
     queryset = Entrevista.objects.all().order_by('-fecha_publicacion')

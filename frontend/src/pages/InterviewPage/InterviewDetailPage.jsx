@@ -5,11 +5,16 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import InterviewSection from "./InterviewSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { sanitizeHTML } from "../../utils/htmlSanitizer";
 
 function InterviewDetailPage() {
   const { slug } = useParams();
   const [interview, setInterview] = useState(null);
   const [interviews, setInterviews] = useState(null);
+
+  const cleanContent = interview?.contenido
+    ? sanitizeHTML(interview.contenido)
+    : "";
 
   useEffect(() => {
     async function loadInterviews() {
@@ -33,6 +38,8 @@ function InterviewDetailPage() {
   if (!interview || !interviews) {
     return <LoadingSpinner />;
   }
+
+  console.log(interview)
   return (
     <>
       <Header />
@@ -93,16 +100,11 @@ function InterviewDetailPage() {
 
           {/* Contenido de la entrevista */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              La entrevista
-            </h2>
-            <div className="prose max-w-none text-gray-700">
-              {interview.contenido.split("\n").map((paragraph, index) => (
-                <p key={index} className="mb-4">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+
+            <div
+              className="prose max-w-none text-gray-700"
+              dangerouslySetInnerHTML={{ __html: cleanContent }}
+            />
           </div>
 
           <InterviewSection

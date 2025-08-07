@@ -42,7 +42,7 @@ export default function NewsSection({
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-base font-semibold leading-tight drop-shadow-md">
+              <h3 className="text-xs xl:text-xl font-semibold leading-tight drop-shadow-md">
                 {news.titulo}
               </h3>
             </div>

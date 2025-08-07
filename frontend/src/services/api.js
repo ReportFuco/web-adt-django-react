@@ -78,7 +78,7 @@ export const getInterview = async () => {
 export const getInterviewBySlug = async (slug) => {
   try {
     const response = await api.get(`entrevistas/${slug}`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error al extraer la entrevista", error);
   }

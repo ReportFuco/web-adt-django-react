@@ -16,10 +16,11 @@ export default function SpotifyPlaylist() {
         <div className="w-20 mx-auto border-b-4 border-purple-500 mb-4"></div>
         <div className="flex justify-center">
           <iframe
-            className="rounded-lg shadow-md w-full md:w-[60%]" 
+            className="rounded-lg shadow-md w-full md:w-[60%]"
             src="https://open.spotify.com/embed/playlist/4uDeR4NrQHknGI4XMVEwRH?utm_source=generator&theme=0&bg_color=1a1a1a&theme_color=9b59b6"
+            width="100%"
             height="352"
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+            allow="autoplay; clipboard-write; fullscreen; encrypted-media; picture-in-picture"
             loading="eager"
           ></iframe>
         </div>
