@@ -74,3 +74,15 @@ class Entrevista(models.Model):
     def __str__(self):
         return f"Entrevista con {self.artista} - {self.fecha_publicacion}"
     
+class FranjaSuperior(models.Model):
+    contenido = models.CharField(max_length=500)
+
+    def __str__(self):
+        return f"Haz click aca para modificar la Franja"
+
+class Contacto(models.Model):
+    nombre_contacto = models.CharField(max_length=50, null=False)
+    apellido_contacto = models.CharField(max_length=50)
+    email = models.EmailField(max_length=100, null=False)
+    telefono = models.CharField(max_length=11)
+    fecha = models.DateField(auto_now_add=True)

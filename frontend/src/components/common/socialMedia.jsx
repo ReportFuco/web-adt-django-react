@@ -9,7 +9,7 @@ const socialMediaData = [
     id: 1,
     icon: instagram,
     alt: "Instagram",
-    count: "115.826",
+    count: "125.121",
   },
   {
     id: 2,
@@ -66,7 +66,7 @@ const hoverVariants = {
 
 function Socialmedia() {
   return (
-    <section className="bg-black py-20 px-4 mt-4 border-y-4 border-neutral-700 text-white text-center">
+    <section className="bg-black px-4 m-4 text-white text-center">
       <motion.div
         className="flex flex-col md:flex-row justify-center gap-6 max-w-6xl mx-auto"
         variants={containerVariants}

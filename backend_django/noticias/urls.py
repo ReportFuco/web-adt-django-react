@@ -11,6 +11,9 @@ router.register(r'anuncios', AnuncioViewSet)
 router.register(r'comentarios', ComentarioViewSet, basename='comentarios')
 router.register(r'tags', TagViewSet)
 router.register(r'entrevistas', EntrevistaViewSet)
+router.register(r'contacto', ContactoViewSet)
+router.register(r'franjasuperior', FranjaSuperiorViewSet)
+
 
 urlpatterns = [
     path('api/', include(router.urls)),

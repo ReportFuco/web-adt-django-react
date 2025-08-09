@@ -155,8 +155,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CORS_ALLOWED_ORIGINS = [
     "https://adictosaltechno.com",
     "http://localhost",
-    "https://n8n.fucolabs.dev"
-    
+    "https://n8n.fucolabs.dev",
+    "http://209.126.1.114:5173"
 ]
 
 STATICFILES_DIRS = [Path(BASE_DIR, 'static')]

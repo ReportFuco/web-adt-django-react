@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiBaseUrl = "https://api.adictosaltechno.com/api/";
 
-export const api = axios.create({
+const api = axios.create({
   baseURL: apiBaseUrl,
   headers: { "Content-Type": "application/json" },
 });
@@ -18,6 +18,15 @@ export const register = async (userData) => {
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, error: error.response.data };
+  }
+};
+
+export const franjaMensaje = async () => {
+  try {
+    const response = await api.get("franjasuperior/1/");
+    return response.data;
+  } catch (e) {
+    console.error("Error al tener la franja", e);
   }
 };
 
@@ -41,6 +50,10 @@ export const getLogin = async (identifier, password) => {
       error: error.response?.data?.detail || "Error en el login",
     };
   }
+};
+
+export const postContact = async (payload) => {
+  return api.post("contacto/", payload);
 };
 
 export const getNoticia = async (slug) => {

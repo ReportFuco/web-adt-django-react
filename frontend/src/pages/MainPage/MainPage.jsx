@@ -10,6 +10,9 @@ import { useState, useEffect } from "react";
 import { getNoticias, getInterview, getEvents } from "../../services/api";
 import { getProductos } from "../../services/store.api";
 import Socialmedia from "../../components/common/socialMedia";
+import Form from "../../components/common/Form";
+import NoticiasCarousel from "../../components/common/NoticiasCarousel";
+
 
 function MainPage() {
   const [data, setData] = useState({
@@ -54,11 +57,7 @@ function MainPage() {
     <>
       <Header />
       <main className="min-h-screen flex flex-col">
-        <img
-          src={data.noticias[0].imagen}
-          alt={data.noticias[0].titulo}
-          className="w-full h-full object-cover object-center"
-        />
+        <NoticiasCarousel data={data.noticias.slice(0, 3)} />
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
           <article className="p-0.5">
             <NewsSection
@@ -66,7 +65,7 @@ function MainPage() {
               destacadas={true}
               limit={4}
               gridCols="grid-cols-2"
-              cardHeight="h-55 md:h-85"
+              cardHeight="h-65 md:h-85"
             />
           </article>
           <article className="p-0.5">
@@ -117,8 +116,16 @@ function MainPage() {
             />
           </article>
         </section>
+        
+        <div className="mx-4">
+          <h2 className=" text-white flex items-center gap-2">
+            Redes sociales
+            <span className="flex-1 h-[1px] bg-white ml-2"></span>
+          </h2>
+        </div>
 
         <Socialmedia />
+        <Form />
         <SpotifyPlaylist />
 
         <Footer />

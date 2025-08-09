@@ -27,7 +27,7 @@ export default function NewsSection({
         {filteredEvents.map((events) => (
           <div
             key={events.id}
-            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-xs`}
             onClick={() => {
               navigate(`/eventos/${events.id}/${events.slug}`);
               window.scrollTo(0, 0);

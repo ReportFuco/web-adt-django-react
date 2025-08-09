@@ -30,12 +30,13 @@ export default function InterviewSection({
         {filteredInterview.map((interviews) => (
           <div
             key={interviews.id}
-            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-xs`}
             onClick={() => {
               navigate(`/entrevistas/${interviews.slug}`);
               window.scrollTo(0, 0);
             }}
           >
+            
             <img
               src={interviews.imagen_portada}
               alt={interviews.artista}

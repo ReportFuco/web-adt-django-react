@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import logo from "../../assets/adt-logo.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
@@ -7,35 +7,49 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import CartButton from "../features/store/CartButton";
-
-const menuItems = [
-  { label: "Noticias", path: "/noticias" },
-  { label: "Entrevistas", path: "/entrevistas" },
-  { label: "Eventos", path: "/eventos" },
-  { label: "Contacto", path: "/contacto" },
-  { label: "Tienda", path: "/tienda" },
-];
-
-const MarqueeText = memo(() => (
-  <Marquee speed={75} className="py-1.5 text-white">
-    🔥 Ultimas novedades: Nuevo evento de musica techno en santiago •••
-    Descuento del 20% en productos seleccionados ••• 🎶 Nueva playlist
-    disponible ••• Noticias en el mundo del techno •••
-  </Marquee>
-));
-
-const UserAvatar = memo(({ user }) => (
-  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-900 text-white font-bold group-hover:bg-purple-700 transition-colors">
-    {user.username.charAt(0).toUpperCase()}
-  </div>
-));
+import {franjaMensaje}from "../../services/api"
 
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { cart, removeFromCart, updateQuantity } = useCart();
+  const [franja, setFranja] = useState(null);
 
+  const menuItems = [
+    { label: "Noticias", path: "/noticias" },
+    { label: "Entrevistas", path: "/entrevistas" },
+    { label: "Eventos", path: "/eventos" },
+    { label: "Tienda", path: "/tienda" },
+  ];
+
+  const UserAvatar = memo(({ user }) => (
+    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-900 text-white font-bold group-hover:bg-purple-700 transition-colors">
+      {user.username.charAt(0).toUpperCase()}
+    </div>
+  ));
+
+  useEffect(() => {
+    const loadFranja = async () => {
+      try {
+        const res = await franjaMensaje();
+        if (res) {
+          setFranja(res);
+        }
+      } catch (e) {
+        console.error("Error al obtener la franja:", e);
+        setFranja({ contenido: "Mensaje predeterminado" }); // Fallback
+      }
+    };
+
+    loadFranja();
+  }, []);
+
+  const MarqueeText = memo(() => (
+    <Marquee speed={75} className="py-1.5 text-white">
+      {franja?.contenido || "Cargando..."}
+    </Marquee>
+  ));
   const handleLogout = useCallback(async () => {
     await logout();
     navigate("/");
@@ -129,7 +143,7 @@ const Header = () => {
 
             {/* Botón del menú móvil */}
             <button
-              className="text-white focus:outline-none hover:text-purple-400 transition-colors"
+              className="text-white focus:outline-none hover:text-gray-500 transition-colors"
               onClick={toggleMenu}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
@@ -165,7 +179,7 @@ const Header = () => {
               <li key={item.path}>
                 <button
                   onClick={() => navigateAndClose(item.path)}
-                  className="w-full text-left py-3 px-4 text-white hover:bg-gray-800 hover:text-purple-400 transition-colors"
+                  className="w-full text-left py-3 px-4 text-white hover:bg-neutral-900 hover:text-gray-300 transition-colors"
                 >
                   {item.label}
                 </button>

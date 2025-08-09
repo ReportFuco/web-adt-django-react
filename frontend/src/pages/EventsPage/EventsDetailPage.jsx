@@ -100,33 +100,21 @@ function EventsDetailPage() {
                 </div>
 
                 {/* Event Highlights */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <h3 className="font-bold text-lg mb-3 flex items-center">
-                      <FaCalendarAlt className="text-blue-600 mr-2" /> Fecha y
-                      Hora
+                <div className="grid grid-cols-1 font-bold text-lg text-white md:grid-cols-2 gap-6 mb-8">
+                  <div className="p-4 border-1 border-neutral-700 rounded-xs">
+                    <h3 className=" mb-3 flex items-center">
+                      <FaCalendarAlt className=" mr-2" /> Fecha y Hora
                     </h3>
                     <p>{formatDate(evento.fecha_hora)}</p>
                   </div>
-                  <div className="bg-green-50 p-6 rounded-lg">
-                    <h3 className="font-bold text-lg mb-3 flex items-center">
-                      <FaMapMarkerAlt className="text-green-600 mr-2" />{" "}
-                      Ubicación
+                  <div className=" p-4 border-1 border-neutral-700 rounded-xs">
+                    <h3 className="mb-3 flex items-center">
+                      <FaMapMarkerAlt className=" mr-2" /> Ubicación
                     </h3>
                     <p>{evento.lugar}</p>
                     {evento.direccion && (
                       <p className="text-sm mt-1">{evento.direccion}</p>
                     )}
-                  </div>
-                </div>
-
-                {/* Share Buttons */}
-                <div className="border-t pt-6">
-                  <h4 className="font-medium mb-3">Compartir este evento:</h4>
-                  <div className="flex space-x-3">
-                    <button className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200">
-                      <FaShareAlt />
-                    </button>
                   </div>
                 </div>
               </div>
@@ -135,17 +123,17 @@ function EventsDetailPage() {
 
           <div className="lg:w-1/3 space-y-6">
             {/* Ticket/Registration Box */}
-            <div className="rounded-md neutral-950 text-white shadow-md overflow-hidden top-6">
-              <div className="bg-neutral-900  p-2 text-center">
+            <div className="rounded-md neutral-950 text-white">
+              <div className="bg-gradient-to-tl from-red-950 to-black p-2 text-center rounded-xs">
                 <h3 className="text-xl font-bold">Más Información</h3>
               </div>
-              <div className="p-4 bg-neutral-800">
+              <div className="p-4 bg-neutral-950">
                 {evento.website && (
                   <a
                     href={evento.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 w-full inline-block text-center border border-black hover:bg-neutral-950 text-neutral-300 py-3 px-4 rounded-lg font-medium flex items-center justify-center"
+                    className="flex items-center justify-center mt-4 w-full text-center bg-black hover:bg-neutral-900  py-3 px-4 rounded-lg font-medium"
                   >
                     <FaLink className="mr-2" /> Sitio Oficial
                   </a>
@@ -159,11 +147,11 @@ function EventsDetailPage() {
             </div>
 
             {/* Map Placeholder */}
-            <div className="text-neutral-300 rounded-xl border-1 border-white overflow-hidden p-6">
+            <div className="text-neutral-300 rounded-xs border border-neutral-700 overflow-hidden p-6">
               <h3 className="text-xl font-bold mb-4 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" /> Ubicación
               </h3>
-              <div className="bg-gray-200 h-48 rounded-lg flex items-center justify-center">
+              <div className="bg-gray-200 h-48 rounded-lg overflow-hidden">
                 <Maps direccion={evento.direccion} />
               </div>
               {evento.direccion && (

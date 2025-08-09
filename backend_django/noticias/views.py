@@ -17,7 +17,7 @@ class NoticiaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -42,7 +42,7 @@ class EventoViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -65,7 +65,7 @@ class EntrevistaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 class AnuncioViewSet(viewsets.ModelViewSet):
     queryset = Anuncio.objects.all()
@@ -74,7 +74,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 class ComentarioViewSet(viewsets.ModelViewSet):
     serializer_class = ComentarioSerializer
@@ -109,4 +109,24 @@ class TagViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+
+class FranjaSuperiorViewSet(viewsets.ModelViewSet):
+    queryset = FranjaSuperior.objects.all()
+    serializer_class = FranjaSuperiorSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
+
+
+class ContactoViewSet(viewsets.ModelViewSet):
+    queryset = Contacto.objects.all()
+    serializer_class = ContactoSerializer
+
+    def get_permissions(self):
+        if self.action in [ 'retrieve', 'create']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]

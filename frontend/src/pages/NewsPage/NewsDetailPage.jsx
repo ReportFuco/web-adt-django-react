@@ -65,7 +65,7 @@ function NewsDetailPage() {
     <>
       <Header />
       {/* Sección de Encabezado */}
-      <section className="relative flex flex-col border-b-2 lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
+      <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
         <div className="lg:w-1/2 flex flex-col justify-center px-6">
           <p className="uppercase text-sm font-semibold text-gray-400">
             Actualidad
