@@ -51,14 +51,12 @@ function EventsDetailPage() {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString("es-ES", options);
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       <Header />
 
       {/* Hero Section */}
@@ -95,9 +93,9 @@ function EventsDetailPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Event Details */}
           <div className="lg:w-2/3">
-            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div className="rounded-xl shadow-md overflow-hidden mb-8">
               <div className="p-8">
-                <div className="prose max-w-none text-gray-700 text-lg leading-relaxed mb-6">
+                <div className="prose max-w-none text-neutral-300 text-lg leading-relaxed mb-6">
                   {parse(cleanContent)}
                 </div>
 
@@ -137,17 +135,17 @@ function EventsDetailPage() {
 
           <div className="lg:w-1/3 space-y-6">
             {/* Ticket/Registration Box */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden top-6">
-              <div className="bg-black text-white p-4 text-center">
+            <div className="rounded-md neutral-950 text-white shadow-md overflow-hidden top-6">
+              <div className="bg-neutral-900  p-2 text-center">
                 <h3 className="text-xl font-bold">Más Información</h3>
               </div>
-              <div className="p-6">
+              <div className="p-4 bg-neutral-800">
                 {evento.website && (
                   <a
                     href={evento.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 w-full inline-block text-center border border-black hover:bg-gray-100 text-black py-3 px-4 rounded-lg font-medium flex items-center justify-center"
+                    className="mt-4 w-full inline-block text-center border border-black hover:bg-neutral-950 text-neutral-300 py-3 px-4 rounded-lg font-medium flex items-center justify-center"
                   >
                     <FaLink className="mr-2" /> Sitio Oficial
                   </a>
@@ -161,7 +159,7 @@ function EventsDetailPage() {
             </div>
 
             {/* Map Placeholder */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <div className="text-neutral-300 rounded-xl border-1 border-white overflow-hidden p-6">
               <h3 className="text-xl font-bold mb-4 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" /> Ubicación
               </h3>
@@ -169,7 +167,7 @@ function EventsDetailPage() {
                 <Maps direccion={evento.direccion} />
               </div>
               {evento.direccion && (
-                <p className="mt-3 text-sm text-gray-600">
+                <p className="mt-3 text-sm text-neutral-300">
                   <span className="font-medium">Dirección:</span>{" "}
                   {evento.direccion}
                 </p>

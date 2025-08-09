@@ -65,7 +65,7 @@ function NewsDetailPage() {
     <>
       <Header />
       {/* Sección de Encabezado */}
-      <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
+      <section className="relative flex flex-col border-b-2 lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
         <div className="lg:w-1/2 flex flex-col justify-center px-6">
           <p className="uppercase text-sm font-semibold text-gray-400">
             Actualidad
@@ -91,18 +91,16 @@ function NewsDetailPage() {
       {/* Contenido Principal */}
       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* --- Artículo --- */}
-        <article className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
+        <article className="lg:col-span-2 text-neutral-300 p-6 rounded-lg shadow-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
           {parse(cleanContent)}
-          <p className="mt-4 text-sm text-gray-600 overflow-y-auto">
-            Fuente: {noticia.fuente}
-          </p>
+
         </article>
 
         {/* --- Columna derecha (solo escritorio) --- */}
         <div className="lg:grid gap-8 lg:grid-rows-[auto_auto_1fr]">
           {/* Comentarios (siempre visible) */}
-          <aside className="bg-white p-6 rounded-lg shadow-lg flex flex-col h-[550px]">
-            <h2 className="text-xl font-semibold mb-4 text-neutral-950 text-center">
+          <aside className="p-6 bg-neutral-900 rounded-lg shadow-lg flex flex-col h-[550px]">
+            <h2 className="text-xl font-semibold mb-4 text-neutral-300 text-center">
               Comentarios
             </h2>
             <div className="flex-grow overflow-y-auto">
@@ -116,12 +114,12 @@ function NewsDetailPage() {
                 <input
                   type="text"
                   placeholder="Escribe un comentario..."
-                  className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                  className="flex-1 text-white border border-white rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                   {...register("comments", {
                     required: "Debes escribir algo para comentar",
                   })}
                 />
-                <button type="submit" className="text-black text-2xl p-2">
+                <button type="submit" className="text-white text-2xl p-2">
                   <IoSend />
                 </button>
                 {errors.comments && (
@@ -131,7 +129,7 @@ function NewsDetailPage() {
                 )}
               </form>
             ) : (
-              <p className="text-center text-sm text-black mt-4">
+              <p className="text-center text-sm text-white mt-4">
                 Debes{" "}
                 <Link
                   to="/login"

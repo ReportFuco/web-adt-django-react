@@ -17,18 +17,18 @@ export default function NewsSection({
     .slice(0, limit);
 
   return (
-    <div className="max-w-6xl px-1 py-1">
+    <div className="max-w-6xl px-1 py-1 text-white">
       {/* Título condicional */}
       <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
         {destacadas ? "Noticias Destacadas" : "Más Noticias"}
-        <span className="flex-1 h-[1px] bg-black ml-2"></span>
+        <span className="flex-1 h-[1px] bg-white ml-2"></span>
       </h2>
 
       <div className={`grid ${gridCols} gap-2`}>
         {filteredNews.map((news) => (
           <div
             key={news.id}
-            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => {
               navigate(`/noticias/${news.id}/${news.slug}`);
               window.scrollTo(0, 0);

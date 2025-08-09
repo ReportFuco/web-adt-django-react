@@ -50,7 +50,7 @@ function Login() {
     }
 
     reset();
-    navigate("/tienda");
+    navigate("/");
   };  
 
   return (

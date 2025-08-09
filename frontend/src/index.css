@@ -3,11 +3,11 @@
 
 /* Estilos base */
 body {
-  background-color: white;
+  background-color: black;
   font-family: "Inter", sans-serif; /* Fuente principal */
   font-weight: 400; /* Regular por defecto */
   line-height: 1.6;
-  color: #000; /* Negro puro para contraste */
+  color: #000;
 }
 
 h1,
@@ -19,6 +19,12 @@ h3,
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 1.5rem 0 1rem;
+}
+
+
+body::selection {
+  background: #8b8b8b !important;
+  color: black !important;
 }
 
 

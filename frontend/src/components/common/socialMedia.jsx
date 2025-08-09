@@ -66,7 +66,7 @@ const hoverVariants = {
 
 function Socialmedia() {
   return (
-    <section className="bg-black py-20 px-4 border-y-4 border-neutral-700 text-white text-center">
+    <section className="bg-black py-20 px-4 mt-4 border-y-4 border-neutral-700 text-white text-center">
       <motion.div
         className="flex flex-col md:flex-row justify-center gap-6 max-w-6xl mx-auto"
         variants={containerVariants}

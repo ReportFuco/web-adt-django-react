@@ -1,4 +1,4 @@
-import fondo from "../../assets/fondo-web.jpg";
+import fondo from "../../assets/img/fondo web.png";
 
 export default function SpotifyPlaylist() {
   return (
@@ -7,13 +7,12 @@ export default function SpotifyPlaylist() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${fondo})` }}
       ></div>
-      <div className="relative bg-gray-900/75 rounded-2xl backdrop-blur-lg shadow-lg p-6 max-w-4xl w-full">
-        <h2 className="text-2xl font-bold text-white text-center mb-4">
-          <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
+      <div className="relative backdrop-blur-lg p-6 w-[60%]">
+        <h2 className="bg-gray-900/75 rounded-2xl text-2xl font-bold text-white text-center mb-4">
+          <span className="text-white text-transparent bg-clip-text w-auto">
             Spotify Playlist
           </span>
         </h2>
-        <div className="w-20 mx-auto border-b-4 border-purple-500 mb-4"></div>
         <div className="flex justify-center">
           <iframe
             className="rounded-lg shadow-md w-full md:w-[60%]"

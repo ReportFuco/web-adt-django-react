@@ -65,7 +65,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Logo"
-              className="h-20 cursor-pointer transition-transform hover:scale-105"
+              className="h-20 cursor-pointer transition-transform hover:scale-110"
               onClick={() => navigate("/")}
               loading="lazy"
             />
@@ -78,7 +78,7 @@ const Header = () => {
                 <li key={item.path}>
                   <Link
                     to={item.path}
-                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-purple-400 hover:bg-gray-900 transition-all duration-200 active:scale-95"
+                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-neutral-600 transition-all duration-200 active:scale-95"
                   >
                     {item.label}
                   </Link>

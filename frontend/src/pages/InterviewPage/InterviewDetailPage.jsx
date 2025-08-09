@@ -43,11 +43,11 @@ function InterviewDetailPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen">
         {/* Contenedor principal */}
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Tarjeta de presentación */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all hover:shadow-xl">
+          <div className="text-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all hover:shadow-xl">
             <div className="md:flex">
               {/* Imagen */}
               <div className="md:w-1/3">

@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8">
         {/* Redes Sociales y Contacto */}
         <div>
-          <h3 className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">Síguenos</h3>
+          <h3 className="text-neutral-300">Síguenos</h3>
               <RedesSociales classNameDiseño="mt-3" />
           <p className="mt-4 text-gray-400">Contacto: adictos.al.techno@gmail.com</p>
         </div>

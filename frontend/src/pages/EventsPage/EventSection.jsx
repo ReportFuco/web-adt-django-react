@@ -18,16 +18,16 @@ export default function NewsSection({
   return (
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
+      <h2 className={`flex text-white items-center gap-2 font-bold mb-2 ${titleSize}`}>
         {destacadas ? "Eventos Destacados" : "Más Eventos"}
-        <span className="flex-1 h-[1px] bg-black ml-2"></span>
+        <span className="flex-1 h-[1px] bg-white ml-2"></span>
       </h2>
 
       <div className={`grid ${gridCols} gap-2`}>
         {filteredEvents.map((events) => (
           <div
             key={events.id}
-            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            className={`relative group overflow-hidden cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
             onClick={() => {
               navigate(`/eventos/${events.id}/${events.slug}`);
               window.scrollTo(0, 0);
