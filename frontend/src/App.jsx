@@ -13,9 +13,11 @@ import ProductDetailPage from "./pages/store/ProductDetailPage";
 import StorePage from "./pages/store/StorePage";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/store/CartPage";
-import PagoExitoso from "./pages/store/Pagos/PagoExitoso"
-import PagoFallido from "./pages/store/Pagos/PagoFallido"
-import PagoPendiente from "./pages/store/Pagos/PagoPendiente"
+import PagoExitoso from "./pages/store/Pagos/PagoExitoso";
+import PagoFallido from "./pages/store/Pagos/PagoFallido";
+import PagoPendiente from "./pages/store/Pagos/PagoPendiente";
+import ForgotPassword from "./pages/LoginPage/ForgotPassword";
+import ResetPassword from "./pages/LoginPage/ResetPassword";
 
 function App() {
   return (
@@ -39,6 +41,12 @@ function App() {
             {/* Login y Register */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/reset-password/:uidb64/:token"
+              element={<ResetPassword />}
+            />
+
             {/* Tienda */}
             <Route path="/tienda" element={<StorePage />} />
             <Route

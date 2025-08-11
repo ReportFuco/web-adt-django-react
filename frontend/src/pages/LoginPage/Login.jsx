@@ -22,7 +22,7 @@ const InputWithIcon = ({ icon, placeholder, type, name, register, error }) => (
       {...register(name, {
         required: `El campo ${placeholder.toLowerCase()} es obligatorio`,
       })}
-      className="w-full pl-10 p-3 bg-neutral-700 border border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+      className="w-full pl-10 p-3 bg-neutral-700 border border-neutral-600 rounded-xs focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
     />
     {error && <p className="text-red-400 text-sm mt-1">{error.message}</p>}
   </div>
@@ -59,7 +59,7 @@ function Login() {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-0" />
-      <div className="absolute bg-neutral-950/80 backdrop-blur-lg p-8 rounded-lg shadow-lg text-white w-96 z-10">
+      <div className="absolute bg-neutral-950/80 backdrop-blur-lg p-8 rounded-xs shadow-lg text-white w-96 z-10">
         <h2 className="text-2xl font-bold text-center mb-8">Iniciar Sesión</h2>
 
         {loginError && (
@@ -87,7 +87,7 @@ function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full bg-neutral-900 py-3 rounded-lg text-white font-semibold transition-transform duration-300 ${
+            className={`w-full bg-neutral-900 py-3 rounded-xs text-white font-semibold transition-transform duration-300 ${
               isSubmitting
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-neutral-500 hover:scale-105"
@@ -99,7 +99,7 @@ function Login() {
 
         <div className="flex items-center my-4">
           <div className="flex-grow border-t border-gray-500" />
-          <h2 className="mx-3 text-gray-400">O inicia sesión con</h2>
+          <h2 className="mx-4 px-2 text-gray-400 text-xs" >O inicia sesión con</h2>
           <div className="flex-grow border-t border-gray-500" />
         </div>
 
