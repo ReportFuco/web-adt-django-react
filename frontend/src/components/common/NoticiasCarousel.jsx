@@ -59,13 +59,13 @@ export default function NoticiasCarousel({ data }) {
       {/* Controles */}
       <button
         onClick={prevSlide}
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-3 py-2 rounded-full z-20"
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full z-20"
       >
         ‹
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-3 py-2 rounded-full z-20"
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 w-8 h-8 text-white rounded-full z-20"
       >
         ›
       </button>

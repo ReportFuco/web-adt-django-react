@@ -58,6 +58,7 @@ function MainPage() {
       <Header />
       <main className="min-h-screen flex flex-col">
         <NoticiasCarousel data={data.noticias.slice(0, 3)} />
+
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
           <article className="p-0.5">
             <NewsSection
@@ -116,7 +117,7 @@ function MainPage() {
             />
           </article>
         </section>
-        
+
         <div className="mx-4">
           <h2 className=" text-white flex items-center gap-2">
             Redes sociales
@@ -127,9 +128,8 @@ function MainPage() {
         <Socialmedia />
         <Form />
         <SpotifyPlaylist />
-
-        <Footer />
       </main>
+      <Footer />
     </>
   );
 }

@@ -7,7 +7,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import CartButton from "../features/store/CartButton";
-import {franjaMensaje}from "../../services/api"
+import { franjaMensaje } from "../../services/api";
+import { ScrollProgress } from "@/components/magicui/scroll-progress";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full bg-black md:bg-black/90 backdrop-blur-lg text-white p-2 z-50 h-16 shadow-lg">
+      <header className="fixed top-0 left-0 w-full bg-black md:bg-black/80 backdrop-blur-lg text-white p-2 z-50 h-16 shadow-lg">
         <div className="container mx-auto flex justify-between items-center h-full px-4">
           <div className="flex items-center h-full">
             <img
@@ -118,7 +119,7 @@ const Header = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-purple-400 hover:bg-gray-900 transition-all duration-200 active:scale-95"
+                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-neutral-600 transition-all duration-200 active:scale-95"
                   >
                     Iniciar sesión
                   </Link>
@@ -205,7 +206,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => navigateAndClose("/login")}
-                  className="w-full text-left py-3 px-4 text-white hover:bg-gray-800 hover:text-purple-400 transition-colors"
+                  className="px-3 py-1.5 rounded-md font-medium text-white hover:text-neutral-600 transition-all duration-200 active:scale-95"
                 >
                   Iniciar sesión
                 </button>
@@ -213,19 +214,20 @@ const Header = () => {
             </li>
           </ul>
         </div>
+
+        {/* Barra de noticias */}
+        <div className="fixed top-16 left-0 w-full bg-gray-900 text-white text-sm flex justify-between items-center z-40 shadow-md">
+          <div className="flex-1 overflow-hidden bg-neutral-900">
+            <MarqueeText />
+          </div>
+          <div className="hidden sm:flex space-x-3 items-center bg-black px-4 py-1.5 h-full">
+            <RedesSociales />
+          </div>
+        </div>
+        
       </header>
-
-      {/* Barra de noticias */}
-      <div className="fixed top-16 left-0 w-full bg-gray-900 text-white text-sm flex justify-between items-center z-40 shadow-md">
-        <div className="flex-1 overflow-hidden bg-neutral-900">
-          <MarqueeText />
-        </div>
-        <div className="hidden sm:flex space-x-3 items-center bg-black px-4 py-1.5 h-full">
-          <RedesSociales />
-        </div>
-      </div>
-
       <div className="mt-28"></div>
+      <ScrollProgress className="top-[96px] md:top-[98px] bg-white" />
     </>
   );
 };

@@ -12,6 +12,7 @@ import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import NewsSection from "./NewsSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
+import Socialmedia from "../../components/common/socialMedia";
 
 function NewsDetailPage() {
   const { token } = useAuth();
@@ -93,7 +94,6 @@ function NewsDetailPage() {
         {/* --- Artículo --- */}
         <article className="lg:col-span-2 text-neutral-300 p-6 rounded-lg shadow-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
           {parse(cleanContent)}
-
         </article>
 
         {/* --- Columna derecha (solo escritorio) --- */}
@@ -155,10 +155,8 @@ function NewsDetailPage() {
         </div>
       </div>
 
-      <div>
-        <SpotifyPlaylist />
-      </div>
-
+      <Socialmedia />
+      <SpotifyPlaylist />
       <Footer />
     </>
   );

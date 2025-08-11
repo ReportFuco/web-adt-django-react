@@ -14,6 +14,8 @@ import {
   FaShareAlt,
 } from "react-icons/fa";
 import Maps from "../../components/features/Maps";
+import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
+import Socialmedia from "../../components/common/socialMedia";
 
 function EventsDetailPage() {
   const { slug } = useParams();
@@ -60,14 +62,30 @@ function EventsDetailPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative h-96 overflow-hidden">
-        <img
-          src={evento.imagen}
-          alt={evento.nombre}
-          className="w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90"></div>
-        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+      <div className="relative h-110 overflow-hidden">
+        {/* Fondo difuminado */}
+        <div className="absolute inset-0">
+          <img
+            src={evento.imagen}
+            alt=""
+            className="w-full h-full object-cover blur-lg scale-110"
+          />
+        </div>
+
+        {/* Imagen principal */}
+        <div className="absolute inset-0 flex justify-center items-center">
+          <img
+            src={evento.imagen}
+            alt={evento.nombre}
+            className="relative max-h-full max-w-full object-contain z-10"
+          />
+        </div>
+
+        {/* Degradado */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90 z-20"></div>
+
+        {/* Contenido de texto */}
+        <div className="absolute bottom-0 left-0 right-0 p-8 text-white z-30">
           <div className="max-w-6xl mx-auto">
             <span className="inline-block px-3 py-1 bg-white text-black text-sm font-semibold rounded-full mb-4">
               Evento Destacado
@@ -172,7 +190,8 @@ function EventsDetailPage() {
           </div>
         </div>
       </div>
-
+      <Socialmedia/>
+      <SpotifyPlaylist />
       <Footer />
     </div>
   );

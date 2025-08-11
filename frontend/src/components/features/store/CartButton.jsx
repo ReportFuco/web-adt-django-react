@@ -54,14 +54,7 @@ const CartButton = ({
         onClick={toggleCart}
         aria-label={`Carrito (${totalItems} items)`}
         aria-expanded={isCartOpen}
-        className={`
-          p-2 relative group hover:text-purple-400 transition-colors
-          ${
-            mobileVersion
-              ? "w-full flex items-center justify-between px-4 py-3"
-              : ""
-          }
-        `}
+        className="px-3 py-1.5 rounded-md font-medium text-white hover:text-neutral-600 transition-all duration-200 active:scale-95"
       >
         <div className="flex items-center">
           <svg

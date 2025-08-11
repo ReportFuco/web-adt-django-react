@@ -7,6 +7,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useState, useEffect } from "react";
 import { getNoticias } from "../../services/api";
 import Socialmedia from "../../components/common/socialMedia";
+import NoticiasCarousel from "../../components/common/NoticiasCarousel";
 
 function NewsPage() {
   const [noticias, setNoticias] = useState(null);
@@ -43,9 +44,10 @@ function NewsPage() {
   return (
     <>
       <Header />
+      <NoticiasCarousel data={noticias.slice(0, 4)} />
       <main className="min-h-screen flex flex-col">
-        <section className="md:col-span-4 flex flex-col gap-4 items-center">
-          <h1 className="text-3xl font-extrabold text-center my-4">
+        <section className="md:col-span-4 flex flex-col gap-4 items-center my-4">
+          <h1 className="text-3xl text-white font-extrabold text-center ">
             Últimas noticias
           </h1>
 

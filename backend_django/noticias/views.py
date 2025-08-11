@@ -4,6 +4,8 @@ from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from .serializers import *
 from .models import *
+from .utils import enviar_whatsapp_contacto
+import threading
 
 CACHE_TTL = 60 * 5  # 5 minutos
 
@@ -130,3 +132,17 @@ class ContactoViewSet(viewsets.ModelViewSet):
         if self.action in [ 'retrieve', 'create']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    def perform_create(self, serializer):
+        # Guarda el contacto en la base de datos
+        contacto = serializer.save()
+
+        threading.Thread(
+            target=enviar_whatsapp_contacto,
+            args=(
+                contacto.nombre_contacto,
+                contacto.email,
+                f"Teléfono: {contacto.telefono or 'No indicado'}\n"
+                f"Apellido: {contacto.apellido_contacto or ''}"
+            )
+        ).start()
