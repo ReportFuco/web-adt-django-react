@@ -227,3 +227,15 @@ EVOLUTION_API_URL=config("EVOLUTION_API_URL")
 EVOLUTION_API_TOKEN= config("EVOLUTION_API_TOKEN")
 
 ADMIN_NUMBER=config("ADMIN_NUMBER")
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = 'noreply@adictosaltechno.com'
+
+
+FRONTEND_URL = "https://adictosaltechno.com"
