@@ -61,34 +61,32 @@ function InterviewDetailPage() {
               </div>
 
               {/* Contenido */}
-              <div className="p-6 md:w-2/3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-300 mb-2">
-                      Entrevista a {interview.artista}
-                    </h1>
-                    {interview.periodista && (
-                      <p className="text-gray-600 mb-1">
-                        Por:{" "}
-                        <span className="font-medium">
-                          {interview.periodista}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-
-                  {interview.instagram && (
-                    <a
-                      href={`https://instagram.com/${interview.instagram}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity px-5 py-2 cursor-pointer"
-                    >
-                      <img src={Instagram} alt="Instagram" width="15px" />@
-                      {interview.instagram}
-                    </a>
+              <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start">
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-300 mb-2">
+                    Entrevista a {interview.artista}
+                  </h1>
+                  {interview.periodista && (
+                    <p className="text-gray-400 text-sm md:text-base mb-1">
+                      Por:{" "}
+                      <span className="font-medium">
+                        {interview.periodista}
+                      </span>
+                    </p>
                   )}
                 </div>
+
+                {interview.instagram && (
+                  <a
+                    href={`https://instagram.com/${interview.instagram}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 self-start md:self-center bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-xs md:text-sm font-semibold hover:opacity-90 transition-opacity px-4 py-2 cursor-pointer"
+                  >
+                    <img src={Instagram} alt="Instagram" width="15" />@
+                    {interview.instagram}
+                  </a>
+                )}
               </div>
             </div>
           </div>
