@@ -12,12 +12,28 @@ import NoticiasCarousel from "../../components/common/NoticiasCarousel";
 function NewsPage() {
   const [noticias, setNoticias] = useState(null);
   const [error, setError] = useState(null);
+  const [destacados, setDestacados] = useState([]);
+
+  function normalizeData(noticias) {
+    return noticias.map((noticia) => ({
+      id: noticia.id,
+      titulo: noticia.titulo,
+      imagen: noticia.imagen,
+      tipo: "Noticias",
+      slug: noticia.slug,
+      fecha: noticia.fecha_publicacion,
+      destacado: noticia.destacado,
+    }));
+  }
 
   useEffect(() => {
     async function loadNews() {
       try {
         const res = await getNoticias();
+        const normalizados = normalizeData(res.data);
         setNoticias(res.data);
+        const destacadosFiltrados = normalizados.filter((item) => item.destacado);
+        setDestacados(destacadosFiltrados);
       } catch (error) {
         console.error("Error cargando noticias:", error);
         setError("Error al cargar las noticias");
@@ -44,7 +60,7 @@ function NewsPage() {
   return (
     <>
       <Header />
-      <NoticiasCarousel data={noticias.slice(0, 4)} />
+      <NoticiasCarousel data={destacados} />
       <main className="min-h-screen flex flex-col">
         <section className="md:col-span-4 flex flex-col gap-4 items-center my-4">
           <h1 className="text-3xl text-white font-extrabold text-center ">

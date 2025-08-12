@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import { getInterview } from "../../services/api";
 import { useNavigate } from "react-router-dom";
-import parse from "html-react-parser";
 
 export default function InterviewSection({
   interview = [],
@@ -36,7 +33,6 @@ export default function InterviewSection({
               window.scrollTo(0, 0);
             }}
           >
-            
             <img
               src={interviews.imagen_portada}
               alt={interviews.artista}
@@ -54,7 +50,7 @@ export default function InterviewSection({
     `,
                 }}
               >
-                Entrevista a {interviews.artista}
+                {interviews.artista}
               </h2>
             </div>
           </div>

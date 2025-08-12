@@ -17,10 +17,11 @@ function EventsPage() {
     return eventos.map((evento) => ({
       id: evento.id,
       titulo: evento.nombre,
+      nombre: evento.nombre,
       imagen: evento.imagen,
-      tipo: "evento",
+      tipo: "Eventos",
       slug: evento.slug,
-      fecha: evento.fecha_hora,
+      fecha_hora: evento.fecha_hora,
       destacado: evento.destacado || false,
     }));
   }

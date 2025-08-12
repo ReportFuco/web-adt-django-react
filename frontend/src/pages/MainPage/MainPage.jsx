@@ -28,7 +28,7 @@ function MainPage() {
       id: noticia.id,
       titulo: noticia.titulo,
       imagen: noticia.imagen,
-      tipo: "noticia",
+      tipo: "Noticias",
       slug: noticia.slug,
       fecha: noticia.fecha_publicacion,
       destacado: noticia.destacado, // ✅ incluir
@@ -38,7 +38,7 @@ function MainPage() {
       id: evento.id,
       titulo: evento.nombre,
       imagen: evento.imagen,
-      tipo: "evento",
+      tipo: "Eventos",
       slug: evento.slug,
       fecha: evento.fecha_hora,
       destacado: evento.destacado, // ✅ incluir
@@ -84,9 +84,10 @@ function MainPage() {
   data.destacados.push({
     titulo: "¡Siguenos en nuestra playlist de Spotify!",
     imagen: BannerSpotify,
-    tipo: "custom",
+    tipo: "Spotify",
     slug: null,
     id: "spotify-banner",
+    url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH"
   });
 
   return (

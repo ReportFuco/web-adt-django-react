@@ -35,10 +35,21 @@ export default function NoticiasCarousel({ data }) {
   if (!data || data.length === 0) return null;
 
   const currentItem = data[current];
-  const detailLink =
-    currentItem.tipo === "noticia"
-      ? `/noticias/${currentItem.id}/${currentItem.slug}`
-      : `/eventos/${currentItem.id}/${currentItem.slug}`;
+  const detailLink = () => {
+    if (currentItem.tipo === "Noticias") {
+      return {
+        type: "internal",
+        path: `/noticias/${currentItem.id}/${currentItem.slug}`,
+      };
+    } else if (currentItem.tipo === "Eventos") {
+      return {
+        type: "internal",
+        path: `/eventos/${currentItem.id}/${currentItem.slug}`,
+      };
+    } else {
+      return { type: "external", path: currentItem?.url };
+    }
+  };
 
   return (
     <div className="relative w-full h-72 md:h-110 overflow-hidden">
@@ -51,6 +62,9 @@ export default function NoticiasCarousel({ data }) {
             key={index}
             className="relative w-full flex-shrink-0 h-72 md:h-120"
           >
+            <div className="absolute top-4 left-4 py-2 px-6 m-6 bg-[#ff3131]/90 bg-opacity-70 text-white rounded-xs text-xs font-semibold shadow-md z-20 select-none">
+              <strong>{item.tipo}</strong>
+            </div>
             {/* Fondo con blur condicional */}
             {!isMobile && (
               <div className="block absolute inset-0">
@@ -93,24 +107,36 @@ export default function NoticiasCarousel({ data }) {
         >
           {currentItem.titulo}
         </h2>
-        <Link
-          to={detailLink}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm md:text-base w-fit"
-        >
-          Más información
-        </Link>
+
+        {detailLink().type === "internal" ? (
+          <Link
+            to={detailLink().path}
+            className="bg-[#ff3131] hover:bg-red-700/90 text-white px-4 py-2 rounded-xs text-sm md:text-base w-fit"
+          >
+            Más información
+          </Link>
+        ) : (
+          <a
+            href={detailLink().path}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-red-600 hover:bg-red-700/90 text-white px-4 py-2 rounded-xs text-sm md:text-base w-fit"
+          >
+            Ir al sitio
+          </a>
+        )}
       </div>
 
       {/* Controles mejorados para móvil */}
       <button
         onClick={prevSlide}
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full z-20 flex items-center justify-center"
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-neutral-700 transition-colors duration-300 text-white rounded-full z-20 flex items-center justify-center"
       >
         ‹
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 w-8 h-8 text-white rounded-full z-20 flex items-center justify-center"
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-neutral-700 transition-colors duration-300 w-8 h-8 text-white rounded-full z-20 flex items-center justify-center"
       >
         ›
       </button>

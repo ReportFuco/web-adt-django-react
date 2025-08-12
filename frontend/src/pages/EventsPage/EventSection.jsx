@@ -10,6 +10,16 @@ export default function NewsSection({
   titleSize = destacadas ? "text-2xl" : "text-xl",
 }) {
   const navigate = useNavigate();
+  
+  const formatDate = (dateString) => {
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString("es-ES", options);
+  };
 
   const filteredEvents = event
     .filter((news) =>
@@ -57,7 +67,7 @@ export default function NewsSection({
                 {events.nombre}
               </h2>
               <p className="text-xs opacity-80 mt-1">
-                {new Date(events.fecha_hora).toLocaleDateString()}
+                {formatDate(events.fecha_hora)}
               </p>
             </div>
           </div>
