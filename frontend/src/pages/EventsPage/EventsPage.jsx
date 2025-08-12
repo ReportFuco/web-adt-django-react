@@ -1,22 +1,38 @@
+import { useState, useEffect } from "react";
 import Header from "../../components/layout/Header";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
-import technoImage from "../../assets/techno 7.jpg";
 import EventSection from "../EventsPage/EventSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { useState, useEffect } from "react";
-import { getEvents } from "../../services/api";
 import Socialmedia from "../../components/common/socialMedia";
+import NoticiasCarousel from "@/components/common/NoticiasCarousel";
+import { getEvents } from "../../services/api";
 
 function EventsPage() {
-  const [evento, setEvento] = useState(null);
+  const [eventos, setEventos] = useState(null);
   const [error, setError] = useState(null);
+  const [destacados, setDestacados] = useState([]);
+
+  function normalizeData(eventos) {
+    return eventos.map((evento) => ({
+      id: evento.id,
+      titulo: evento.nombre,
+      imagen: evento.imagen,
+      tipo: "evento",
+      slug: evento.slug,
+      fecha: evento.fecha_hora,
+      destacado: evento.destacado || false,
+    }));
+  }
 
   useEffect(() => {
     async function loadNews() {
       try {
         const res = await getEvents();
-        setEvento(res.data);
+        const normalizados = normalizeData(res.data);
+        setEventos(normalizados);
+        const destacadosFiltrados = normalizados.filter((item) => item.destacado);
+        setDestacados(destacadosFiltrados);
       } catch (error) {
         console.error("Error cargando noticias:", error);
         setError("Error al cargar las noticias");
@@ -26,10 +42,6 @@ function EventsPage() {
     loadNews();
   }, []);
 
-  if (!evento) {
-    return <LoadingSpinner />;
-  }
-
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -38,27 +50,32 @@ function EventsPage() {
     );
   }
 
+  if (!eventos) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
       <Header />
+      <NoticiasCarousel data={destacados} />
       <main className="min-h-screen flex flex-col">
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
           <h1 className="text-3xl font-extrabold text-center my-4">
-            últimos Eventos
+            Últimos Eventos
           </h1>
 
-          <article className="p-0.5">
+          <article className="p-0.5 w-full max-w-6xl">
             <EventSection
-              event={evento}
+              event={eventos}
               destacadas={true}
               limit={10}
               gridCols="grid-cols-2"
               cardHeight="h-55 md:h-90"
             />
           </article>
-          <article className="p-0.5">
+          <article className="p-0.5 w-full max-w-6xl">
             <EventSection
-              event={evento}
+              event={eventos}
               destacadas={false}
               limit={10}
               gridCols="grid-cols-2 md:grid-cols-4"
@@ -68,7 +85,6 @@ function EventsPage() {
         </section>
         <Socialmedia />
         <SpotifyPlaylist />
-
         <Footer />
       </main>
     </>

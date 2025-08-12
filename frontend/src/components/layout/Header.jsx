@@ -47,10 +47,25 @@ const Header = () => {
   }, []);
 
   const MarqueeText = memo(() => (
-    <Marquee speed={75} className="py-1.5 text-white">
-      {franja?.contenido || "Cargando..."}
+    <Marquee
+      speed={75}
+      className="py-1.5 text-white hover:bg-neutral-600 transition-colors duration-300"
+    >
+      {franja?.url ? (
+        <a
+          href={franja.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="no-underline "
+        >
+          {franja?.contenido || "Cargando..."}
+        </a>
+      ) : (
+        franja?.contenido || "Cargando..."
+      )}
     </Marquee>
   ));
+
   const handleLogout = useCallback(async () => {
     await logout();
     navigate("/");
@@ -224,7 +239,6 @@ const Header = () => {
             <RedesSociales />
           </div>
         </div>
-        
       </header>
       <div className="mt-28"></div>
       <ScrollProgress className="top-[96px] md:top-[98px] bg-white" />

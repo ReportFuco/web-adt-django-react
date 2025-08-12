@@ -12,13 +12,17 @@ export default function NewsSection({
   const navigate = useNavigate();
 
   const filteredEvents = event
-    .filter((news) => (destacadas ? news.destacado === true : news.destacado === false))
+    .filter((news) =>
+      destacadas ? news.destacado === true : news.destacado === false
+    )
     .slice(0, limit);
 
   return (
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
-      <h2 className={`flex text-white items-center gap-2 font-bold mb-2 ${titleSize}`}>
+      <h2
+        className={`flex text-white items-center gap-2 font-bold mb-2 ${titleSize}`}
+      >
         {destacadas ? "Eventos Destacados" : "Más Eventos"}
         <span className="flex-1 h-[1px] bg-white ml-2"></span>
       </h2>
@@ -40,9 +44,18 @@ export default function NewsSection({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-xs xl:text-xl font-semibold leading-tight drop-shadow-md">
+              <h2
+                className="text-xs md:text-xl font-bold"
+                style={{
+                  textShadow: `
+      0px 0px 6px rgba(0,0,0,0.9),
+      0px 0px 12px rgba(0,0,0,0.8),
+      0px 0px 18px rgba(0,0,0,0.7)
+    `,
+                }}
+              >
                 {events.nombre}
-              </h3>
+              </h2>
               <p className="text-xs opacity-80 mt-1">
                 {new Date(events.fecha_hora).toLocaleDateString()}
               </p>
