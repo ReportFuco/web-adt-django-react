@@ -41,38 +41,65 @@ function InterviewDetailPage() {
     return <LoadingSpinner />;
   }
 
-  console.log(interview);
   return (
     <>
       <Header />
       <main className="min-h-screen">
-        {/* Contenedor principal */}
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Tarjeta de presentación */}
-          <div className="text-white rounded-xs shadow-lg overflow-hidden mb-8 transition-all hover:shadow-xl">
-            <div className="md:flex">
-              {/* Imagen */}
-              <div className="md:w-1/3">
-                <img
-                  src={interview.imagen_portada}
-                  alt={interview.artista}
-                  className="w-full h-full object-cover"
-                />
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="relative text-white rounded-lg shadow-xl overflow-hidden mb-8 bg-gradient-to-br from-neutral-900 to-neutral-950 border border-gray-900">
+            {/* Imagen de portada full width */}
+            <div className="w-full h-[200px] md:h-[300px] lg:h-[450px] relative">
+              <img
+                src={interview.imagen_portada}
+                alt={interview.artista}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+              <div className="absolute top-4 left-4">
+                <span className="bg-[#ff3131] backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                  Entrevista
+                </span>
               </div>
+            </div>
 
-              {/* Contenido */}
-              <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start">
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-gray-300 mb-2">
-                    Entrevista a {interview.artista}
-                  </h1>
-                  {interview.periodista && (
-                    <p className="text-gray-400 text-sm md:text-base mb-1">
-                      Por:{" "}
-                      <span className="font-medium">
-                        {interview.periodista}
-                      </span>
-                    </p>
+            {/* Contenido principal */}
+            <div className="p-6 lg:p-10">
+              <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
+                {interview.artista}
+              </h1>
+
+              {interview.periodista && (
+                <p className="text-gray-300 text-sm lg:text-base mb-4">
+                  Entrevistado por{" "}
+                  <span className="font-semibold text-[#ff3131]">
+                    {interview.periodista}
+                  </span>
+                </p>
+              )}
+
+              {interview.descripcion && (
+                <p className="text-gray-400 text-base leading-relaxed mb-6">
+                  {interview.descripcion}
+                </p>
+              )}
+
+              {/* Footer info */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-gray-700">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+                  {interview.fecha && (
+                    <span className="flex items-center gap-2">
+                      📅{" "}
+                      {new Date(interview.fecha).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  )}
+                  {interview.duracion_lectura && (
+                    <span className="flex items-center gap-2">
+                      ⏱ {interview.duracion_lectura} min de lectura
+                    </span>
                   )}
                 </div>
 
@@ -81,16 +108,21 @@ function InterviewDetailPage() {
                     href={`https://instagram.com/${interview.instagram}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 self-start md:self-center bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-xs md:text-sm font-semibold hover:opacity-90 transition-opacity px-4 py-2 cursor-pointer"
+                    className="group flex items-center gap-3 bg-gradient-to-r from-[#ff3131] via-red-500 to-red-400 text-white rounded-xl px-6 py-3 font-semibold hover:scale-105 hover:shadow-lg transition-transform duration-300 text-sm lg:text-base"
                   >
-                    <img src={Instagram} alt="Instagram" width="15" />@
-                    {interview.instagram}
+                    <img
+                      src={Instagram}
+                      alt="Instagram"
+                      className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300"
+                    />
+                    <span>@{interview.instagram}</span>
                   </a>
                 )}
               </div>
             </div>
           </div>
 
+          {/* Contenido de la entrevista */}
           <div className="p-6 mb-8">
             <div
               className="prose max-w-none text-gray-300"
@@ -98,6 +130,7 @@ function InterviewDetailPage() {
             />
           </div>
 
+          {/* Sección de entrevistas relacionadas */}
           <InterviewSection
             interview={interviews}
             destacadas={true}

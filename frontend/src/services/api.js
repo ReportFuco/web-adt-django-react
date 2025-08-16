@@ -12,6 +12,19 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.warn("Token expirado o inválido. Redirigiendo al inicio...");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const register = async (userData) => {
   try {
     const response = await api.post("register/", userData);
