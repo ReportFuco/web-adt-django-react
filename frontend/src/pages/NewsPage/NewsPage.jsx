@@ -13,6 +13,7 @@ function NewsPage() {
   const [noticias, setNoticias] = useState(null);
   const [error, setError] = useState(null);
   const [destacados, setDestacados] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   function normalizeData(noticias) {
     return noticias.map((noticia) => ({
@@ -30,8 +31,14 @@ function NewsPage() {
     async function loadNews() {
       try {
         const res = await getNoticias();
-        const normalizados = normalizeData(res.data);
-        setNoticias(res.data);
+        const noticiasData = Array.isArray(res?.data) ? res.data : null;
+
+        if (!noticiasData) {
+          throw new Error("Respuesta inválida al cargar noticias");
+        }
+
+        const normalizados = normalizeData(noticiasData);
+        setNoticias(noticiasData);
         const destacadosFiltrados = normalizados.filter((item) => item.destacado);
         setDestacados(destacadosFiltrados);
       } catch (error) {
@@ -45,7 +52,7 @@ function NewsPage() {
     loadNews();
   }, []);
 
-  if (!noticias) {
+  if (loading) {
     return <LoadingSpinner />;
   }
 
@@ -55,6 +62,10 @@ function NewsPage() {
         <p className="text-red-500 text-xl">{error}</p>
       </div>
     );
+  }
+
+  if (!noticias) {
+    return <LoadingSpinner />;
   }
 
   return (

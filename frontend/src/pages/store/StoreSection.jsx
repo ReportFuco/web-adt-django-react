@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { getProductos } from "../../services/store.api";
 import { useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
 import Marquee from "react-fast-marquee";
+
+const productShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  slug: PropTypes.string.isRequired,
+  imagen: PropTypes.string,
+  nombre: PropTypes.string,
+  descripcion: PropTypes.string,
+  destacado: PropTypes.bool,
+});
 
 export default function StoreSection({
   destacadas = false,
@@ -10,13 +20,14 @@ export default function StoreSection({
   gridCols = "md:grid-cols-4",
   showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-xl" : "text-lg",
+  titleSize,
   marquee = false,
-  marqueeSpeed = 50, // Prop adicional para controlar la velocidad
-  marqueeDirection = "left", // Prop adicional para controlar la dirección
+  marqueeSpeed = 50,
+  marqueeDirection = "left",
 }) {
   const navigate = useNavigate();
   const [producto, setProducto] = useState([]);
+  const resolvedTitleSize = titleSize ?? (destacadas ? "text-xl" : "text-lg");
 
   useEffect(() => {
     async function loadProduct() {
@@ -34,6 +45,7 @@ export default function StoreSection({
   }, [destacadas, limit]);
 
   // Componente de producto para reutilizar
+  // eslint-disable-next-line react/prop-types
   const ProductCard = ({ product }) => (
     <div
       key={product.id}
@@ -53,7 +65,7 @@ export default function StoreSection({
         <h3 className="text-lg text-center font-semibold leading-tight">
           {product.nombre}
         </h3>
-        {showExcerpt && (
+        {showExcerpt && product.descripcion && (
           <p className="text-xs text-center opacity-80 mt-1">
             {parse(product.descripcion.slice(0, 100))}
           </p>
@@ -65,7 +77,7 @@ export default function StoreSection({
   return (
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
+      <h2 className={`flex items-center gap-2 font-bold mb-2 ${resolvedTitleSize}`}>
         {destacadas ? "Productos destacados" : "Más productos"}
         <span className="flex-1 h-[1px] bg-black ml-2"></span>
       </h2>
@@ -88,3 +100,19 @@ export default function StoreSection({
     </div>
   );
 }
+
+StoreSection.propTypes = {
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  showExcerpt: PropTypes.bool,
+  cardHeight: PropTypes.string,
+  titleSize: PropTypes.string,
+  marquee: PropTypes.bool,
+  marqueeSpeed: PropTypes.number,
+  marqueeDirection: PropTypes.oneOf(["left", "right", "up", "down"]),
+};
+
+StoreSection.ProductCardPropTypes = {
+  product: productShape.isRequired,
+};

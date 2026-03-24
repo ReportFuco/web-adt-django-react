@@ -13,6 +13,7 @@ function InterviewDetailPage() {
   const { slug } = useParams();
   const [interview, setInterview] = useState(null);
   const [interviews, setInterviews] = useState(null);
+  const [error, setError] = useState(null);
 
   const cleanContent = interview?.contenido
     ? sanitizeHTML(interview.contenido)
@@ -37,6 +38,10 @@ function InterviewDetailPage() {
     loadInterviews();
   }, [slug]);
 
+  if (error) {
+    return <div className="text-center text-red-500 py-10">{error}</div>;
+  }
+
   if (!interview || !interviews) {
     return <LoadingSpinner />;
   }
@@ -47,7 +52,6 @@ function InterviewDetailPage() {
       <main className="min-h-screen">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="relative text-white rounded-lg shadow-xl overflow-hidden mb-8 bg-gradient-to-br from-neutral-900 to-neutral-950 border border-gray-900">
-            {/* Imagen de portada full width */}
             <div className="w-full h-[200px] md:h-[300px] lg:h-[450px] relative">
               <img
                 src={interview.imagen_portada}
@@ -62,7 +66,6 @@ function InterviewDetailPage() {
               </div>
             </div>
 
-            {/* Contenido principal */}
             <div className="p-6 lg:p-10">
               <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
                 {interview.artista}
@@ -83,7 +86,6 @@ function InterviewDetailPage() {
                 </p>
               )}
 
-              {/* Footer info */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-gray-700">
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
                   {interview.fecha && (
@@ -122,7 +124,6 @@ function InterviewDetailPage() {
             </div>
           </div>
 
-          {/* Contenido de la entrevista */}
           <div className="p-6 mb-8">
             <div
               className="prose max-w-none text-gray-300"
@@ -130,7 +131,6 @@ function InterviewDetailPage() {
             />
           </div>
 
-          {/* Sección de entrevistas relacionadas */}
           <InterviewSection
             interview={interviews}
             destacadas={true}

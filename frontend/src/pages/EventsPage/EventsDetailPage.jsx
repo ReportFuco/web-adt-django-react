@@ -7,12 +7,7 @@ import EventSection from "./EventSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import parse from "html-react-parser";
-import {
-  FaCalendarAlt,
-  FaMapMarkerAlt,
-  FaLink,
-  FaShareAlt,
-} from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import Maps from "../../components/features/Maps";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Socialmedia from "../../components/common/socialMedia";
@@ -21,6 +16,7 @@ function EventsDetailPage() {
   const { slug } = useParams();
   const [evento, setEvento] = useState(null);
   const [eventos, setEventos] = useState(null);
+  const [error, setError] = useState(null);
 
   const cleanContent = evento ? sanitizeHTML(evento.descripcion) : "";
 
@@ -43,6 +39,10 @@ function EventsDetailPage() {
     loadEvents();
   }, [slug]);
 
+  if (error) {
+    return <div className="text-center text-red-500 py-10">{error}</div>;
+  }
+
   if (!evento || !eventos) {
     return <LoadingSpinner />;
   }
@@ -61,9 +61,7 @@ function EventsDetailPage() {
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Section */}
       <div className="relative h-110 overflow-hidden">
-        {/* Fondo difuminado */}
         <div className="absolute inset-0">
           <img
             src={evento.imagen}
@@ -72,7 +70,6 @@ function EventsDetailPage() {
           />
         </div>
 
-        {/* Imagen principal */}
         <div className="absolute inset-0 flex justify-center items-center">
           <img
             src={evento.imagen}
@@ -81,10 +78,8 @@ function EventsDetailPage() {
           />
         </div>
 
-        {/* Degradado */}
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90 z-20"></div>
 
-        {/* Contenido de texto */}
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white z-30">
           <div className="max-w-6xl mx-auto">
             <span className="inline-block px-3 py-1 bg-white text-black text-sm font-semibold rounded-full mb-4">
@@ -98,18 +93,15 @@ function EventsDetailPage() {
                 <FaMapMarkerAlt className="mr-2" /> {evento.lugar}
               </span>
               <span className="flex items-center">
-                <FaCalendarAlt className="mr-2" />{" "}
-                {formatDate(evento.fecha_hora)}
+                <FaCalendarAlt className="mr-2" /> {formatDate(evento.fecha_hora)}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Event Details */}
           <div className="lg:w-2/3">
             <div className="rounded-xl shadow-md overflow-hidden mb-8">
               <div className="p-8">
@@ -117,7 +109,6 @@ function EventsDetailPage() {
                   {parse(cleanContent)}
                 </div>
 
-                {/* Event Highlights */}
                 <div className="grid grid-cols-1 font-bold text-lg text-white md:grid-cols-2 gap-6 mb-8">
                   <div className="p-4 border-1 border-neutral-700 rounded-xs">
                     <h3 className=" mb-3 flex items-center">
@@ -140,7 +131,6 @@ function EventsDetailPage() {
           </div>
 
           <div className="lg:w-1/3 space-y-6">
-            {/* Ticket/Registration Box */}
             <div className="rounded-md neutral-950 text-white">
               <div className="bg-gradient-to-tl from-red-950 to-black p-2 text-center rounded-xs">
                 <h3 className="text-xl font-bold">Más Información</h3>
@@ -164,7 +154,6 @@ function EventsDetailPage() {
               </div>
             </div>
 
-            {/* Map Placeholder */}
             <div className="text-neutral-300 rounded-xs border border-neutral-700 overflow-hidden p-6">
               <h3 className="text-xl font-bold mb-4 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" /> Ubicación
@@ -174,8 +163,7 @@ function EventsDetailPage() {
               </div>
               {evento.direccion && (
                 <p className="mt-3 text-sm text-neutral-300">
-                  <span className="font-medium">Dirección:</span>{" "}
-                  {evento.direccion}
+                  <span className="font-medium">Dirección:</span> {evento.direccion}
                 </p>
               )}
             </div>
@@ -190,7 +178,7 @@ function EventsDetailPage() {
           </div>
         </div>
       </div>
-      <Socialmedia/>
+      <Socialmedia />
       <SpotifyPlaylist />
       <Footer />
     </div>

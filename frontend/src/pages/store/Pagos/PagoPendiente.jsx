@@ -1,5 +1,3 @@
-import React from 'react'
-
 function PagoPendiente() {
   return (
     <div>

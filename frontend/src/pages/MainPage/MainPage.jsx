@@ -81,20 +81,23 @@ function MainPage() {
     return <LoadingSpinner />;
   }
 
-  data.destacados.push({
-    titulo: "¡Siguenos en nuestra playlist de Spotify!",
-    imagen: BannerSpotify,
-    tipo: "Spotify",
-    slug: null,
-    id: "spotify-banner",
-    url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH"
-  });
+  const destacados = [
+    ...(data.destacados || []),
+    {
+      titulo: "¡Siguenos en nuestra playlist de Spotify!",
+      imagen: BannerSpotify,
+      tipo: "Spotify",
+      slug: null,
+      id: "spotify-banner",
+      url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH",
+    },
+  ];
 
   return (
     <>
       <Header />
       <main className="min-h-screen flex flex-col">
-        <NoticiasCarousel data={data.destacados} />
+        <NoticiasCarousel data={destacados} />
 
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
           <article className="p-0.5">
