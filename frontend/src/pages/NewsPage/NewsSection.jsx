@@ -1,4 +1,13 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+
+const newsShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  titulo: PropTypes.string,
+  slug: PropTypes.string,
+  imagen: PropTypes.string,
+  destacado: PropTypes.bool,
+});
 
 export default function NewsSection({
   noticias = [],
@@ -6,9 +15,10 @@ export default function NewsSection({
   limit = 4,
   gridCols = "md:grid-cols-4",
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
+  titleSize,
 }) {
   const navigate = useNavigate();
+  const resolvedTitleSize = titleSize ?? (destacadas ? "text-2xl" : "text-xl");
 
   const filteredNews = noticias
     .filter((news) =>
@@ -19,7 +29,7 @@ export default function NewsSection({
   return (
     <div className="max-w-6xl px-1 py-1 text-white">
       {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
+      <h2 className={`flex items-center gap-2 font-bold mb-2 ${resolvedTitleSize}`}>
         {destacadas ? "Noticias Destacadas" : "Más Noticias"}
         <span className="flex-1 h-[1px] bg-white ml-2"></span>
       </h2>
@@ -61,3 +71,12 @@ export default function NewsSection({
     </div>
   );
 }
+
+NewsSection.propTypes = {
+  noticias: PropTypes.arrayOf(newsShape),
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  cardHeight: PropTypes.string,
+  titleSize: PropTypes.string,
+};

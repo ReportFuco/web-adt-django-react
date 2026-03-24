@@ -6,7 +6,7 @@ import { crearPreferenciaPago } from "../../services/store.api";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity } = useCart();
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
 

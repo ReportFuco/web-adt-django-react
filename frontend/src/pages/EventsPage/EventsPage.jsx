@@ -30,13 +30,19 @@ function EventsPage() {
     async function loadNews() {
       try {
         const res = await getEvents();
-        const normalizados = normalizeData(res.data);
+        const eventsData = Array.isArray(res?.data) ? res.data : null;
+
+        if (!eventsData) {
+          throw new Error("Respuesta inválida al cargar eventos");
+        }
+
+        const normalizados = normalizeData(eventsData);
         setEventos(normalizados);
         const destacadosFiltrados = normalizados.filter((item) => item.destacado);
         setDestacados(destacadosFiltrados);
       } catch (error) {
-        console.error("Error cargando noticias:", error);
-        setError("Error al cargar las noticias");
+        console.error("Error cargando eventos:", error);
+        setError("Error al cargar los eventos");
       }
     }
 

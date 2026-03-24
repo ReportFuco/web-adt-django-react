@@ -1,7 +1,6 @@
 import Header from "../../components/layout/Header";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
-import technoImage from "../../assets/techno 7.jpg";
 import InterviewSection from "./InterviewSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useState, useEffect } from "react";
@@ -16,19 +15,21 @@ function InterviewPage() {
     async function loadNews() {
       try {
         const res = await getInterview();
-        setInterview(res.data);
+        const interviewsData = Array.isArray(res?.data) ? res.data : null;
+
+        if (!interviewsData) {
+          throw new Error("Respuesta inválida al cargar entrevistas");
+        }
+
+        setInterview(interviewsData);
       } catch (error) {
-        console.error("Error cargando noticias:", error);
-        setError("Error al cargar las noticias");
+        console.error("Error cargando entrevistas:", error);
+        setError("Error al cargar las entrevistas");
       }
     }
 
     loadNews();
   }, []);
-
-  if (!interview) {
-    return <LoadingSpinner />;
-  }
 
   if (error) {
     return (
@@ -36,6 +37,10 @@ function InterviewPage() {
         <p className="text-red-500 text-xl">{error}</p>
       </div>
     );
+  }
+
+  if (!interview) {
+    return <LoadingSpinner />;
   }
 
   return (
