@@ -1,4 +1,14 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+
+const eventShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  nombre: PropTypes.string,
+  slug: PropTypes.string,
+  imagen: PropTypes.string,
+  fecha_hora: PropTypes.string,
+  destacado: PropTypes.bool,
+});
 
 export default function NewsSection({
   event = [],
@@ -7,10 +17,11 @@ export default function NewsSection({
   gridCols = "md:grid-cols-4",
   showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
+  titleSize,
 }) {
   const navigate = useNavigate();
-  
+  const resolvedTitleSize = titleSize ?? (destacadas ? "text-2xl" : "text-xl");
+
   const formatDate = (dateString) => {
     const options = {
       weekday: "long",
@@ -31,7 +42,7 @@ export default function NewsSection({
     <div className="max-w-6xl px-1 py-1">
       {/* Título condicional */}
       <h2
-        className={`flex text-white items-center gap-2 font-bold mb-2 ${titleSize}`}
+        className={`flex text-white items-center gap-2 font-bold mb-2 ${resolvedTitleSize}`}
       >
         {destacadas ? "Eventos Destacados" : "Más Eventos"}
         <span className="flex-1 h-[1px] bg-white ml-2"></span>
@@ -76,3 +87,13 @@ export default function NewsSection({
     </div>
   );
 }
+
+NewsSection.propTypes = {
+  event: PropTypes.arrayOf(eventShape),
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  showExcerpt: PropTypes.bool,
+  cardHeight: PropTypes.string,
+  titleSize: PropTypes.string,
+};

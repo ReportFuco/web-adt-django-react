@@ -1,4 +1,13 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+
+const interviewShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  artista: PropTypes.string,
+  slug: PropTypes.string,
+  imagen_portada: PropTypes.string,
+  destacado: PropTypes.bool,
+});
 
 export default function InterviewSection({
   interview = [],
@@ -7,9 +16,10 @@ export default function InterviewSection({
   gridCols = "md:grid-cols-4",
   showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
+  titleSize,
 }) {
   const navigate = useNavigate();
+  const resolvedTitleSize = titleSize ?? (destacadas ? "text-2xl" : "text-xl");
 
   const filteredInterview = interview
     .filter((news) => (destacadas ? news.destacado === true : true))
@@ -18,7 +28,7 @@ export default function InterviewSection({
   return (
     <div className="max-w-6xl px-1 py-1 text-white">
       {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
+      <h2 className={`flex items-center gap-2 font-bold mb-2 ${resolvedTitleSize}`}>
         {destacadas ? "Entrevistas destacadas" : "Entrevistas"}
         <span className="flex-1 h-[1px] bg-white ml-2"></span>
       </h2>
@@ -59,3 +69,13 @@ export default function InterviewSection({
     </div>
   );
 }
+
+InterviewSection.propTypes = {
+  interview: PropTypes.arrayOf(interviewShape),
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  showExcerpt: PropTypes.bool,
+  cardHeight: PropTypes.string,
+  titleSize: PropTypes.string,
+};
