@@ -1,7 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useCallback, memo } from "react";
 import logo from "../../assets/logo-adt.png";
-import logoWordmark from "../../assets/IMG_0467.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
@@ -38,8 +37,7 @@ const Header = () => {
       } catch (e) {
         console.error("Error al obtener la franja:", e);
         setFranja({
-          contenido:
-            "Adictos al Techno / Cultura underground / Noticias / Eventos",
+          contenido: "Adictos al Techno / Cultura underground / Noticias / Eventos",
         });
       }
     };
@@ -90,37 +88,46 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 md:h-24 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-8 md:gap-10 shrink-0">
+      <header className="fixed top-0 w-full z-50 bg-black/92 backdrop-blur-md border-b border-white/8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-[78px] md:h-[84px] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-6 md:gap-10 min-w-0 flex-1">
             <button
-              className="flex items-center gap-4 shrink-0"
+              className="flex items-stretch min-w-0 gap-0"
               onClick={() => navigate("/")}
               aria-label="Ir al inicio"
             >
-              <img
-                src={logo}
-                alt="ADT"
-                className="h-10 md:h-11 w-auto object-contain brightness-0 invert shrink-0"
-                loading="eager"
-              />
-
-              <div className="hidden md:flex items-center border-l border-white/15 pl-5 ml-1 min-w-[260px] lg:min-w-[340px]">
+              <div className="hidden sm:flex items-center justify-center px-5 md:px-6 border-r border-white/10">
                 <img
-                  src={logoWordmark}
-                  alt="Adictos al Techno"
-                  className="w-[220px] lg:w-[300px] h-auto object-contain opacity-95 brightness-[1.9] contrast-[1.2]"
+                  src={logo}
+                  alt="ADT"
+                  className="h-6 md:h-7 w-auto object-contain brightness-0 invert shrink-0"
                   loading="eager"
                 />
               </div>
+              <div className="flex sm:hidden items-center justify-center">
+                <img
+                  src={logo}
+                  alt="ADT"
+                  className="h-9 w-auto object-contain brightness-0 invert shrink-0"
+                  loading="eager"
+                />
+              </div>
+              <div className="hidden sm:flex flex-col justify-center px-5 md:px-6 text-left">
+                <span className="text-[10px] md:text-[11px] uppercase tracking-[0.34em] text-white/45 font-semibold leading-none">
+                  Adictos al
+                </span>
+                <span className="mt-1 text-sm md:text-base uppercase tracking-[0.28em] text-white font-extrabold leading-none">
+                  Techno
+                </span>
+              </div>
             </button>
 
-            <nav className="hidden md:flex items-center gap-5 lg:gap-6 uppercase text-[11px] font-bold tracking-[0.18em] text-white/75">
+            <nav className="hidden md:flex items-center gap-7 lg:gap-8 uppercase text-[10px] font-bold tracking-[0.18em] text-white/78">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className="hover:text-white transition-colors whitespace-nowrap"
+                  className="hover:text-white transition-colors duration-300 whitespace-nowrap"
                 >
                   {item.label}
                 </Link>
@@ -128,16 +135,16 @@ const Header = () => {
             </nav>
           </div>
 
-          <div className="hidden md:flex items-center gap-5 text-white shrink-0">
+          <div className="hidden md:flex items-center gap-4 lg:gap-5 text-white">
             {user ? (
               <div className="flex items-center gap-3">
                 <UserAvatar user={user} />
-                <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">
+                <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">
                   {user.username}
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="text-[10px] uppercase tracking-[0.22em] border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all"
+                  className="text-[10px] uppercase tracking-[0.18em] border border-white/15 px-4 py-2 hover:bg-white hover:text-black transition-all duration-300"
                 >
                   Salir
                 </button>
@@ -145,16 +152,18 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-white text-black px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] hover:bg-white/90 transition-all"
+                className="bg-white text-black px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] hover:bg-white/90 transition-all duration-300"
               >
                 Login
               </Link>
             )}
-            <CartButton
-              cart={cart}
-              updateQuantity={updateQuantity}
-              handleRemoveItem={handleRemoveItem}
-            />
+            <div className="pl-3 border-l border-white/10">
+              <CartButton
+                cart={cart}
+                updateQuantity={updateQuantity}
+                handleRemoveItem={handleRemoveItem}
+              />
+            </div>
           </div>
 
           <div className="flex items-center md:hidden space-x-3 text-white">
