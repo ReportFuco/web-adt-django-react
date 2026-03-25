@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useCallback, memo } from "react";
 import logo from "../../assets/logo-adt.png";
-import logoWordmark from "../../assets/logo-adt-white.jpg";
+import logoWordmark from "../../assets/IMG_0467.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
@@ -37,7 +37,10 @@ const Header = () => {
         if (res) setFranja(res);
       } catch (e) {
         console.error("Error al obtener la franja:", e);
-        setFranja({ contenido: "Adictos al Techno / Cultura underground / Noticias / Eventos" });
+        setFranja({
+          contenido:
+            "Adictos al Techno / Cultura underground / Noticias / Eventos",
+        });
       }
     };
 
@@ -45,7 +48,10 @@ const Header = () => {
   }, []);
 
   const MarqueeText = memo(() => (
-    <Marquee speed={45} className="py-2 text-white/70 uppercase tracking-[0.22em] text-[10px] font-bold">
+    <Marquee
+      speed={45}
+      className="py-2 text-white/70 uppercase tracking-[0.22em] text-[10px] font-bold"
+    >
       {franja?.url ? (
         <a
           href={franja.url}
@@ -74,7 +80,7 @@ const Header = () => {
       navigate(path);
       setIsMenuOpen(false);
     },
-    [navigate]
+    [navigate],
   );
 
   const handleRemoveItem = (productId) => {
@@ -85,39 +91,50 @@ const Header = () => {
   return (
     <>
       <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-6 md:gap-10 min-w-0 flex-1">
-            <button className="flex items-center min-w-0 gap-3" onClick={() => navigate("/")} aria-label="Ir al inicio">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 md:h-24 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-8 md:gap-10 shrink-0">
+            <button
+              className="flex items-center gap-4 shrink-0"
+              onClick={() => navigate("/")}
+              aria-label="Ir al inicio"
+            >
               <img
                 src={logo}
                 alt="ADT"
                 className="h-10 md:h-11 w-auto object-contain brightness-0 invert shrink-0"
                 loading="eager"
               />
-              <div className="hidden sm:flex items-center h-10 md:h-11 overflow-hidden border-l border-white/15 pl-3">
+
+              <div className="hidden md:flex items-center border-l border-white/15 pl-5 ml-1 min-w-[260px] lg:min-w-[340px]">
                 <img
                   src={logoWordmark}
                   alt="Adictos al Techno"
-                  className="h-16 md:h-20 w-auto object-contain brightness-[1.8] contrast-[1.15]"
+                  className="w-[220px] lg:w-[300px] h-auto object-contain opacity-95 brightness-[1.9] contrast-[1.2]"
                   loading="eager"
                 />
               </div>
             </button>
 
-            <nav className="hidden md:flex items-center gap-6 uppercase text-[11px] font-bold tracking-[0.22em] text-white/80">
+            <nav className="hidden md:flex items-center gap-5 lg:gap-6 uppercase text-[11px] font-bold tracking-[0.18em] text-white/75">
               {menuItems.map((item) => (
-                <Link key={item.path} to={item.path} className="hover:text-white transition-colors whitespace-nowrap">
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="hover:text-white transition-colors whitespace-nowrap"
+                >
                   {item.label}
                 </Link>
               ))}
             </nav>
           </div>
 
-          <div className="hidden md:flex items-center gap-5 text-white">
+          <div className="hidden md:flex items-center gap-5 text-white shrink-0">
             {user ? (
               <div className="flex items-center gap-3">
                 <UserAvatar user={user} />
-                <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">{user.username}</span>
+                <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">
+                  {user.username}
+                </span>
                 <button
                   onClick={handleLogout}
                   className="text-[10px] uppercase tracking-[0.22em] border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all"
@@ -133,14 +150,37 @@ const Header = () => {
                 Login
               </Link>
             )}
-            <CartButton cart={cart} updateQuantity={updateQuantity} handleRemoveItem={handleRemoveItem} />
+            <CartButton
+              cart={cart}
+              updateQuantity={updateQuantity}
+              handleRemoveItem={handleRemoveItem}
+            />
           </div>
 
           <div className="flex items-center md:hidden space-x-3 text-white">
-            <CartButton cart={cart} updateQuantity={updateQuantity} handleRemoveItem={handleRemoveItem} />
-            <button className="focus:outline-none" onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
-              <svg className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? "rotate-90" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            <CartButton
+              cart={cart}
+              updateQuantity={updateQuantity}
+              handleRemoveItem={handleRemoveItem}
+            />
+            <button
+              className="focus:outline-none"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <svg
+                className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? "rotate-90" : "rotate-0"}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
@@ -159,13 +199,18 @@ const Header = () => {
 
         <div
           className={`md:hidden w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
-            isMenuOpen ? "max-h-screen opacity-100 border-t border-white/10" : "max-h-0 opacity-0"
+            isMenuOpen
+              ? "max-h-screen opacity-100 border-t border-white/10"
+              : "max-h-0 opacity-0"
           }`}
         >
           <ul className="flex flex-col py-3 uppercase tracking-[0.18em] text-[11px] text-white/80 font-bold">
             {menuItems.map((item) => (
               <li key={item.path}>
-                <button onClick={() => navigateAndClose(item.path)} className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors">
+                <button
+                  onClick={() => navigateAndClose(item.path)}
+                  className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors"
+                >
                   {item.label}
                 </button>
               </li>
@@ -178,12 +223,18 @@ const Header = () => {
                     <UserAvatar user={user} />
                     <span className="text-white">{user.username}</span>
                   </div>
-                  <button onClick={handleLogout} className="w-full py-2 text-black bg-white hover:bg-white/90 transition-colors">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full py-2 text-black bg-white hover:bg-white/90 transition-colors"
+                  >
                     Cerrar sesión
                   </button>
                 </div>
               ) : (
-                <button onClick={() => navigateAndClose("/login")} className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors">
+                <button
+                  onClick={() => navigateAndClose("/login")}
+                  className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors"
+                >
                   Login
                 </button>
               )}
