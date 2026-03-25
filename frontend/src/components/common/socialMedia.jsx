@@ -6,31 +6,60 @@ import tiktok from "../../assets/icons/tiktok-brands-solid.svg";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 
 const socialMediaData = [
-  { id: 1, icon: instagram, alt: "Instagram", count: 134701, url: "https://www.instagram.com/adictos_al_techno/" },
-  { id: 2, icon: whatsapp, alt: "Comunidad WhatsApp", count: 668, url: "https://chat.whatsapp.com/EZkSGVq4BrpLc7SCxIHjNz" },
-  { id: 3, icon: spotifyicon, alt: "Playlist Spotify", count: 995, url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH?fbclid=PAZXh0bgNhZW0CMTEAAafpoGV8xavIV9hbDs4y4lIT6nN1Iou6NcS8iyq7RYwzT3dS1rTroQOZ8atcjg_aem_KXbo3FsofuRP-qVDBMXNHw&nd=1&dlsi=b2dfcb3b265a4eed" },
-  { id: 4, icon: tiktok, alt: "TikTok", count: 104, url: "https://www.tiktok.com/@adictos.al.techno?_t=ZM-8vv8jszOOKz&_r=1" },
+  {
+    id: 1,
+    icon: instagram,
+    alt: "Instagram",
+    count: 134701,
+    url: "https://www.instagram.com/adictos_al_techno/",
+  },
+  {
+    id: 2,
+    icon: whatsapp,
+    alt: "Comunidad WhatsApp",
+    count: 668,
+    url: "https://chat.whatsapp.com/EZkSGVq4BrpLc7SCxIHjNz",
+  },
+  {
+    id: 3,
+    icon: spotifyicon,
+    alt: "Playlist Spotify",
+    count: 995,
+    url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH?fbclid=PAZXh0bgNhZW0CMTEAAafpoGV8xavIV9hbDs4y4lIT6nN1Iou6NcS8iyq7RYwzT3dS1rTroQOZ8atcjg_aem_KXbo3FsofuRP-qVDBMXNHw&nd=1&dlsi=b2dfcb3b265a4eed",
+  },
+  {
+    id: 4,
+    icon: tiktok,
+    alt: "TikTok",
+    count: 104,
+    url: "https://www.tiktok.com/@adictos.al.techno?_t=ZM-8vv8jszOOKz&_r=1",
+  },
 ];
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.14 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.45 } },
-};
-
-const hoverVariants = {
-  hover: { y: -5, scale: 1.02, transition: { duration: 0.25, ease: "easeOut" } },
+  hidden: { y: 18, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
 };
 
 function Socialmedia() {
   return (
-    <section className="px-4 my-10 text-center text-neutral-900">
+    <section className="px-4 my-14 text-white">
+      <div className="max-w-7xl mx-auto mb-8">
+        <div className="section-title">
+          <div>
+            <h2 className="section-title-heading">Comunidad</h2>
+            <p className="section-title-kicker">Reach / social / audience</p>
+          </div>
+        </div>
+      </div>
+
       <motion.div
-        className="flex flex-col md:flex-row justify-center gap-5 max-w-6xl mx-auto"
+        className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -38,25 +67,31 @@ function Socialmedia() {
         {socialMediaData.map((social) => (
           <motion.a
             key={social.id}
-            className="flex flex-col items-center gap-4 rounded-[24px] border border-black/8 p-8 w-full md:w-64 lg:w-72 bg-white/88 shadow-sm backdrop-blur-sm"
-            variants={itemVariants}
-            whileHover="hover"
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
+            variants={itemVariants}
+            whileHover={{ y: -4, backgroundColor: "rgba(255,255,255,0.03)", transition: { duration: 0.2 } }}
+            className="group min-h-[270px] border border-white/10 bg-[#101010] p-8 flex flex-col items-center justify-center text-center"
           >
-            <motion.div variants={hoverVariants} className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-100 border border-black/6">
-              <img src={social.icon} alt={social.alt} className="h-7 w-7 object-contain opacity-85" />
-            </motion.div>
-            <motion.p className="font-bold text-neutral-900" variants={hoverVariants}>
+            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <img
+                src={social.icon}
+                alt={social.alt}
+                className="h-7 w-7 object-contain brightness-0 invert opacity-85 group-hover:opacity-100"
+              />
+            </div>
+
+            <div className="mb-5 text-white">
               <NumberTicker
                 value={social.count}
-                className="whitespace-pre-wrap text-4xl font-semibold tracking-tighter text-neutral-900"
+                className="whitespace-pre-wrap text-4xl md:text-5xl font-bold tracking-tight text-white"
               />
-            </motion.p>
-            <motion.p className="text-sm text-neutral-500 uppercase tracking-[0.18em]" variants={hoverVariants}>
+            </div>
+
+            <p className="text-[11px] md:text-xs text-white/45 uppercase tracking-[0.24em] font-bold leading-relaxed">
               {social.alt}
-            </motion.p>
+            </p>
           </motion.a>
         ))}
       </motion.div>

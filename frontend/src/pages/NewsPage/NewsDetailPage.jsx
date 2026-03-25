@@ -55,131 +55,78 @@ function NewsDetailPage() {
     loadNews();
   }, [slug]);
 
-  if (!noticia || !noticias) {
-    return <LoadingSpinner />;
-  }
+  if (!noticia || !noticias) return <LoadingSpinner />;
 
   return (
     <>
       <Header />
 
-      {/* Hero Section optimizada para móviles */}
-      <div className="relative h-auto min-h-[60vh] md:h-110 overflow-hidden">
-        {/* Fondo difuminado - solo visible en md+ */}
-        <div className="absolute inset-0 hidden md:block">
-          <img
-            src={noticia.imagen}
-            alt={`Fondo ${noticia.titulo}`}
-            className="w-full h-full object-cover blur-xl scale-105"
-          />
+      <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
+        <div className="absolute inset-0">
+          <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover grayscale opacity-40 brightness-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/60 to-black/20"></div>
         </div>
 
-        {/* Imagen principal - visible en todos los dispositivos */}
-        <div className="absolute inset-0 flex justify-center items-center">
-          <img
-            src={noticia.imagen}
-            alt={noticia.titulo}
-            className="relative w-full h-full md:w-auto md:h-auto md:max-h-[80%] object-cover md:object-contain z-10"
-          />
+        <div className="relative z-20 max-w-7xl mx-auto w-full px-6 md:px-8 py-12 md:py-16 text-white">
+          <span className="inline-block border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] mb-5">
+            Actualidad
+          </span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[0.94] tracking-tight max-w-5xl mb-5">
+            {noticia.titulo}
+          </h1>
+          {noticia.subtitulo && (
+            <p className="text-lg md:text-xl text-white/70 max-w-3xl mb-4">{noticia.subtitulo}</p>
+          )}
+          <p className="text-[11px] uppercase tracking-[0.26em] text-white/50 font-bold">
+            {new Date(noticia.fecha_publicacion).toLocaleDateString("es-ES", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
         </div>
+      </section>
 
-        {/* Degradado */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 md:opacity-90 z-20"></div>
-
-        {/* Contenido de texto */}
-        <div className="relative pt-16 pb-8 px-4 text-white z-30 flex flex-col justify-end h-full">
-          <div className="max-w-6xl mx-auto w-full">
-            <span className="inline-block px-3 py-1 bg-white text-black text-sm font-semibold rounded-full mb-3">
-              Actualidad
-            </span>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 leading-tight">
-              {noticia.titulo}
-            </h1>
-            {noticia.subtitulo && (
-              <p className="text-base md:text-lg italic text-gray-300 mb-3">
-                {noticia.subtitulo}
-              </p>
-            )}
-            <p className="text-gray-300 text-sm md:text-base">
-              {new Date(noticia.fecha_publicacion).toLocaleDateString("es-ES", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Contenido Principal optimizado para móviles */}
-      <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Artículo */}
-        <article className="lg:col-span-2 text-neutral-300 px-4 py-6 rounded-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_380px] gap-8">
+        <article className="border border-white/10 bg-[#101010] p-6 md:p-10 text-white/85 prose prose-invert prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:my-6 [&_iframe]:border [&_iframe]:border-white/10">
           {parse(cleanContent)}
         </article>
 
-        {/* Columna derecha - reordenada para móviles */}
-        <div className="flex flex-col gap-6 lg:grid lg:gap-8 lg:grid-rows-[auto_auto_1fr]">
-          {/* Otras noticias primero en móviles */}
-          <NewsSection
-            noticias={noticias}
-            gridCols="grid-cols-1"
-            limit={3}
-            destacadas={true}
-            cardHeight="h-64"
-          />
-
-          {/* Comentarios */}
-          <aside className="p-4 text-white bg-neutral-900 rounded-lg shadow-lg flex flex-col h-auto max-h-[500px]">
-            <h2 className="text-xl font-semibold mb-4 text-neutral-300 text-center">
-              Comentarios
-            </h2>
-            <div className="flex-grow overflow-y-auto mb-4">
+        <div className="flex flex-col gap-8">
+          <aside className="border border-white/10 bg-[#101010] text-white p-5 md:p-6 flex flex-col max-h-[620px]">
+            <h2 className="text-2xl font-bold uppercase tracking-tight mb-4">Comentarios</h2>
+            <div className="flex-grow overflow-y-auto mb-4 pr-1">
               <Comments id={id} key={refresh} />
             </div>
             {token ? (
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex items-center gap-2"
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2 border-t border-white/10 pt-4">
                 <input
                   type="text"
                   placeholder="Escribe un comentario..."
-                  className="flex-1 text-white bg-neutral-800 border border-neutral-700 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                  className="flex-1 text-white bg-black border border-white/15 px-4 py-3 focus:outline-none focus:border-white text-sm"
                   {...register("comments", {
                     required: "Debes escribir algo para comentar",
                   })}
                 />
-                <button
-                  type="submit"
-                  className="text-white text-xl p-2 bg-neutral-700 rounded-full"
-                >
+                <button type="submit" className="text-black text-xl p-3 bg-white hover:bg-white/90 transition-colors">
                   <IoSend />
                 </button>
               </form>
             ) : (
-              <p className="text-center text-sm text-white mt-2">
-                Debes{" "}
-                <Link
-                  to="/login"
-                  className="text-blue-400 underline hover:text-blue-300"
-                >
-                  iniciar sesión
-                </Link>{" "}
-                para comentar.
+              <p className="text-sm text-white/60 mt-2 uppercase tracking-[0.16em]">
+                Debes <Link to="/login" className="text-white underline">iniciar sesión</Link> para comentar.
               </p>
             )}
-            {errors.comments && (
-              <p className="text-red-400 text-xs mt-1 text-center">
-                {errors.comments.message}
-              </p>
-            )}
+            {errors.comments && <p className="text-red-400 text-xs mt-2">{errors.comments.message}</p>}
           </aside>
 
-          {/* Publicidad */}
-          <div className="bg-yellow-100 p-4 rounded-lg h-[120px] flex items-center justify-center">
-            <p className="text-center font-medium">Publicidad</p>
+          <div className="border border-white/10 bg-[#0f0f0f] p-6 text-white/50 uppercase tracking-[0.24em] text-xs font-bold text-center">
+            Espacio editorial / publicidad
+          </div>
+
+          <div className="border border-white/10 bg-[#0f0f0f] p-4 md:p-5">
+            <NewsSection noticias={noticias} gridCols="grid-cols-1" limit={3} destacadas={true} cardHeight="h-[22rem]" />
           </div>
         </div>
       </div>

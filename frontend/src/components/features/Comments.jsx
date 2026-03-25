@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getComments } from "../../services/api";
 
 function Comments({ id }) {
@@ -15,15 +15,16 @@ function Comments({ id }) {
   }, [id]);
 
   if (!comentarios.length) {
-    return (
-      <p className="text-center text-gray-600 mt-10">Sin comentarios</p>
-    );
+    return <p className="text-center text-white/40 mt-10 uppercase tracking-[0.18em] text-xs">Sin comentarios</p>;
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       {comentarios.map((coment) => (
-        <p className="m-4" key={coment.id}><strong>{coment.autor_username}</strong>: {coment.contenido}</p>
+        <div key={coment.id} className="border border-white/10 bg-black/60 p-4 text-sm text-white/80">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-white/40 mb-2">{coment.autor_username}</p>
+          <p>{coment.contenido}</p>
+        </div>
       ))}
     </div>
   );

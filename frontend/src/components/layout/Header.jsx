@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useCallback, memo } from "react";
 import logo from "../../assets/logo-adt.png";
+import logoWordmark from "../../assets/logo-adt-white.jpg";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
@@ -86,13 +87,21 @@ const Header = () => {
       <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 md:gap-10 min-w-0 flex-1">
-            <button className="flex items-center min-w-0" onClick={() => navigate("/")} aria-label="Ir al inicio">
+            <button className="flex items-center min-w-0 gap-3" onClick={() => navigate("/")} aria-label="Ir al inicio">
               <img
                 src={logo}
-                alt="Adictos al Techno"
-                className="h-11 md:h-14 w-auto object-contain brightness-0 invert"
+                alt="ADT"
+                className="h-10 md:h-11 w-auto object-contain brightness-0 invert shrink-0"
                 loading="eager"
               />
+              <div className="hidden sm:flex items-center h-10 md:h-11 overflow-hidden border-l border-white/15 pl-3">
+                <img
+                  src={logoWordmark}
+                  alt="Adictos al Techno"
+                  className="h-16 md:h-20 w-auto object-contain brightness-[1.8] contrast-[1.15]"
+                  loading="eager"
+                />
+              </div>
             </button>
 
             <nav className="hidden md:flex items-center gap-6 uppercase text-[11px] font-bold tracking-[0.22em] text-white/80">
