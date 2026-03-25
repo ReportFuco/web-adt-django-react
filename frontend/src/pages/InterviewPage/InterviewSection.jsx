@@ -7,6 +7,7 @@ const interviewShape = PropTypes.shape({
   slug: PropTypes.string,
   imagen_portada: PropTypes.string,
   destacado: PropTypes.bool,
+  tags: PropTypes.array,
 });
 
 export default function InterviewSection({
@@ -47,6 +48,15 @@ export default function InterviewSection({
             </div>
             <div className="flex flex-col gap-4">
               <h3 className="text-2xl font-bold leading-tight uppercase" style={{ color: "var(--text)" }}>{item.artista}</h3>
+              {Array.isArray(item.tags) && item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {item.tags.slice(0, 3).map((tag) => (
+                    <span key={tag.id ?? tag.nombre ?? tag} className="border border-amber-400/30 bg-amber-400/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200 shadow-[inset_0_0_0_1px_rgba(251,191,36,0.06)]">
+                      {tag.nombre ?? tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <button className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 group/btn theme-text-soft">
                 Leer más <span className="group-hover/btn:translate-x-2 transition-transform">→</span>
               </button>

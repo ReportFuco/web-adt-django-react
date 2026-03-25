@@ -4,6 +4,8 @@ import axios from "axios";
 import lockIcon from "../../assets/icons/lock-solid.svg";
 import backgroundImage from "../../assets/fondo-web.jpg";
 
+import { API_BASE_URL } from "../../config/api";
+
 const InputWithIcon = ({ icon, placeholder, type, value, onChange }) => (
   <div className="relative flex items-center bg-neutral-700 border border-neutral-600 rounded-xs focus-within:ring-2 focus-within:ring-blue-500 transition-transform duration-300 hover:scale-105 w-full">
     <img src={icon} alt={placeholder} className="pl-3 w-5 h-5 text-gray-400" />
@@ -30,7 +32,7 @@ export default function ResetPassword() {
     setLoading(true);
     try {
       await axios.post(
-        `https://api.adictosaltechno.com/api/password-reset-confirm/${uidb64}/${token}/`,
+        `${API_BASE_URL}password-reset-confirm/${uidb64}/${token}/`,
         { password }
       );
       setMessage("✅ Contraseña cambiada con éxito. Redirigiendo al login...");

@@ -4,6 +4,8 @@ import backgroundImage from "../../assets/fondo-web.jpg";
 import { IoIosMail } from "react-icons/io";
 import { Link } from "react-router-dom";
 
+import { API_BASE_URL } from "../../config/api";
+
 const InputWithIcon = ({ icon: Icon, placeholder, type, value, onChange }) => {
   return (
     <div className="relative flex items-center bg-neutral-700 border border-neutral-600 rounded-xs focus-within:ring-2 focus-within:ring-blue-500 transition-transform duration-300 hover:scale-105 w-full">
@@ -31,7 +33,7 @@ export default function ForgotPassword() {
     setMessage("");
     setLoading(true);
     try {
-      await axios.post("https://api.adictosaltechno.com/api/password-reset/", {
+      await axios.post(`${API_BASE_URL}password-reset/`, {
         email,
       });
       setMessage(

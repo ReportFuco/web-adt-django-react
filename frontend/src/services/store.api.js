@@ -1,10 +1,19 @@
 import axios from "axios";
 
-const baseURL = "https://api.adictosaltechno.com/api/";
+import { API_BASE_URL } from "../config/api";
+import { ensureValidAccessToken } from "./api";
 
 export const api = axios.create({
-  baseURL: baseURL,
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
+});
+
+api.interceptors.request.use(async (config) => {
+  const token = await ensureValidAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const getProductos = async () => {

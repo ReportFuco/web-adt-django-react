@@ -22,6 +22,8 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
 
 class PasswordResetRequestView(APIView):
+    GENERIC_SUCCESS_MESSAGE = "Si el correo existe, enviaremos instrucciones para restablecer la contraseña."
+
     def post(self, request):
         email = request.data.get('email')
         if not email:
@@ -30,7 +32,7 @@ class PasswordResetRequestView(APIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({"error": "No existe un usuario con ese email"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": self.GENERIC_SUCCESS_MESSAGE}, status=status.HTTP_200_OK)
 
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
@@ -46,7 +48,7 @@ class PasswordResetRequestView(APIView):
             fail_silently=False,
         )
 
-        return Response({"message": "Correo de recuperación enviado"}, status=status.HTTP_200_OK)
+        return Response({"message": self.GENERIC_SUCCESS_MESSAGE}, status=status.HTTP_200_OK)
 
 
 

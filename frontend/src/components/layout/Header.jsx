@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useCallback, memo } from "react";
-import logo from "../../assets/logo-adt.png";
+import logoHeader from "../../assets/logo-final-header-cropped.png";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
@@ -89,40 +89,22 @@ const Header = () => {
   return (
     <>
       <header className="fixed top-0 w-full z-50 bg-black/92 backdrop-blur-md border-b border-white/8">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-[78px] md:h-[84px] flex items-center justify-between gap-4">
-          <div className="flex items-center gap-6 md:gap-10 min-w-0 flex-1">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-5 lg:px-6 h-[82px] sm:h-[88px] md:h-[94px] flex items-center justify-between gap-2 md:gap-3">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1 overflow-hidden">
             <button
-              className="flex items-stretch min-w-0 gap-0"
+              className="flex items-center min-w-0 flex-1 max-w-[86vw] sm:max-w-[82vw] md:max-w-[72vw] lg:max-w-none"
               onClick={() => navigate("/")}
               aria-label="Ir al inicio"
             >
-              <div className="hidden sm:flex items-center justify-center px-5 md:px-6 border-r border-white/10">
-                <img
-                  src={logo}
-                  alt="ADT"
-                  className="h-6 md:h-7 w-auto object-contain brightness-0 invert shrink-0"
-                  loading="eager"
-                />
-              </div>
-              <div className="flex sm:hidden items-center justify-center">
-                <img
-                  src={logo}
-                  alt="ADT"
-                  className="h-9 w-auto object-contain brightness-0 invert shrink-0"
-                  loading="eager"
-                />
-              </div>
-              <div className="hidden sm:flex flex-col justify-center px-5 md:px-6 text-left">
-                <span className="text-[10px] md:text-[11px] uppercase tracking-[0.34em] text-white/45 font-semibold leading-none">
-                  Adictos al
-                </span>
-                <span className="mt-1 text-sm md:text-base uppercase tracking-[0.28em] text-white font-extrabold leading-none">
-                  Techno
-                </span>
-              </div>
+              <img
+                src={logoHeader}
+                alt="Adictos al Techno"
+                className="block h-3 sm:h-4 md:h-4 lg:h-5 xl:h-5 w-auto max-w-full object-contain opacity-95"
+                loading="eager"
+              />
             </button>
 
-            <nav className="hidden md:flex items-center gap-7 lg:gap-8 uppercase text-[10px] font-bold tracking-[0.18em] text-white/78">
+            <nav className="hidden lg:flex items-center gap-4 xl:gap-5 uppercase text-[9px] font-bold tracking-[0.12em] text-white/78">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
@@ -135,7 +117,7 @@ const Header = () => {
             </nav>
           </div>
 
-          <div className="hidden md:flex items-center gap-4 lg:gap-5 text-white">
+          <div className="hidden lg:flex items-center gap-4 lg:gap-5 text-white shrink-0">
             {user ? (
               <div className="flex items-center gap-3">
                 <UserAvatar user={user} />
@@ -166,14 +148,14 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="flex items-center md:hidden space-x-3 text-white">
+          <div className="flex items-center lg:hidden space-x-2 text-white shrink-0">
             <CartButton
               cart={cart}
               updateQuantity={updateQuantity}
               handleRemoveItem={handleRemoveItem}
             />
             <button
-              className="focus:outline-none"
+              className="focus:outline-none scale-110"
               onClick={toggleMenu}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
@@ -207,7 +189,7 @@ const Header = () => {
         </div>
 
         <div
-          className={`md:hidden w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`lg:hidden w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
             isMenuOpen
               ? "max-h-screen opacity-100 border-t border-white/10"
               : "max-h-0 opacity-0"
@@ -251,7 +233,7 @@ const Header = () => {
           </ul>
         </div>
       </header>
-      <div className="mt-28 md:mt-32"></div>
+      <div className="mt-[108px] sm:mt-[116px] md:mt-[124px] lg:mt-[136px]"></div>
     </>
   );
 };

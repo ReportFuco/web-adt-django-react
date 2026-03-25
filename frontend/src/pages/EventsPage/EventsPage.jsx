@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import Header from "../../components/layout/Header";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
@@ -7,6 +8,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Socialmedia from "../../components/common/socialMedia";
 import NoticiasCarousel from "@/components/common/NoticiasCarousel";
 import { getEvents } from "../../services/api";
+import Seo from "../../components/common/Seo";
 
 function EventsPage() {
   const [eventos, setEventos] = useState(null);
@@ -29,10 +31,9 @@ function EventsPage() {
   useEffect(() => {
     async function loadNews() {
       try {
-        const res = await getEvents();
-        const eventsData = Array.isArray(res?.data) ? res.data : null;
+        const eventsData = await getEvents();
 
-        if (!eventsData) {
+        if (!Array.isArray(eventsData)) {
           throw new Error("Respuesta inválida al cargar eventos");
         }
 
@@ -63,13 +64,31 @@ function EventsPage() {
 
   return (
     <>
+      <Seo
+        title="Eventos techno y música electrónica | Adictos al Techno"
+        description="Agenda de eventos techno, fiestas electrónicas, festivales y fechas destacadas en Chile y el mundo."
+        canonical="https://adictosaltechno.com/eventos"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Eventos techno y música electrónica",
+          url: "https://adictosaltechno.com/eventos",
+          inLanguage: "es-CL",
+        }}
+      />
       <Header />
       <NoticiasCarousel data={destacados} />
       <main className="min-h-screen flex flex-col">
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
-          <h1 className="text-3xl font-extrabold text-center my-4">
-            Últimos Eventos
+          <p className="text-[11px] uppercase tracking-[0.28em] text-white/45 font-semibold text-center mt-4">
+            Agenda techno, fiestas electrónicas y festivales
+          </p>
+          <h1 className="text-3xl font-extrabold text-center my-1">
+            Eventos techno y música electrónica
           </h1>
+          <p className="text-sm md:text-base text-white/60 text-center max-w-3xl px-4 mb-2">
+            Revisa fechas, fiestas, festivales y eventos de techno para seguir la escena electrónica en Chile y el mundo.
+          </p>
 
           <article className="p-0.5 w-full max-w-6xl">
             <EventSection

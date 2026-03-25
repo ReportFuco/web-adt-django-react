@@ -32,7 +32,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 pass
 
         if user is None:
-            raise ValueError("No se pudo autenticar con username ni con email.")
+            raise serializers.ValidationError("Credenciales inválidas.")
 
         attrs["username"] = user.username
         

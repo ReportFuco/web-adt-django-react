@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'django_countries',
     'tinymce',
@@ -165,6 +166,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
 
 SIMPLE_JWT = {
@@ -189,8 +192,8 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOW_CREDENTIALS = True
 
 MERCADO_PAGO = {
-    'ACCESS_TOKEN': 'TEST-5320300230425336-042817-124072ea7eaf42ceef8b35edcba627a0-2414508504',
-    'PUBLIC_KEY': 'TEST-7b6a42e1-ae4c-4cce-ab1c-bbb86325e7a3',
+    'ACCESS_TOKEN': config('MERCADO_PAGO_ACCESS_TOKEN', default=''),
+    'PUBLIC_KEY': config('MERCADO_PAGO_PUBLIC_KEY', default=''),
 }
 
 CSRF_TRUSTED_ORIGINS = [
@@ -238,4 +241,4 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = 'noreply@adictosaltechno.com'
 
 
-FRONTEND_URL = "https://adictosaltechno.com"
+FRONTEND_URL = config('FRONTEND_URL', default='https://adictosaltechno.com')

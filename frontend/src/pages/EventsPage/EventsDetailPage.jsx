@@ -1,16 +1,19 @@
 import { useParams } from "react-router-dom";
-import { getEventBySlug, getEvents } from "../../services/api";
 import { useState, useEffect } from "react";
+import parse from "html-react-parser";
+import { FaCalendarAlt, FaMapMarkerAlt, FaLink } from "react-icons/fa";
+
+import { getEventBySlug, getEvents } from "../../services/api";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import EventSection from "./EventSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
-import parse from "html-react-parser";
-import { FaCalendarAlt, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import Maps from "../../components/features/Maps";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Socialmedia from "../../components/common/socialMedia";
+import Seo from "../../components/common/Seo";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 
 function EventsDetailPage() {
   const { slug } = useParams();
@@ -28,7 +31,7 @@ function EventsDetailPage() {
           setEvento(res.data);
         }
         const resEventos = await getEvents();
-        setEventos(resEventos.data);
+        setEventos(resEventos);
       } catch (error) {
         console.error("Error al cargar el evento:", error);
         setError("Hubo un problema al cargar el evento");
@@ -41,6 +44,13 @@ function EventsDetailPage() {
   if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
   if (!evento || !eventos) return <LoadingSpinner />;
 
+  const eventDescription = (evento.descripcion || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+  const eventUrl = `https://adictosaltechno.com/eventos/${evento.id}/${slug}`;
+
   const formatDate = (dateString) => {
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString("es-ES", options);
@@ -48,6 +58,46 @@ function EventsDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
+      <Seo
+        title={`${evento.nombre} | Evento techno | Adictos al Techno`}
+        description={eventDescription || `Detalles del evento techno ${evento.nombre} en Adictos al Techno.`}
+        canonical={eventUrl}
+        image={evento.imagen}
+        type="article"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: evento.nombre,
+            description: eventDescription || evento.nombre,
+            startDate: evento.fecha_hora,
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            eventStatus: "https://schema.org/EventScheduled",
+            image: evento.imagen ? [evento.imagen] : undefined,
+            url: eventUrl,
+            location: {
+              "@type": "Place",
+              name: evento.lugar,
+              address: evento.direccion || evento.lugar,
+            },
+            organizer: evento.organizacion
+              ? { "@type": "Organization", name: evento.organizacion }
+              : undefined,
+            keywords: Array.isArray(evento.tags)
+              ? evento.tags.map((tag) => tag.nombre ?? tag).join(", ")
+              : "eventos techno, música electrónica",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Inicio", item: "https://adictosaltechno.com/" },
+              { "@type": "ListItem", position: 2, name: "Eventos", item: "https://adictosaltechno.com/eventos" },
+              { "@type": "ListItem", position: 3, name: evento.nombre, item: eventUrl },
+            ],
+          },
+        ]}
+      />
       <Header />
 
       <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
@@ -57,6 +107,7 @@ function EventsDetailPage() {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto w-full px-6 md:px-8 py-12 md:py-16 text-white">
+          <Breadcrumbs items={[{ label: "Inicio", to: "/" }, { label: "Eventos", to: "/eventos" }, { label: evento.nombre }]} />
           <span className="inline-block border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] mb-5">
             Evento
           </span>
@@ -65,6 +116,15 @@ function EventsDetailPage() {
             <span className="flex items-center gap-3"><FaMapMarkerAlt /> {evento.lugar}</span>
             <span className="flex items-center gap-3"><FaCalendarAlt /> {formatDate(evento.fecha_hora)}</span>
           </div>
+          {Array.isArray(evento.tags) && evento.tags.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {evento.tags.map((tag) => (
+                <span key={tag.id ?? tag.nombre ?? tag} className="border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-fuchsia-200">
+                  {tag.nombre ?? tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

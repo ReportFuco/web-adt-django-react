@@ -55,4 +55,4 @@ class ItemPedido(models.Model):
     price = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name} in Order #{self.order.id}"
+        return f"{self.quantity} x {self.product.nombre} in Order #{self.order.id}"

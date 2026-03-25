@@ -1,11 +1,13 @@
+import { useState, useEffect } from "react";
+
 import Header from "../../components/layout/Header";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
 import InterviewSection from "./InterviewSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { useState, useEffect } from "react";
 import { getInterview } from "../../services/api";
 import Socialmedia from "../../components/common/socialMedia";
+import Seo from "../../components/common/Seo";
 
 function InterviewPage() {
   const [interview, setInterview] = useState(null);
@@ -14,10 +16,9 @@ function InterviewPage() {
   useEffect(() => {
     async function loadNews() {
       try {
-        const res = await getInterview();
-        const interviewsData = Array.isArray(res?.data) ? res.data : null;
+        const interviewsData = await getInterview();
 
-        if (!interviewsData) {
+        if (!Array.isArray(interviewsData)) {
           throw new Error("Respuesta inválida al cargar entrevistas");
         }
 
@@ -45,12 +46,30 @@ function InterviewPage() {
 
   return (
     <>
+      <Seo
+        title="Entrevistas de techno y cultura electrónica | Adictos al Techno"
+        description="Entrevistas a DJs, productores y protagonistas de la escena techno y electrónica en Chile y el mundo."
+        canonical="https://adictosaltechno.com/entrevistas"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Entrevistas de techno y cultura electrónica",
+          url: "https://adictosaltechno.com/entrevistas",
+          inLanguage: "es-CL",
+        }}
+      />
       <Header />
       <main className="min-h-screen flex flex-col">
         <section className="md:col-span-4 flex flex-col gap-4 items-center">
-          <h1 className="text-3xl font-extrabold text-center my-4">
-            Últimas entrevistas
+          <p className="text-[11px] uppercase tracking-[0.28em] text-white/45 font-semibold text-center mt-4">
+            Voces de la escena techno y electrónica
+          </p>
+          <h1 className="text-3xl font-extrabold text-center my-1">
+            Entrevistas de techno y cultura electrónica
           </h1>
+          <p className="text-sm md:text-base text-white/60 text-center max-w-3xl px-4 mb-2">
+            Conversaciones con DJs, productores, artistas y protagonistas de la cultura techno en Chile y el circuito internacional.
+          </p>
 
           <article className="p-0.5">
             <InterviewSection
@@ -74,7 +93,6 @@ function InterviewPage() {
 
         <Socialmedia />
         <SpotifyPlaylist />
-
         <Footer />
       </main>
     </>

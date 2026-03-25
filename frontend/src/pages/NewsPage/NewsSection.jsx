@@ -7,6 +7,7 @@ const newsShape = PropTypes.shape({
   slug: PropTypes.string,
   imagen: PropTypes.string,
   destacado: PropTypes.bool,
+  tags: PropTypes.array,
 });
 
 export default function NewsSection({
@@ -47,6 +48,15 @@ export default function NewsSection({
             </div>
             <div className="flex flex-col gap-4">
               <h3 className="text-2xl font-bold leading-tight uppercase" style={{ color: "var(--text)" }}>{news.titulo}</h3>
+              {Array.isArray(news.tags) && news.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {news.tags.slice(0, 3).map((tag) => (
+                    <span key={tag.id ?? tag.nombre ?? tag} className="border border-cyan-400/30 bg-cyan-400/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-cyan-200 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.06)]">
+                      {tag.nombre ?? tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <button className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 group/btn theme-text-soft">
                 Leer más <span className="group-hover/btn:translate-x-2 transition-transform">→</span>
               </button>

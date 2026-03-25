@@ -13,6 +13,8 @@ import NewsSection from "./NewsSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import Socialmedia from "../../components/common/socialMedia";
+import Seo from "../../components/common/Seo";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 
 function NewsDetailPage() {
   const { token } = useAuth();
@@ -47,7 +49,7 @@ function NewsDetailPage() {
           setNoticia(res);
         }
         const resNoticias = await getNoticias();
-        setNoticias(resNoticias.data);
+        setNoticias(resNoticias);
       } catch (error) {
         console.error("Error al cargar las noticias:", error);
       }
@@ -57,8 +59,52 @@ function NewsDetailPage() {
 
   if (!noticia || !noticias) return <LoadingSpinner />;
 
+  const noticiaDescription = (noticia.subtitulo || noticia.contenido || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+  const noticiaUrl = `https://adictosaltechno.com/noticias/${id}/${slug}`;
+
   return (
     <>
+      <Seo
+        title={`${noticia.titulo} | Noticias de techno | Adictos al Techno`}
+        description={noticiaDescription || "Lee la noticia completa en Adictos al Techno."}
+        canonical={noticiaUrl}
+        image={noticia.imagen}
+        type="article"
+        schema={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: noticia.titulo,
+            description: noticiaDescription || noticia.titulo,
+            image: noticia.imagen ? [noticia.imagen] : undefined,
+            datePublished: noticia.fecha_publicacion,
+            author: noticia.autor_username ? [{ '@type': 'Person', name: noticia.autor_username }] : undefined,
+            mainEntityOfPage: noticiaUrl,
+            keywords: Array.isArray(noticia.tags) ? noticia.tags.map((tag) => tag.nombre ?? tag).join(', ') : 'techno, música electrónica',
+            publisher: {
+              '@type': 'Organization',
+              name: 'Adictos al Techno',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://adictosaltechno.com/assets/logo-adt-o1knstV1.png'
+              }
+            }
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://adictosaltechno.com/' },
+              { '@type': 'ListItem', position: 2, name: 'Noticias', item: 'https://adictosaltechno.com/noticias' },
+              { '@type': 'ListItem', position: 3, name: noticia.titulo, item: noticiaUrl }
+            ]
+          }
+        ]}
+      />
       <Header />
 
       <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
@@ -68,6 +114,7 @@ function NewsDetailPage() {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto w-full px-6 md:px-8 py-12 md:py-16 text-white">
+          <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Noticias', to: '/noticias' }, { label: noticia.titulo }]} />
           <span className="inline-block border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] mb-5">
             Actualidad
           </span>
@@ -85,6 +132,15 @@ function NewsDetailPage() {
               day: "numeric",
             })}
           </p>
+          {Array.isArray(noticia.tags) && noticia.tags.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {noticia.tags.map((tag) => (
+                <span key={tag.id ?? tag.nombre ?? tag} className="border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-cyan-200">
+                  {tag.nombre ?? tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

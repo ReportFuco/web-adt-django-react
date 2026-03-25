@@ -17,7 +17,9 @@ export const allowedAttributes = {
   table: ["border", "cellpadding", "cellspacing"],
 };
 
-export const sanitizeHTML = (dirtyHTML, baseUrl = 'https://api.adictosaltechno.com') => {
+import { API_ORIGIN } from "../config/api";
+
+export const sanitizeHTML = (dirtyHTML, baseUrl = API_ORIGIN) => {
   // Primero sanitiza el HTML
   const sanitized = DOMPurify.sanitize(dirtyHTML, {
     ALLOWED_TAGS: allowedTags,

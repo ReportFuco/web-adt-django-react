@@ -1,18 +1,21 @@
+import threading
+
+from django.core.cache import cache
+from django.db.models import F
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.core.cache import cache
-from rest_framework import viewsets, permissions
-from .serializers import *
+from rest_framework import permissions, viewsets
+from rest_framework.response import Response
+
 from .models import *
+from .serializers import *
 from .utils import enviar_whatsapp_contacto
-import threading
 
 CACHE_TTL = 60 * 5  # 5 minutos
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
-@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class NoticiaViewSet(viewsets.ModelViewSet):
-    queryset = Noticia.objects.all().order_by('-fecha_publicacion')
+    queryset = Noticia.objects.select_related('autor').prefetch_related('tags').all().order_by('-fecha_publicacion')
     serializer_class = NoticiaSerializer
     lookup_field = "slug"
 
@@ -21,6 +24,13 @@ class NoticiaViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Noticia.objects.filter(pk=instance.pk).update(vistas=F('vistas') + 1)
+        instance.refresh_from_db(fields=['vistas'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
         serializer.save()
         cache.clear()
@@ -35,9 +45,8 @@ class NoticiaViewSet(viewsets.ModelViewSet):
 
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
-@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class EventoViewSet(viewsets.ModelViewSet):
-    queryset = Evento.objects.all().order_by('-fecha_hora')
+    queryset = Evento.objects.prefetch_related('tags').all().order_by('-fecha_hora')
     serializer_class = EventoSerializer
     lookup_field = "slug"
 
@@ -45,6 +54,13 @@ class EventoViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Evento.objects.filter(pk=instance.pk).update(vistas=F('vistas') + 1)
+        instance.refresh_from_db(fields=['vistas'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -59,8 +75,9 @@ class EventoViewSet(viewsets.ModelViewSet):
         cache.clear()
 
 
+@method_decorator(cache_page(CACHE_TTL), name='list')
 class EntrevistaViewSet(viewsets.ModelViewSet):
-    queryset = Entrevista.objects.all().order_by('-fecha_publicacion')
+    queryset = Entrevista.objects.prefetch_related('tags').all().order_by('-fecha_publicacion')
     serializer_class = EntrevistaSerializer
     lookup_field = "slug"
 
@@ -68,6 +85,13 @@ class EntrevistaViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Entrevista.objects.filter(pk=instance.pk).update(vistas=F('vistas') + 1)
+        instance.refresh_from_db(fields=['vistas'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 class AnuncioViewSet(viewsets.ModelViewSet):
     queryset = Anuncio.objects.all()

@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { getLogin } from "../services/api";
 import { jwtDecode } from "jwt-decode";
+
+import { clearAuthStorage, ensureValidAccessToken, getLogin } from "../services/api";
 
 export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -9,13 +10,38 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("accessToken") || null);
   const [user, setUser] = useState(() => {
     const storedToken = localStorage.getItem("accessToken");
-    return storedToken ? jwtDecode(storedToken) : null;
+    try {
+      return storedToken ? jwtDecode(storedToken) : null;
+    } catch {
+      return null;
+    }
   });
+
+  useEffect(() => {
+    const restoreSession = async () => {
+      const validToken = await ensureValidAccessToken();
+      if (validToken) {
+        setToken(validToken);
+        setUser(jwtDecode(validToken));
+        return;
+      }
+      setToken(null);
+      setUser(null);
+    };
+
+    restoreSession();
+  }, []);
 
   useEffect(() => {
     if (token) {
       localStorage.setItem("accessToken", token);
-      setUser(jwtDecode(token));
+      try {
+        setUser(jwtDecode(token));
+      } catch {
+        clearAuthStorage();
+        setToken(null);
+        setUser(null);
+      }
     } else {
       localStorage.removeItem("accessToken");
       setUser(null);
@@ -34,8 +60,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    clearAuthStorage();
   };
 
   return (

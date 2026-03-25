@@ -1,11 +1,16 @@
-from rest_framework.decorators import api_view, permission_classes
-from .serializers import CategoriaSerializer, ProductoSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets, permissions
-from rest_framework.response import Response
-from .models import Categoria, Producto
-from django.conf import settings
+import logging
+
 import mercadopago
+from django.conf import settings
+from rest_framework import permissions, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from .models import Categoria, Producto
+from .serializers import CategoriaSerializer, ProductoSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
@@ -15,18 +20,18 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 
 class ProductoViewSet(viewsets.ModelViewSet):
-    queryset = Producto.objects.all()
+    queryset = Producto.objects.select_related("categoria").all()
     serializer_class = ProductoSerializer
     lookup_field = "slug"
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 from django.shortcuts import get_object_or_404
 from .models import Producto  # Asegúrate de importar tu modelo
@@ -40,7 +45,11 @@ def crear_preferencia_pago(request):
         if not items_carrito:
             return Response({"error": "El carrito está vacío"}, status=400)
 
-        sdk = mercadopago.SDK(settings.MERCADO_PAGO['ACCESS_TOKEN'])
+        access_token = settings.MERCADO_PAGO.get('ACCESS_TOKEN')
+        if not access_token:
+            return Response({"error": "Mercado Pago no está configurado"}, status=503)
+
+        sdk = mercadopago.SDK(access_token)
         preferencia = {
             "items": [],
             "payer": {
@@ -83,7 +92,7 @@ def crear_preferencia_pago(request):
             })
 
         respuesta = sdk.preference().create(preferencia)
-        print("Respuesta de MP:", respuesta)
+        logger.info("Respuesta de Mercado Pago recibida", extra={"has_response": bool(respuesta and "response" in respuesta)})
         if not respuesta or "response" not in respuesta:
             return Response(
                 {"error": "Error al conectar con Mercado Pago"},

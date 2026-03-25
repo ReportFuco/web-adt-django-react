@@ -46,6 +46,8 @@ class Evento(ImagenOptimizadaMixin, models.Model):
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
     direccion = models.CharField(max_length=100, null=True)
     organizacion = models.CharField(max_length=50, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    vistas = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.nombre
@@ -71,6 +73,7 @@ class Entrevista(ImagenOptimizadaMixin, models.Model):
     periodista = models.CharField(max_length=255)
     tags = models.ManyToManyField('Tag', blank=True)
     destacado = models.BooleanField(default=False)
+    vistas = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Entrevista con {self.artista} - {self.fecha_publicacion}"

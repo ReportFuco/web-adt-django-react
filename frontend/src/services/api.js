@@ -1,25 +1,88 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
-const apiBaseUrl = "https://api.adictosaltechno.com/api/";
+import { API_BASE_URL } from "../config/api";
 
 const api = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
+
+const normalizeListResponse = (response) => {
+  const payload = response?.data;
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.results)) return payload.results;
+  return [];
+};
+
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  try {
+    const { exp } = jwtDecode(token);
+    if (!exp) return true;
+    return exp * 1000 <= Date.now() + 5000;
+  } catch {
+    return true;
+  }
+};
+
+export const clearAuthStorage = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+};
+
+export const refreshAccessToken = async () => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken || isTokenExpired(refreshToken)) {
+    clearAuthStorage();
+    return null;
+  }
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}token/refresh/`, {
+      refresh: refreshToken,
+    });
+    const accessToken = response.data?.access;
+    if (!accessToken) {
+      clearAuthStorage();
+      return null;
+    }
+    localStorage.setItem("accessToken", accessToken);
+    return accessToken;
+  } catch {
+    clearAuthStorage();
+    return null;
+  }
+};
+
+export const ensureValidAccessToken = async () => {
+  const token = localStorage.getItem("accessToken");
+  if (token && !isTokenExpired(token)) {
+    return token;
+  }
+  return refreshAccessToken();
+};
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("accessToken");
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+api.interceptors.request.use(async (config) => {
+  const token = await ensureValidAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      console.warn("Token expirado o inválido. Redirigiendo al inicio...");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      window.location.href = "/";
+      console.warn("Token expirado o inválido. Cerrando sesión...");
+      clearAuthStorage();
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -71,7 +134,7 @@ export const postContact = async (payload) => {
 
 export const getNoticia = async (slug) => {
   try {
-    const response = await axios.get(`${apiBaseUrl}noticias/${slug}/`, {
+    const response = await axios.get(`${API_BASE_URL}noticias/${slug}/`, {
       withCredentials: true,
     });
     return response.data;
@@ -84,7 +147,7 @@ export const getNoticia = async (slug) => {
 export const getNoticias = async () => {
   try {
     const response = await api.get("noticias/");
-    return response;
+    return normalizeListResponse(response);
   } catch {
     console.error("Error al obtener las noticias");
     return [];
@@ -94,7 +157,7 @@ export const getNoticias = async () => {
 export const getInterview = async () => {
   try {
     const response = await api.get("entrevistas/");
-    return response;
+    return normalizeListResponse(response);
   } catch {
     console.error("Error al obtener las entrevistas");
     return [];
@@ -150,9 +213,10 @@ export const registerUser = async (userData) => {
 export const getEvents = async () => {
   try {
     const response = await api.get("eventos/");
-    return response;
+    return normalizeListResponse(response);
   } catch (error) {
     console.error("Error al obtener los datos", error);
+    return [];
   }
 };
 
