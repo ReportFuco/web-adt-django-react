@@ -17,7 +17,26 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["*", "172.20.10.5"]
+ALLOWED_HOSTS = [
+    'adictosaltechno.com',
+    'www.adictosaltechno.com',
+    'api.adictosaltechno.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURE_SSL_REDIRECT = not DEBUG  
+
+# Cookies seguras (solo HTTPS)
+SESSION_COOKIE_SECURE = not DEBUG  
+CSRF_COOKIE_SECURE = not DEBUG  
+
+SECURE_HSTS_SECONDS = 30 * 24 * 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True    
+
 
 # Application definition
 
@@ -134,9 +153,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://209.126.1.114",
+    "https://adictosaltechno.com",
     "http://localhost",
-    
+    "https://n8n.fucolabs.dev",
+    "http://209.126.1.114:5173"
 ]
 
 STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
@@ -173,7 +193,11 @@ MERCADO_PAGO = {
     'PUBLIC_KEY': 'TEST-7b6a42e1-ae4c-4cce-ab1c-bbb86325e7a3',
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://172.20.10.5:5173"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://adictosaltechno.com",
+    "https://www.adictosaltechno.com",
+    "https://api.adictosaltechno.com",
+]
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 500,
@@ -184,3 +208,34 @@ TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements': 'iframe[src|width|height|frameborder|allowfullscreen]',
     'valid_children': '+body[iframe]',
 }
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+        },
+        "TIMEOUT": 60 * 15,
+    }
+}
+
+EVOLUTION_API_URL=config("EVOLUTION_API_URL")
+
+EVOLUTION_API_TOKEN= config("EVOLUTION_API_TOKEN")
+
+ADMIN_NUMBER=config("ADMIN_NUMBER")
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = 'noreply@adictosaltechno.com'
+
+
+FRONTEND_URL = "https://adictosaltechno.com"

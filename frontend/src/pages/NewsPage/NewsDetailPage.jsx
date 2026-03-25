@@ -12,6 +12,7 @@ import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import NewsSection from "./NewsSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
+import Socialmedia from "../../components/common/socialMedia";
 
 function NewsDetailPage() {
   const { token } = useAuth();
@@ -45,122 +46,93 @@ function NewsDetailPage() {
           const res = await getNoticia(slug);
           setNoticia(res);
         }
-
         const resNoticias = await getNoticias();
         setNoticias(resNoticias.data);
       } catch (error) {
         console.error("Error al cargar las noticias:", error);
-        setError("Hubo un problema al cargar las noticias");
       }
     }
-
     loadNews();
   }, [slug]);
 
-  if (!noticia || !noticias) {
-    return <LoadingSpinner />;
-  }
+  if (!noticia || !noticias) return <LoadingSpinner />;
 
   return (
     <>
       <Header />
-      {/* Sección de Encabezado */}
-      <section className="relative flex flex-col lg:flex-row items-center lg:items-stretch bg-black text-white p-6 lg:p-12">
-        <div className="lg:w-1/2 flex flex-col justify-center px-6">
-          <p className="uppercase text-sm font-semibold text-gray-400">
-            Actualidad
-          </p>
-          <h1 className="text-4xl font-bold mb-4">{noticia.titulo}</h1>
-          <p className="text-lg italic text-gray-300">{noticia.subtitulo}</p>
-          <p className="text-gray-400">
-            {new Date(noticia.fecha_publicacion).toLocaleDateString()}
-          </p>
+
+      <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
+        <div className="absolute inset-0">
+          <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover grayscale opacity-40 brightness-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/60 to-black/20"></div>
         </div>
 
-        {noticia.imagen && (
-          <div className="aspect-[4/3] w-full lg:w-[500px] overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={noticia.imagen}
-              alt={noticia.titulo}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+        <div className="relative z-20 max-w-7xl mx-auto w-full px-6 md:px-8 py-12 md:py-16 text-white">
+          <span className="inline-block border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] mb-5">
+            Actualidad
+          </span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[0.94] tracking-tight max-w-5xl mb-5">
+            {noticia.titulo}
+          </h1>
+          {noticia.subtitulo && (
+            <p className="text-lg md:text-xl text-white/70 max-w-3xl mb-4">{noticia.subtitulo}</p>
+          )}
+          <p className="text-[11px] uppercase tracking-[0.26em] text-white/50 font-bold">
+            {new Date(noticia.fecha_publicacion).toLocaleDateString("es-ES", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
       </section>
 
-      {/* Contenido Principal */}
-      <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* --- Artículo --- */}
-        <article className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg prose prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-lg [&_iframe]:my-4">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_380px] gap-8">
+        <article className="border border-white/10 bg-[#101010] p-6 md:p-10 text-white/85 prose prose-invert prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:my-6 [&_iframe]:border [&_iframe]:border-white/10">
           {parse(cleanContent)}
-          <p className="mt-4 text-sm text-gray-600 overflow-y-auto">
-            Fuente: {noticia.fuente}
-          </p>
         </article>
 
-        {/* --- Columna derecha (solo escritorio) --- */}
-        <div className="lg:grid gap-8 lg:grid-rows-[auto_auto_1fr]">
-          {/* Comentarios (siempre visible) */}
-          <aside className="bg-white p-6 rounded-lg shadow-lg flex flex-col h-[550px]">
-            <h2 className="text-xl font-semibold mb-4 text-neutral-950 text-center">
-              Comentarios
-            </h2>
-            <div className="flex-grow overflow-y-auto">
+        <div className="flex flex-col gap-8">
+          <aside className="border border-white/10 bg-[#101010] text-white p-5 md:p-6 flex flex-col max-h-[620px]">
+            <h2 className="text-2xl font-bold uppercase tracking-tight mb-4">Comentarios</h2>
+            <div className="flex-grow overflow-y-auto mb-4 pr-1">
               <Comments id={id} key={refresh} />
             </div>
             {token ? (
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex items-center gap-2 mt-4"
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2 border-t border-white/10 pt-4">
                 <input
                   type="text"
                   placeholder="Escribe un comentario..."
-                  className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                  className="flex-1 text-white bg-black border border-white/15 px-4 py-3 focus:outline-none focus:border-white text-sm"
                   {...register("comments", {
                     required: "Debes escribir algo para comentar",
                   })}
                 />
-                <button type="submit" className="text-black text-2xl p-2">
+                <button type="submit" className="text-black text-xl p-3 bg-white hover:bg-white/90 transition-colors">
                   <IoSend />
                 </button>
-                {errors.comments && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.comments.message}
-                  </p>
-                )}
               </form>
             ) : (
-              <p className="text-center text-sm text-black mt-4">
-                Debes{" "}
-                <Link
-                  to="/login"
-                  className="text-blue-500 underline hover:text-blue-700"
-                >
-                  iniciar sesión
-                </Link>{" "}
-                para comentar.
+              <p className="text-sm text-white/60 mt-2 uppercase tracking-[0.16em]">
+                Debes <Link to="/login" className="text-white underline">iniciar sesión</Link> para comentar.
               </p>
             )}
+            {errors.comments && <p className="text-red-400 text-xs mt-2">{errors.comments.message}</p>}
           </aside>
-          <div className="bg-yellow-100 p-4 rounded-lg mt-8 lg:mt-0 h-[300px]">
-            <p className="text-center font-medium">Publicidad</p>
+
+          <div className="border border-white/10 bg-[#0f0f0f] p-6 text-white/50 uppercase tracking-[0.24em] text-xs font-bold text-center">
+            Espacio editorial / publicidad
           </div>
 
-          <NewsSection
-            noticias={noticias}
-            gridCols="grid-cols-1"
-            limit={3}
-            destacadas={true}
-            cardHeight="h-64"
-          />
+          <div className="border border-white/10 bg-[#0f0f0f] p-4 md:p-5">
+            <NewsSection noticias={noticias} gridCols="grid-cols-1" limit={3} destacadas={true} cardHeight="h-[22rem]" />
+          </div>
         </div>
       </div>
 
-      <div>
-        <SpotifyPlaylist />
-      </div>
-
+      <Socialmedia />
+      <SpotifyPlaylist />
       <Footer />
     </>
   );

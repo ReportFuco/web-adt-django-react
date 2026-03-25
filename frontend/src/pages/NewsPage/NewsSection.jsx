@@ -1,4 +1,13 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+
+const newsShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  titulo: PropTypes.string,
+  slug: PropTypes.string,
+  imagen: PropTypes.string,
+  destacado: PropTypes.bool,
+});
 
 export default function NewsSection({
   noticias = [],
@@ -6,49 +15,53 @@ export default function NewsSection({
   limit = 4,
   gridCols = "md:grid-cols-4",
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
 }) {
   const navigate = useNavigate();
 
   const filteredNews = noticias
-    .filter((news) =>
-      destacadas ? news.destacado === true : news.destacado === false
-    )
+    .filter((news) => (destacadas ? news.destacado === true : news.destacado === false))
     .slice(0, limit);
 
   return (
-    <div className="max-w-6xl px-1 py-1">
-      {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
-        {destacadas ? "Noticias Destacadas" : "Más Noticias"}
-        <span className="flex-1 h-[1px] bg-black ml-2"></span>
-      </h2>
+    <div className="max-w-7xl px-0 py-0" style={{ color: "var(--text)" }}>
+      <div className="section-title mb-10">
+        <div>
+          <h2 className="section-title-heading">{destacadas ? "Noticias Recientes" : "Más Noticias"}</h2>
+          <p className="section-title-kicker">Latest from the scene</p>
+        </div>
+      </div>
 
-      <div className={`grid ${gridCols} gap-2`}>
+      <div className={`editorial-grid ${gridCols}`}>
         {filteredNews.map((news) => (
-          <div
+          <article
             key={news.id}
-            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            className={`editorial-card p-6 md:p-8 flex flex-col gap-6 group ${cardHeight}`}
             onClick={() => {
               navigate(`/noticias/${news.id}/${news.slug}`);
               window.scrollTo(0, 0);
             }}
           >
-            <img
-              src={news.imagen}
-              alt={news.titulo}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-
-            <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-base font-semibold leading-tight drop-shadow-md">
-                {news.titulo.slice(0, 50)}
-              </h3>
+            <div className="relative flex-1 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+              <img src={news.imagen} alt={news.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute top-4 left-4 theme-panel-strong text-[10px] font-bold px-3 py-1 uppercase tracking-tight">Noticia</div>
             </div>
-          </div>
+            <div className="flex flex-col gap-4">
+              <h3 className="text-2xl font-bold leading-tight uppercase" style={{ color: "var(--text)" }}>{news.titulo}</h3>
+              <button className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 group/btn theme-text-soft">
+                Leer más <span className="group-hover/btn:translate-x-2 transition-transform">→</span>
+              </button>
+            </div>
+          </article>
         ))}
       </div>
     </div>
   );
 }
+
+NewsSection.propTypes = {
+  noticias: PropTypes.arrayOf(newsShape),
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  cardHeight: PropTypes.string,
+};

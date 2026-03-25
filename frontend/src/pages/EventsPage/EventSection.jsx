@@ -1,55 +1,106 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-export default function NewsSection({
+const eventShape = PropTypes.shape({
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  nombre: PropTypes.string,
+  slug: PropTypes.string,
+  imagen: PropTypes.string,
+  fecha_hora: PropTypes.string,
+  lugar: PropTypes.string,
+  destacado: PropTypes.bool,
+});
+
+export default function EventSection({
   event = [],
   destacadas = false,
   limit = 4,
   gridCols = "md:grid-cols-4",
-  showExcerpt = true,
   cardHeight = "h-48",
-  titleSize = destacadas ? "text-2xl" : "text-xl",
 }) {
   const navigate = useNavigate();
 
+  const formatDate = (dateString) => {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("es-ES", options);
+  };
+
   const filteredEvents = event
-    .filter((news) => (destacadas ? news.destacado === true : news.destacado === false))
+    .filter((item) => (destacadas ? item.destacado === true : item.destacado === false))
     .slice(0, limit);
 
-  return (
-    <div className="max-w-6xl px-1 py-1">
-      {/* Título condicional */}
-      <h2 className={`flex items-center gap-2 font-bold mb-2 ${titleSize}`}>
-        {destacadas ? "Eventos Destacados" : "Más Eventos"}
-        <span className="flex-1 h-[1px] bg-black ml-2"></span>
-      </h2>
+  const rowMode = cardHeight.includes("11rem") || cardHeight.includes("12rem");
 
-      <div className={`grid ${gridCols} gap-2`}>
-        {filteredEvents.map((events) => (
+  if (rowMode) {
+    return (
+      <div className="space-y-px editorial-grid">
+        {filteredEvents.map((item) => (
           <div
-            key={events.id}
-            className={`relative group overflow-hidden shadow-md shadow-neutral-700 cursor-pointer m-0.5 ${cardHeight} rounded-2xl`}
+            key={item.id}
+            className="grid grid-cols-1 md:grid-cols-4 items-center py-8 px-6 group cursor-pointer theme-panel-strong hover:opacity-90 transition-all"
             onClick={() => {
-              navigate(`/eventos/${events.id}/${events.slug}`);
+              navigate(`/eventos/${item.id}/${item.slug}`);
               window.scrollTo(0, 0);
             }}
           >
-            <img
-              src={events.imagen}
-              alt={events.nombre}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-4 w-full text-white">
-              <h3 className="text-base font-semibold leading-tight drop-shadow-md">
-                {events.nombre}
-              </h3>
-              <p className="text-xs opacity-80 mt-1">
-                {new Date(events.fecha_hora).toLocaleDateString()}
-              </p>
+            <div className="text-3xl font-bold tracking-tighter mb-4 md:mb-0" style={{ color: "var(--text)" }}>
+              {new Date(item.fecha_hora).toLocaleDateString("es-ES", { month: "short", day: "2-digit" }).toUpperCase()}
+            </div>
+            <div className="md:col-span-2">
+              <h4 className="text-2xl font-bold uppercase" style={{ color: "var(--text)" }}>{item.nombre}</h4>
+              <p className="text-sm uppercase tracking-widest mt-1 theme-text-muted">{item.lugar || formatDate(item.fecha_hora)}</p>
+            </div>
+            <div className="flex justify-end gap-6 items-center mt-6 md:mt-0">
+              <span className="text-[10px] font-bold border px-3 py-1 uppercase theme-button-secondary">Evento</span>
+              <span style={{ color: "var(--text)" }}>→</span>
             </div>
           </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl px-0 py-0" style={{ color: "var(--text)" }}>
+      <div className="section-title mb-10">
+        <div>
+          <h2 className="section-title-heading">{destacadas ? "Eventos Destacados" : "Más Eventos"}</h2>
+          <p className="section-title-kicker">Calendar / clubs / live moments</p>
+        </div>
+      </div>
+
+      <div className={`editorial-grid ${gridCols}`}>
+        {filteredEvents.map((item) => (
+          <article
+            key={item.id}
+            className={`editorial-card p-6 md:p-8 flex flex-col gap-6 group ${cardHeight}`}
+            onClick={() => {
+              navigate(`/eventos/${item.id}/${item.slug}`);
+              window.scrollTo(0, 0);
+            }}
+          >
+            <div className="relative flex-1 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+              <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute top-4 left-4 theme-panel-strong text-[10px] font-bold px-3 py-1 uppercase tracking-tight">Evento</div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <p className="text-[10px] uppercase tracking-widest theme-text-muted">{formatDate(item.fecha_hora)}</p>
+              <h3 className="text-2xl font-bold leading-tight uppercase" style={{ color: "var(--text)" }}>{item.nombre}</h3>
+              <button className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 group/btn theme-text-soft">
+                Ver evento <span className="group-hover/btn:translate-x-2 transition-transform">→</span>
+              </button>
+            </div>
+          </article>
         ))}
       </div>
     </div>
   );
 }
+
+EventSection.propTypes = {
+  event: PropTypes.arrayOf(eventShape),
+  destacadas: PropTypes.bool,
+  limit: PropTypes.number,
+  gridCols: PropTypes.string,
+  cardHeight: PropTypes.string,
+};

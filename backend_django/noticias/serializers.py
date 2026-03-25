@@ -1,4 +1,4 @@
-from .models import Noticia, Evento, Anuncio, Comentario, Tag, Entrevista
+from .models import *
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -42,3 +42,13 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+
+class ContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacto
+        fields = "__all__"
+
+class FranjaSuperiorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FranjaSuperior
+        fields = "__all__"

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://209.126.1.114/api/";
+const baseURL = "https://api.adictosaltechno.com/api/";
 
 export const api = axios.create({
   baseURL: baseURL,

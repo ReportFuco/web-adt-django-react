@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const apiBaseUrl = "http://209.126.1.114/api/";
+const apiBaseUrl = "https://api.adictosaltechno.com/api/";
 
-export const api = axios.create({
+const api = axios.create({
   baseURL: apiBaseUrl,
   headers: { "Content-Type": "application/json" },
 });
@@ -12,12 +12,34 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.warn("Token expirado o inválido. Redirigiendo al inicio...");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const register = async (userData) => {
   try {
     const response = await api.post("register/", userData);
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, error: error.response.data };
+  }
+};
+
+export const franjaMensaje = async () => {
+  try {
+    const response = await api.get("franjasuperior/1/");
+    return response.data;
+  } catch (e) {
+    console.error("Error al tener la franja", e);
   }
 };
 
@@ -41,6 +63,10 @@ export const getLogin = async (identifier, password) => {
       error: error.response?.data?.detail || "Error en el login",
     };
   }
+};
+
+export const postContact = async (payload) => {
+  return api.post("contacto/", payload);
 };
 
 export const getNoticia = async (slug) => {
@@ -78,7 +104,7 @@ export const getInterview = async () => {
 export const getInterviewBySlug = async (slug) => {
   try {
     const response = await api.get(`entrevistas/${slug}`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error al extraer la entrevista", error);
   }

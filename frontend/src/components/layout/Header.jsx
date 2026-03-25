@@ -1,40 +1,65 @@
 import { useNavigate, Link } from "react-router-dom";
-import React, { useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import logo from "../../assets/logo-adt.png";
+import logoWordmark from "../../assets/logo-adt-white.jpg";
 import RedesSociales from "../common/RedesSociales";
 import Marquee from "react-fast-marquee";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import CartButton from "../features/store/CartButton";
-
-const menuItems = [
-  { label: "Noticias", path: "/noticias" },
-  { label: "Entrevistas", path: "/entrevistas" },
-  { label: "Eventos", path: "/eventos" },
-  { label: "Contacto", path: "/contacto" },
-  { label: "Tienda", path: "/tienda" },
-];
-
-const MarqueeText = memo(() => (
-  <Marquee speed={75} className="py-1.5 text-white">
-    🔥 Ultimas novedades: Nuevo evento de musica techno en santiago •••
-    Descuento del 20% en productos seleccionados ••• 🎶 Nueva playlist
-    disponible ••• Noticias en el mundo del techno •••
-  </Marquee>
-));
-
-const UserAvatar = memo(({ user }) => (
-  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-900 text-white font-bold group-hover:bg-purple-700 transition-colors">
-    {user.username.charAt(0).toUpperCase()}
-  </div>
-));
+import { franjaMensaje } from "../../services/api";
 
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { cart, removeFromCart, updateQuantity } = useCart();
+  const [franja, setFranja] = useState(null);
+
+  const menuItems = [
+    { label: "Eventos", path: "/eventos" },
+    { label: "Noticias", path: "/noticias" },
+    { label: "Entrevistas", path: "/entrevistas" },
+    { label: "Tienda", path: "/tienda" },
+  ];
+
+  const UserAvatar = memo(({ user }) => (
+    <div className="flex items-center justify-center w-8 h-8 border border-white/20 bg-white text-black font-bold">
+      {user.username.charAt(0).toUpperCase()}
+    </div>
+  ));
+
+  useEffect(() => {
+    const loadFranja = async () => {
+      try {
+        const res = await franjaMensaje();
+        if (res) setFranja(res);
+      } catch (e) {
+        console.error("Error al obtener la franja:", e);
+        setFranja({ contenido: "Adictos al Techno / Cultura underground / Noticias / Eventos" });
+      }
+    };
+
+    loadFranja();
+  }, []);
+
+  const MarqueeText = memo(() => (
+    <Marquee speed={45} className="py-2 text-white/70 uppercase tracking-[0.22em] text-[10px] font-bold">
+      {franja?.url ? (
+        <a
+          href={franja.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="no-underline px-6 hover:text-white transition-colors"
+        >
+          {franja?.contenido || "Cargando..."}
+        </a>
+      ) : (
+        <span className="px-6">{franja?.contenido || "Cargando..."}</span>
+      )}
+    </Marquee>
+  ));
 
   const handleLogout = useCallback(async () => {
     await logout();
@@ -59,159 +84,114 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full bg-black/97 backdrop-blur-lg text-white p-2 z-50 h-16 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center h-full px-4">
-          <div className="flex items-center h-full">
-            <img
-              src={logo}
-              alt="Logo"
-              className="h-20 cursor-pointer transition-transform hover:scale-105"
-              onClick={() => navigate("/")}
-              loading="lazy"
-            />
+      <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-6 md:gap-10 min-w-0 flex-1">
+            <button className="flex items-center min-w-0 gap-3" onClick={() => navigate("/")} aria-label="Ir al inicio">
+              <img
+                src={logo}
+                alt="ADT"
+                className="h-10 md:h-11 w-auto object-contain brightness-0 invert shrink-0"
+                loading="eager"
+              />
+              <div className="hidden sm:flex items-center h-10 md:h-11 overflow-hidden border-l border-white/15 pl-3">
+                <img
+                  src={logoWordmark}
+                  alt="Adictos al Techno"
+                  className="h-16 md:h-20 w-auto object-contain brightness-[1.8] contrast-[1.15]"
+                  loading="eager"
+                />
+              </div>
+            </button>
+
+            <nav className="hidden md:flex items-center gap-6 uppercase text-[11px] font-bold tracking-[0.22em] text-white/80">
+              {menuItems.map((item) => (
+                <Link key={item.path} to={item.path} className="hover:text-white transition-colors whitespace-nowrap">
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           </div>
 
-          {/* Menú desktop */}
-          <nav className="hidden md:flex space-x-4">
-            <ul className="flex space-x-4 items-center">
-              {menuItems.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-purple-400 hover:bg-gray-900 transition-all duration-200 active:scale-95"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-
-              {user ? (
-                <li className="relative group">
-                  <div className="flex items-center gap-2 pl-4">
-                    <UserAvatar user={user} />
-                    <span className="font-medium text-gray-200 group-hover:text-purple-300 transition-colors">
-                      {user.username}
-                    </span>
-                    <button
-                      onClick={handleLogout}
-                      className="ml-2 px-3 py-1.5 text-sm text-gray-300 hover:text-white hover:bg-purple-900 rounded-md transition-all duration-200 active:scale-95"
-                    >
-                      Salir
-                    </button>
-                  </div>
-                </li>
-              ) : (
-                <li>
-                  <Link
-                    to="/login"
-                    className="px-3 py-1.5 rounded-md font-medium text-white hover:text-purple-400 hover:bg-gray-900 transition-all duration-200 active:scale-95"
-                  >
-                    Iniciar sesión
-                  </Link>
-                </li>
-              )}
-            </ul>
-            <CartButton
-              cart={cart}
-              updateQuantity={updateQuantity}
-              handleRemoveItem={handleRemoveItem}
-            />
-          </nav>
-
-          {/* Botón del menú móvil */}
-          <div className="flex items-center md:hidden space-x-4">
-            {/* Botón del carrito para móvil (sin versión móvil especial) */}
-            <CartButton
-              cart={cart}
-              updateQuantity={updateQuantity}
-              handleRemoveItem={handleRemoveItem}
-            />
-
-            {/* Botón del menú móvil */}
-            <button
-              className="text-white focus:outline-none hover:text-purple-400 transition-colors"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-              aria-expanded={isMenuOpen}
-            >
-              <svg
-                className={`w-6 h-6 transition-transform duration-300 ${
-                  isMenuOpen ? "rotate-90" : "rotate-0"
-                }`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+          <div className="hidden md:flex items-center gap-5 text-white">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <UserAvatar user={user} />
+                <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">{user.username}</span>
+                <button
+                  onClick={handleLogout}
+                  className="text-[10px] uppercase tracking-[0.22em] border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all"
+                >
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-white text-black px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] hover:bg-white/90 transition-all"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                Login
+              </Link>
+            )}
+            <CartButton cart={cart} updateQuantity={updateQuantity} handleRemoveItem={handleRemoveItem} />
+          </div>
+
+          <div className="flex items-center md:hidden space-x-3 text-white">
+            <CartButton cart={cart} updateQuantity={updateQuantity} handleRemoveItem={handleRemoveItem} />
+            <button className="focus:outline-none" onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
+              <svg className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? "rotate-90" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Menú móvil desplegable (sin el carrito dentro) */}
+        <div className="border-t border-white/10 bg-black/95">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-6">
+            <div className="flex-1 overflow-hidden">
+              <MarqueeText />
+            </div>
+            <div className="hidden sm:flex items-center gap-3 border-l border-white/10 pl-4 py-2">
+              <RedesSociales classNameDiseño="" dark />
+            </div>
+          </div>
+        </div>
+
         <div
-          className={`md:hidden absolute top-full left-0 w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
-            isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+          className={`md:hidden w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
+            isMenuOpen ? "max-h-screen opacity-100 border-t border-white/10" : "max-h-0 opacity-0"
           }`}
-          style={{ zIndex: 49 }}
         >
-          <ul className="flex flex-col py-3 border-t border-gray-700">
+          <ul className="flex flex-col py-3 uppercase tracking-[0.18em] text-[11px] text-white/80 font-bold">
             {menuItems.map((item) => (
               <li key={item.path}>
-                <button
-                  onClick={() => navigateAndClose(item.path)}
-                  className="w-full text-left py-3 px-4 text-white hover:bg-gray-800 hover:text-purple-400 transition-colors"
-                >
+                <button onClick={() => navigateAndClose(item.path)} className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors">
                   {item.label}
                 </button>
               </li>
             ))}
 
-            <li className="border-t border-gray-700">
+            <li className="border-t border-white/10 mt-2">
               {user ? (
-                <div className="flex flex-col px-4 py-3">
-                  <div className="flex items-center gap-3 mb-3">
+                <div className="flex flex-col px-5 py-4 gap-3">
+                  <div className="flex items-center gap-3">
                     <UserAvatar user={user} />
-                    <span className="font-medium text-white">
-                      {user.username}
-                    </span>
+                    <span className="text-white">{user.username}</span>
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full py-2 text-white bg-neutral-900 hover:bg-neutral-800 rounded-md transition-colors"
-                  >
+                  <button onClick={handleLogout} className="w-full py-2 text-black bg-white hover:bg-white/90 transition-colors">
                     Cerrar sesión
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => navigateAndClose("/login")}
-                  className="w-full text-left py-3 px-4 text-white hover:bg-gray-800 hover:text-purple-400 transition-colors"
-                >
-                  Iniciar sesión
+                <button onClick={() => navigateAndClose("/login")} className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors">
+                  Login
                 </button>
               )}
             </li>
           </ul>
         </div>
       </header>
-
-      {/* Barra de noticias */}
-      <div className="fixed top-16 left-0 w-full bg-gray-900 text-white text-sm flex justify-between items-center z-40 shadow-md">
-        <div className="flex-1 overflow-hidden bg-neutral-900">
-          <MarqueeText />
-        </div>
-        <div className="hidden sm:flex space-x-3 items-center bg-black px-4 py-1.5 h-full">
-          <RedesSociales />
-        </div>
-      </div>
-
-      <div className="mt-28"></div>
+      <div className="mt-28 md:mt-32"></div>
     </>
   );
 };

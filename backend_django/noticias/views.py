@@ -1,7 +1,16 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from .serializers import *
 from .models import *
+from .utils import enviar_whatsapp_contacto
+import threading
 
+CACHE_TTL = 60 * 5  # 5 minutos
+
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class NoticiaViewSet(viewsets.ModelViewSet):
     queryset = Noticia.objects.all().order_by('-fecha_publicacion')
     serializer_class = NoticiaSerializer
@@ -10,8 +19,23 @@ class NoticiaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        cache.clear()
+
+
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
 class EventoViewSet(viewsets.ModelViewSet):
     queryset = Evento.objects.all().order_by('-fecha_hora')
     serializer_class = EventoSerializer
@@ -20,7 +44,20 @@ class EventoViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.clear()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        cache.clear()
+
 
 class EntrevistaViewSet(viewsets.ModelViewSet):
     queryset = Entrevista.objects.all().order_by('-fecha_publicacion')
@@ -30,7 +67,7 @@ class EntrevistaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 class AnuncioViewSet(viewsets.ModelViewSet):
     queryset = Anuncio.objects.all()
@@ -39,7 +76,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 class ComentarioViewSet(viewsets.ModelViewSet):
     serializer_class = ComentarioSerializer
@@ -74,4 +111,38 @@ class TagViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+
+class FranjaSuperiorViewSet(viewsets.ModelViewSet):
+    queryset = FranjaSuperior.objects.all()
+    serializer_class = FranjaSuperiorSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
+
+
+class ContactoViewSet(viewsets.ModelViewSet):
+    queryset = Contacto.objects.all()
+    serializer_class = ContactoSerializer
+
+    def get_permissions(self):
+        if self.action in [ 'retrieve', 'create']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
+
+    def perform_create(self, serializer):
+        # Guarda el contacto en la base de datos
+        contacto = serializer.save()
+
+        threading.Thread(
+            target=enviar_whatsapp_contacto,
+            args=(
+                contacto.nombre_contacto,
+                contacto.email,
+                f"Teléfono: {contacto.telefono or 'No indicado'}\n"
+                f"Apellido: {contacto.apellido_contacto or ''}"
+            )
+        ).start()
