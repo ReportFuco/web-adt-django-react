@@ -3,143 +3,63 @@ import { Link } from "react-router-dom";
 
 export default function NoticiasCarousel({ data }) {
   const [current, setCurrent] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Detectar si es móvil al montar y en cambios de tamaño
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
-
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % data.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [data.length]);
 
-  const prevSlide = () => {
-    setCurrent((prev) => (prev - 1 + data.length) % data.length);
-  };
-
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % data.length);
-  };
+  const prevSlide = () => setCurrent((prev) => (prev - 1 + data.length) % data.length);
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % data.length);
 
   if (!data || data.length === 0) return null;
 
   const currentItem = data[current];
   const detailLink = () => {
-    if (currentItem.tipo === "Noticias") {
-      return {
-        type: "internal",
-        path: `/noticias/${currentItem.id}/${currentItem.slug}`,
-      };
-    } else if (currentItem.tipo === "Eventos") {
-      return {
-        type: "internal",
-        path: `/eventos/${currentItem.id}/${currentItem.slug}`,
-      };
-    } else {
-      return { type: "external", path: currentItem?.url };
-    }
+    if (currentItem.tipo === "Noticias") return { type: "internal", path: `/noticias/${currentItem.id}/${currentItem.slug}` };
+    if (currentItem.tipo === "Eventos") return { type: "internal", path: `/eventos/${currentItem.id}/${currentItem.slug}` };
+    return { type: "external", path: currentItem?.url };
   };
 
   return (
-    <div className="relative w-full h-72 md:h-110 overflow-hidden">
-      <div
-        className="flex transition-transform duration-1000 ease-in-out"
-        style={{ transform: `translateX(-${current * 100}%)` }}
-      >
-        {data.map((item, index) => (
-          <div
-            key={index}
-            className="relative w-full flex-shrink-0 h-72 md:h-120"
-          >
-            <div className="absolute top-4 left-4 py-2 px-6 m-6 bg-[#ff3131]/90 bg-opacity-70 text-white rounded-xs text-xs font-semibold shadow-md z-20 select-none">
-              <strong>{item.tipo}</strong>
-            </div>
-            {/* Fondo con blur condicional */}
-            {!isMobile && (
-              <div className="block absolute inset-0">
-                <img
-                  src={item.imagen}
-                  alt=""
-                  className="w-full h-full object-cover blur-lg scale-110"
-                />
-              </div>
-            )}
+    <section className="relative min-h-[72vh] md:min-h-[88vh] flex items-center px-0 overflow-hidden border-b border-white/10">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10"></div>
+        <img src={currentItem.imagen} alt={currentItem.titulo} className="w-full h-full object-cover grayscale opacity-40 brightness-50" />
+      </div>
 
-            {/* Imagen principal con mejoras para móvil */}
-            <img
-              src={item.imagen}
-              alt={item.titulo}
-              className={`relative w-full h-full z-10 ${
-                isMobile ? "object-cover" : "object-contain"
-              }`}
-            />
-
-            {/* Overlay oscuro para mejor legibilidad en móvil */}
-            {isMobile && (
-              <div className="absolute inset-0 bg-black/30 z-15"></div>
+      <div className="relative z-20 max-w-7xl mx-auto w-full px-6 md:px-8">
+        <div className="max-w-4xl">
+          <p className="text-[10px] uppercase tracking-[0.5em] mb-6 opacity-60 font-bold border-l-2 border-white pl-4 text-white">
+            {currentItem.tipo} / Adictos al Techno
+          </p>
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight uppercase mb-8 text-white">
+            {currentItem.titulo}
+          </h1>
+          <div className="flex flex-wrap gap-4">
+            {detailLink().type === "internal" ? (
+              <Link to={detailLink().path} className="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:invert transition-all">
+                Explorar
+              </Link>
+            ) : (
+              <a href={detailLink().path} target="_blank" rel="noopener noreferrer" className="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:invert transition-all">
+                Ir al sitio
+              </a>
             )}
+            <button onClick={nextSlide} className="border border-white/20 hover:border-white px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition-all">
+              Siguiente
+            </button>
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* Título y botón */}
-      <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-lg z-20 flex flex-col gap-2 max-w-[80%]">
-        <h2
-          className="text-md md:text-4xl font-bold"
-          style={{
-            textShadow: isMobile
-              ? "0px 2px 4px rgba(0,0,0,0.9)"
-              : `0px 0px 6px rgba(0,0,0,0.9),
-                 0px 0px 12px rgba(0,0,0,0.8),
-                 0px 0px 18px rgba(0,0,0,0.7)`,
-          }}
-        >
-          {currentItem.titulo}
-        </h2>
-
-        {detailLink().type === "internal" ? (
-          <Link
-            to={detailLink().path}
-            className="bg-[#ff3131] hover:bg-red-700/90 text-white px-4 py-2 rounded-xs text-sm md:text-base w-fit"
-          >
-            Más información
-          </Link>
-        ) : (
-          <a
-            href={detailLink().path}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-red-600 hover:bg-red-700/90 text-white px-4 py-2 rounded-xs text-sm md:text-base w-fit"
-          >
-            Ir al sitio
-          </a>
-        )}
+      <div className="absolute bottom-10 right-6 hidden lg:flex flex-col items-center gap-10 z-20 text-white">
+        <button onClick={prevSlide} className="text-[10px] tracking-[0.5em] uppercase font-bold opacity-40 hover:opacity-100 transition-opacity rotate-90">Prev</button>
+        <div className="w-[1px] h-20 bg-gradient-to-b from-white to-transparent"></div>
+        <button onClick={nextSlide} className="text-[10px] tracking-[0.5em] uppercase font-bold opacity-40 hover:opacity-100 transition-opacity rotate-90">Next</button>
       </div>
-
-      {/* Controles mejorados para móvil */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-neutral-700 transition-colors duration-300 text-white rounded-full z-20 flex items-center justify-center"
-      >
-        ‹
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-neutral-700 transition-colors duration-300 w-8 h-8 text-white rounded-full z-20 flex items-center justify-center"
-      >
-        ›
-      </button>
-    </div>
+    </section>
   );
 }
