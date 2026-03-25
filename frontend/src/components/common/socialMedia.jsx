@@ -48,7 +48,7 @@ const itemVariants = {
 
 function Socialmedia() {
   return (
-    <section className="px-4 my-14 text-white">
+    <section className="px-4 my-14" style={{ color: "var(--text)" }}>
       <div className="max-w-7xl mx-auto mb-8">
         <div className="section-title">
           <div>
@@ -72,9 +72,9 @@ function Socialmedia() {
             rel="noopener noreferrer"
             variants={itemVariants}
             whileHover={{ y: -4, backgroundColor: "rgba(255,255,255,0.03)", transition: { duration: 0.2 } }}
-            className="group min-h-[270px] border border-white/10 bg-[#101010] p-8 flex flex-col items-center justify-center text-center"
+            className="group min-h-[270px] theme-panel-strong p-8 flex flex-col items-center justify-center text-center"
           >
-            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full theme-button-secondary bg-white/5">
               <img
                 src={social.icon}
                 alt={social.alt}
@@ -82,14 +82,14 @@ function Socialmedia() {
               />
             </div>
 
-            <div className="mb-5 text-white">
+            <div className="mb-5" style={{ color: "var(--text)" }}>
               <NumberTicker
                 value={social.count}
-                className="whitespace-pre-wrap text-4xl md:text-5xl font-bold tracking-tight text-white"
+                className="whitespace-pre-wrap text-4xl md:text-5xl font-bold tracking-tight"
               />
             </div>
 
-            <p className="text-[11px] md:text-xs text-white/45 uppercase tracking-[0.24em] font-bold leading-relaxed">
+            <p className="text-[11px] md:text-xs theme-text-muted uppercase tracking-[0.24em] font-bold leading-relaxed">
               {social.alt}
             </p>
           </motion.a>

@@ -35,7 +35,7 @@ export default function NoticiasCarousel({ data }) {
           <p className="text-[10px] uppercase tracking-[0.5em] mb-6 opacity-60 font-bold border-l-2 border-white pl-4 text-white">
             {currentItem.tipo} / Adictos al Techno
           </p>
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight uppercase mb-8 text-white">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[0.95] tracking-tight uppercase mb-8 text-white max-w-3xl">
             {currentItem.titulo}
           </h1>
           <div className="flex flex-wrap gap-4">
