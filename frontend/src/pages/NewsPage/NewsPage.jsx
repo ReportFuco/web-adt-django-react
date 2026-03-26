@@ -1,13 +1,14 @@
+import { useState, useEffect } from "react";
+
 import Header from "../../components/layout/Header";
 import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Footer from "../../components/layout/Footer";
-import technoImage from "../../assets/techno 7.jpg";
 import NewsSection from "../NewsPage/NewsSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { useState, useEffect } from "react";
 import { getNoticias } from "../../services/api";
 import Socialmedia from "../../components/common/socialMedia";
 import NoticiasCarousel from "../../components/common/NoticiasCarousel";
+import Seo from "../../components/common/Seo";
 
 function NewsPage() {
   const [noticias, setNoticias] = useState(null);

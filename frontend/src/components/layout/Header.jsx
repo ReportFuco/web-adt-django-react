@@ -20,7 +20,6 @@ const Header = () => {
     { label: "Eventos", path: "/eventos" },
     { label: "Noticias", path: "/noticias" },
     { label: "Entrevistas", path: "/entrevistas" },
-    { label: "Tienda", path: "/tienda" },
   ];
 
   const UserAvatar = memo(({ user }) => (
@@ -104,7 +103,7 @@ const Header = () => {
               />
             </button>
 
-            <nav className="hidden lg:flex items-center gap-4 xl:gap-5 uppercase text-[9px] font-bold tracking-[0.12em] text-white/78">
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-6 uppercase text-[11px] xl:text-[12px] font-bold tracking-[0.14em] text-white/82">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
@@ -195,7 +194,7 @@ const Header = () => {
               : "max-h-0 opacity-0"
           }`}
         >
-          <ul className="flex flex-col py-3 uppercase tracking-[0.18em] text-[11px] text-white/80 font-bold">
+          <ul className="flex flex-col py-3 uppercase tracking-[0.16em] text-[12px] text-white/85 font-bold">
             {menuItems.map((item) => (
               <li key={item.path}>
                 <button
