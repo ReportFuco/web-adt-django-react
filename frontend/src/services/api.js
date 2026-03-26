@@ -99,7 +99,7 @@ export const register = async (userData) => {
 
 export const franjaMensaje = async () => {
   try {
-    const response = await api.get("franjasuperior/1/");
+    const response = await api.get("franjasuperior/latest/");
     return response.data;
   } catch (e) {
     console.error("Error al tener la franja", e);

@@ -5,6 +5,7 @@ from django.db.models import F
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import permissions, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import *
@@ -139,13 +140,21 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class FranjaSuperiorViewSet(viewsets.ModelViewSet):
-    queryset = FranjaSuperior.objects.all()
+    queryset = FranjaSuperior.objects.all().order_by('-id')
     serializer_class = FranjaSuperiorSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'latest']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    @action(detail=False, methods=['get'], url_path='latest')
+    def latest(self, request):
+        franja = self.get_queryset().first()
+        if not franja:
+            return Response({'detail': 'No hay franja superior disponible.'}, status=404)
+        serializer = self.get_serializer(franja)
+        return Response(serializer.data)
 
 
 class ContactoViewSet(viewsets.ModelViewSet):
