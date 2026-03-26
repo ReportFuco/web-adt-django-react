@@ -4,7 +4,7 @@ const DEFAULTS = {
   title: "Adictos al Techno | Noticias, eventos y cultura electrónica",
   description:
     "Noticias de techno, eventos, entrevistas y cultura electrónica en Chile y el mundo. Adictos al Techno cubre lanzamientos, artistas, festivales y escena club.",
-  image: "https://adictosaltechno.com/assets/logo-adt-o1knstV1.png",
+  image: "https://adictosaltechno.com/logo-social.jpg",
   type: "website",
 };
 

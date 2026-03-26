@@ -74,7 +74,7 @@ function InterviewDetailPage() {
               name: "Adictos al Techno",
               logo: {
                 "@type": "ImageObject",
-                url: "https://adictosaltechno.com/assets/logo-adt-o1knstV1.png",
+                url: "https://adictosaltechno.com/logo-social.jpg",
               },
             },
           },
