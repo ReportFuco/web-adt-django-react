@@ -152,6 +152,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_PUBLIC_BASE_URL = config('MEDIA_PUBLIC_BASE_URL', default='')
 
 CORS_ALLOWED_ORIGINS = [
     "https://adictosaltechno.com",

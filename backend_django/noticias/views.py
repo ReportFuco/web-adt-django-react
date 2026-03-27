@@ -17,7 +17,7 @@ CACHE_TTL = 60 * 5  # 5 minutos
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
 class NoticiaViewSet(viewsets.ModelViewSet):
-    queryset = Noticia.objects.select_related('autor').prefetch_related('tags').all().order_by('-fecha_publicacion')
+    queryset = Noticia.objects.select_related('autor').prefetch_related('tags', 'fotos').all().order_by('-fecha_publicacion')
     serializer_class = NoticiaSerializer
     lookup_field = "slug"
 
@@ -48,7 +48,7 @@ class NoticiaViewSet(viewsets.ModelViewSet):
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
 class EventoViewSet(viewsets.ModelViewSet):
-    queryset = Evento.objects.prefetch_related('tags').all().order_by('-fecha_hora')
+    queryset = Evento.objects.prefetch_related('tags', 'fotos').all().order_by('-fecha_hora')
     serializer_class = EventoSerializer
     lookup_field = "slug"
 
@@ -79,7 +79,7 @@ class EventoViewSet(viewsets.ModelViewSet):
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
 class EntrevistaViewSet(viewsets.ModelViewSet):
-    queryset = Entrevista.objects.prefetch_related('tags').all().order_by('-fecha_publicacion')
+    queryset = Entrevista.objects.prefetch_related('tags', 'fotos').all().order_by('-fecha_publicacion')
     serializer_class = EntrevistaSerializer
     lookup_field = "slug"
 

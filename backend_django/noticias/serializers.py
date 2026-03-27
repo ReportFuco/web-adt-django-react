@@ -1,3 +1,6 @@
+from urllib.parse import urljoin
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -10,12 +13,55 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FotoBaseSerializer(serializers.ModelSerializer):
+    url_publica = serializers.SerializerMethodField()
+
+    def get_url_publica(self, obj):
+        if not getattr(obj, 'imagen', None):
+            return None
+        try:
+            media_url = obj.imagen.url
+        except Exception:
+            return None
+
+        base_url = getattr(settings, 'MEDIA_PUBLIC_BASE_URL', '') or ''
+        request = self.context.get('request') if hasattr(self, 'context') else None
+
+        if base_url:
+            return urljoin(base_url.rstrip('/') + '/', media_url.lstrip('/'))
+        if request:
+            return request.build_absolute_uri(media_url)
+        return media_url
+
+
+class FotoNoticiaSerializer(FotoBaseSerializer):
+    class Meta:
+        model = FotoNoticia
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        read_only_fields = ['id', 'creada_en', 'url_publica']
+
+
+class FotoEventoSerializer(FotoBaseSerializer):
+    class Meta:
+        model = FotoEvento
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        read_only_fields = ['id', 'creada_en', 'url_publica']
+
+
+class FotoEntrevistaSerializer(FotoBaseSerializer):
+    class Meta:
+        model = FotoEntrevista
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        read_only_fields = ['id', 'creada_en', 'url_publica']
+
+
 class NoticiaSerializer(serializers.ModelSerializer):
     autor = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(is_superuser=True)
     )
     autor_username = serializers.CharField(source='autor.username', read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+    fotos = FotoNoticiaSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True, write_only=True, required=False, source='tags'
     )
@@ -30,6 +76,7 @@ class NoticiaSerializer(serializers.ModelSerializer):
 
 class EventoSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
+    fotos = FotoEventoSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True, write_only=True, required=False, source='tags'
     )
@@ -47,6 +94,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
 class EntrevistaSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
+    fotos = FotoEntrevistaSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True, write_only=True, required=False, source='tags'
     )

@@ -91,6 +91,60 @@ class Entrevista(ImagenOptimizadaMixin, models.Model):
     def __str__(self):
         return f"Entrevista con {self.artista} - {self.fecha_publicacion}"
     
+class FotoNoticia(ImagenOptimizadaMixin, models.Model):
+    noticia = models.ForeignKey(Noticia, on_delete=models.CASCADE, related_name='fotos')
+    imagen = models.ImageField(upload_to='noticias/galeria/')
+    titulo = models.CharField(max_length=255, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    orden = models.PositiveIntegerField(default=0)
+    destacada = models.BooleanField(default=False)
+    creada_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['orden', 'id']
+        verbose_name = 'Foto de noticia'
+        verbose_name_plural = 'Fotos de noticias'
+
+    def __str__(self):
+        return self.titulo or f"Foto noticia #{self.pk}"
+
+
+class FotoEvento(ImagenOptimizadaMixin, models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='fotos')
+    imagen = models.ImageField(upload_to='eventos/galeria/')
+    titulo = models.CharField(max_length=255, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    orden = models.PositiveIntegerField(default=0)
+    destacada = models.BooleanField(default=False)
+    creada_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['orden', 'id']
+        verbose_name = 'Foto de evento'
+        verbose_name_plural = 'Fotos de eventos'
+
+    def __str__(self):
+        return self.titulo or f"Foto evento #{self.pk}"
+
+
+class FotoEntrevista(ImagenOptimizadaMixin, models.Model):
+    entrevista = models.ForeignKey(Entrevista, on_delete=models.CASCADE, related_name='fotos')
+    imagen = models.ImageField(upload_to='entrevistas/galeria/')
+    titulo = models.CharField(max_length=255, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    orden = models.PositiveIntegerField(default=0)
+    destacada = models.BooleanField(default=False)
+    creada_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['orden', 'id']
+        verbose_name = 'Foto de entrevista'
+        verbose_name_plural = 'Fotos de entrevistas'
+
+    def __str__(self):
+        return self.titulo or f"Foto entrevista #{self.pk}"
+
+
 class FranjaSuperior(models.Model):
     contenido = models.CharField(max_length=500)
     url = models.URLField(blank=True, null=True)
