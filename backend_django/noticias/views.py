@@ -144,7 +144,7 @@ class FranjaSuperiorViewSet(viewsets.ModelViewSet):
     serializer_class = FranjaSuperiorSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'latest']:
+        if self.action in ['list', 'retrieve', 'latest', 'track_click']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
@@ -155,6 +155,13 @@ class FranjaSuperiorViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'No hay franja superior disponible.'}, status=404)
         serializer = self.get_serializer(franja)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], url_path='track-click')
+    def track_click(self, request, pk=None):
+        franja = self.get_object()
+        FranjaSuperior.objects.filter(pk=franja.pk).update(vistas=F('vistas') + 1)
+        franja.refresh_from_db(fields=['vistas'])
+        return Response({'id': franja.id, 'vistas': franja.vistas})
 
 
 class ContactoViewSet(viewsets.ModelViewSet):

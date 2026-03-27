@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import CartButton from "../features/store/CartButton";
-import { franjaMensaje } from "../../services/api";
+import { franjaMensaje, trackFranjaClick } from "../../services/api";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -44,6 +44,18 @@ const Header = () => {
     loadFranja();
   }, []);
 
+  const handleFranjaClick = useCallback(async (event) => {
+    if (!franja?.url) return;
+    event.preventDefault();
+    try {
+      if (franja?.id) await trackFranjaClick(franja.id);
+    } catch (e) {
+      console.error("Error al trackear la franja:", e);
+    } finally {
+      window.open(franja.url, "_blank", "noopener,noreferrer");
+    }
+  }, [franja]);
+
   const MarqueeText = memo(() => (
     <Marquee
       speed={45}
@@ -52,8 +64,7 @@ const Header = () => {
       {franja?.url ? (
         <a
           href={franja.url}
-          target="_blank"
-          rel="noopener noreferrer"
+          onClick={handleFranjaClick}
           className="no-underline px-6 hover:text-white transition-colors"
         >
           {franja?.contenido || "Cargando..."}

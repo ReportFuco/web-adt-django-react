@@ -81,6 +81,7 @@ class Entrevista(ImagenOptimizadaMixin, models.Model):
 class FranjaSuperior(models.Model):
     contenido = models.CharField(max_length=500)
     url = models.URLField(blank=True, null=True)
+    vistas = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Haz click aca para modificar la Franja"

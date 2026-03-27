@@ -106,6 +106,17 @@ export const franjaMensaje = async () => {
   }
 };
 
+export const trackFranjaClick = async (franjaId) => {
+  try {
+    if (!franjaId) return null;
+    const response = await api.post(`franjasuperior/${franjaId}/track-click/`);
+    return response.data;
+  } catch (e) {
+    console.error("Error al registrar click de la franja", e);
+    return null;
+  }
+};
+
 export const getLogin = async (identifier, password) => {
   try {
     const response = await api.post("token/", {
