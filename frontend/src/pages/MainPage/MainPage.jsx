@@ -7,11 +7,12 @@ import NewsSection from "../NewsPage/NewsSection";
 import EventSections from "../EventsPage/EventSection";
 import InterviewSection from "../InterviewPage/InterviewSection";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { getNoticias, getInterview, getEvents } from "../../services/api";
+import { getNoticias, getInterview, getEvents, getAnunciosByUbicacion } from "../../services/api";
 import { getProductos } from "../../services/store.api";
 import Socialmedia from "../../components/common/socialMedia";
 import Form from "../../components/common/Form";
 import NoticiasCarousel from "../../components/common/NoticiasCarousel";
+import AdBanner from "../../components/common/AdBanner";
 import Seo from "../../components/common/Seo";
 import BannerSpotify from "../../assets/img/banners/banner-spotify.jpg";
 
@@ -21,6 +22,7 @@ function MainPage() {
     entrevistas: [],
     eventos: [],
     productos: [],
+    anuncios: { betweenNewsEvents: null },
     loading: true,
   });
 
@@ -53,11 +55,12 @@ function MainPage() {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [noticias, entrevistas, eventos, productos] = await Promise.all([
+        const [noticias, entrevistas, eventos, productos, anunciosHome] = await Promise.all([
           getNoticias(),
           getInterview(),
           getEvents(),
           getProductos(),
+          getAnunciosByUbicacion("home_between_news_events"),
         ]);
         const productosData = Array.isArray(productos?.data)
           ? productos.data
@@ -72,6 +75,7 @@ function MainPage() {
           entrevistas,
           eventos,
           productos: productosData,
+          anuncios: { betweenNewsEvents: anunciosHome?.[0] || null },
           combinado,
           destacados,
           loading: false,
@@ -128,6 +132,12 @@ function MainPage() {
               cardHeight="h-[28rem]"
             />
           </article>
+
+          {data.anuncios?.betweenNewsEvents && (
+            <article className="section-shell">
+              <AdBanner anuncio={data.anuncios.betweenNewsEvents} />
+            </article>
+          )}
 
           <article className="section-shell">
             <EventSections

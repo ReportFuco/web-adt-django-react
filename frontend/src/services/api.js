@@ -117,6 +117,28 @@ export const trackFranjaClick = async (franjaId) => {
   }
 };
 
+
+export const getAnunciosByUbicacion = async (ubicacion) => {
+  try {
+    const response = await api.get(`anuncios/?ubicacion=${ubicacion}`);
+    return normalizeListResponse(response);
+  } catch (e) {
+    console.error("Error al obtener anuncios", e);
+    return [];
+  }
+};
+
+export const trackAnuncioClick = async (anuncioId) => {
+  try {
+    if (!anuncioId) return null;
+    const response = await api.post(`anuncios/${anuncioId}/track-click/`);
+    return response.data;
+  } catch (e) {
+    console.error("Error al registrar click del anuncio", e);
+    return null;
+  }
+};
+
 export const getLogin = async (identifier, password) => {
   try {
     const response = await api.post("token/", {
