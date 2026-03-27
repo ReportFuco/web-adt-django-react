@@ -32,7 +32,7 @@ export default function NoticiasCarousel({ data }) {
             key={currentItem.id ?? current}
             src={currentItem.imagen}
             alt={currentItem.titulo}
-            className="absolute inset-0 w-full h-full object-cover grayscale opacity-40 brightness-50"
+            className="absolute inset-0 w-full h-full object-cover opacity-40 brightness-50"
             initial={{ opacity: 0, scale: 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.985 }}
