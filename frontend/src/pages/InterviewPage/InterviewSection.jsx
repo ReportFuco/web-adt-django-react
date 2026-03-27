@@ -42,7 +42,7 @@ export default function InterviewSection({
               window.scrollTo(0, 0);
             }}
           >
-            <div className="relative flex-1 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+            <div className="relative flex-1 overflow-hidden transition-all duration-500">
               <img src={item.imagen_portada} alt={item.artista} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute top-4 left-4 theme-panel-strong text-[10px] font-bold px-3 py-1 uppercase tracking-tight">Entrevista</div>
             </div>
