@@ -104,5 +104,12 @@ class FranjaSuperiorAdmin(admin.ModelAdmin):
     readonly_fields = ("vistas",)
 
 
-admin.site.register(Anuncio)
+@admin.register(Anuncio)
+class AnuncioAdmin(admin.ModelAdmin):
+    list_display = ["id", "titulo", "ubicacion", "activo", "orden", "clicks", "fecha_inicio", "fecha_fin"]
+    list_filter = ["activo", "ubicacion", "fecha_inicio", "fecha_fin"]
+    search_fields = ["titulo", "contenido", "enlace"]
+    ordering = ["ubicacion", "orden", "-id"]
+    readonly_fields = ("clicks",)
+
 

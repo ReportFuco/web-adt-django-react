@@ -59,7 +59,7 @@ const Header = () => {
   const MarqueeText = memo(() => (
     <Marquee
       speed={45}
-      className="py-2 text-white/85 uppercase tracking-[0.18em] text-[11px] md:text-[12px] font-bold"
+      className="py-2 text-white uppercase tracking-[0.16em] text-[12px] md:text-[13px] font-bold"
     >
       {franja?.url ? (
         <a

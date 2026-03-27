@@ -1,7 +1,8 @@
 import threading
 
 from django.core.cache import cache
-from django.db.models import F
+from django.db.models import F, Q
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import permissions, viewsets
@@ -95,13 +96,33 @@ class EntrevistaViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class AnuncioViewSet(viewsets.ModelViewSet):
-    queryset = Anuncio.objects.all()
+    queryset = Anuncio.objects.all().order_by('orden', '-id')
     serializer_class = AnuncioSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'track_click']:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    def get_queryset(self):
+        qs = Anuncio.objects.all().order_by('orden', '-id')
+        if self.action in ['list', 'retrieve']:
+            now = timezone.now()
+            qs = qs.filter(activo=True).filter(
+                Q(fecha_inicio__isnull=True) | Q(fecha_inicio__lte=now),
+                Q(fecha_fin__isnull=True) | Q(fecha_fin__gte=now)
+            )
+            ubicacion = self.request.query_params.get('ubicacion')
+            if ubicacion:
+                qs = qs.filter(ubicacion=ubicacion)
+        return qs
+
+    @action(detail=True, methods=['post'], url_path='track-click')
+    def track_click(self, request, pk=None):
+        anuncio = self.get_object()
+        Anuncio.objects.filter(pk=anuncio.pk).update(clicks=F('clicks') + 1)
+        anuncio.refresh_from_db(fields=['clicks'])
+        return Response({'id': anuncio.id, 'clicks': anuncio.clicks})
 
 class ComentarioViewSet(viewsets.ModelViewSet):
     serializer_class = ComentarioSerializer

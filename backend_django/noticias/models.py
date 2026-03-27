@@ -53,11 +53,24 @@ class Evento(ImagenOptimizadaMixin, models.Model):
         return self.nombre
 
 class Anuncio(ImagenOptimizadaMixin, models.Model):
+    UBICACION_CHOICES = [
+        ('home_between_news_events', 'Home entre Noticias y Eventos'),
+        ('home_between_events_interviews', 'Home entre Eventos y Entrevistas'),
+        ('home_after_interviews', 'Home después de Entrevistas'),
+    ]
+
     titulo = models.CharField(max_length=255)
     contenido = models.TextField()
     imagen = models.ImageField(upload_to='anuncios/', blank=True, null=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
     enlace = models.URLField(blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    ubicacion = models.CharField(max_length=64, choices=UBICACION_CHOICES, default='home_between_news_events')
+    orden = models.PositiveIntegerField(default=0)
+    cta_text = models.CharField(max_length=80, blank=True, null=True)
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_fin = models.DateTimeField(blank=True, null=True)
+    clicks = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.titulo
