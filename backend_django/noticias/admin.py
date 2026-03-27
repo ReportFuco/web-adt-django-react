@@ -96,6 +96,13 @@ class ContactoAdmin(admin.ModelAdmin):
     list_filter = ("fecha",)
 
 
-admin.site.register(FranjaSuperior)
+@admin.register(FranjaSuperior)
+class FranjaSuperiorAdmin(admin.ModelAdmin):
+    list_display = ["id", "contenido", "url", "vistas"]
+    search_fields = ["contenido", "url"]
+    ordering = ["-id"]
+    readonly_fields = ("vistas",)
+
+
 admin.site.register(Anuncio)
 
