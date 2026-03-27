@@ -14,15 +14,15 @@ function AdBanner({ anuncio }) {
   if (!anuncio) return null;
 
   return (
-    <section className="theme-panel-strong overflow-hidden border border-white/10">
+    <section className="theme-panel-strong overflow-hidden border border-white/10 rounded-none md:rounded-sm">
       <a
         href={anuncio.enlace || "#"}
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
-        className="grid md:grid-cols-[1.2fr_1fr] items-stretch no-underline"
+        className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] items-stretch no-underline"
       >
-        <div className="relative min-h-[240px] md:min-h-[320px] bg-black/30">
+        <div className="relative min-h-[190px] sm:min-h-[240px] md:min-h-[320px] lg:min-h-[360px] bg-black/30 order-1">
           {anuncio.imagen ? (
             <img
               src={anuncio.imagen}
@@ -33,23 +33,23 @@ function AdBanner({ anuncio }) {
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/10 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/10 lg:bg-gradient-to-r lg:from-black/10 lg:via-black/10 lg:to-black/45" />
         </div>
 
-        <div className="flex flex-col justify-center gap-5 p-8 md:p-10 lg:p-12 bg-[#0c0c0c] text-white">
-          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.34em] text-white/60 font-bold">
+        <div className="order-2 flex flex-col justify-center gap-4 sm:gap-5 p-5 sm:p-7 md:p-9 lg:p-10 bg-[#0c0c0c] text-white">
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-white/60 font-bold">
             AUSPICIADO
           </span>
-          <h3 className="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight leading-none">
+          <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight leading-[0.95] max-w-[14ch]">
             {anuncio.titulo}
           </h3>
           {anuncio.contenido && (
-            <p className="text-sm md:text-base text-white/72 leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-[15px] md:text-base text-white/72 leading-relaxed max-w-xl">
               {anuncio.contenido}
             </p>
           )}
-          <div>
-            <span className="inline-flex items-center border border-white/20 px-5 py-3 text-[11px] uppercase tracking-[0.24em] font-bold hover:bg-white hover:text-black transition-all duration-300">
+          <div className="pt-1 sm:pt-2">
+            <span className="inline-flex items-center justify-center border border-white/20 px-4 sm:px-5 py-3 text-[10px] sm:text-[11px] uppercase tracking-[0.22em] font-bold hover:bg-white hover:text-black transition-all duration-300 w-full sm:w-auto text-center">
               {anuncio.cta_text || "Ver más"}
             </span>
           </div>
