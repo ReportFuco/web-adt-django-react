@@ -149,7 +149,7 @@ function EventsDetailPage() {
 
         <div className="flex flex-col gap-8">
           <div className="border border-white/10 bg-[#101010] p-6 text-white">
-            <h3 className="text-2xl font-bold uppercase tracking-tight mb-5">Más información</h3>
+            <h3 className="text-2xl font-bold uppercase tracking-tight mb-5">tickets disponibles aqui</h3>
             {evento.website && (
               <a
                 href={evento.website}
