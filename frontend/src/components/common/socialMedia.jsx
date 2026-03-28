@@ -10,14 +10,14 @@ const socialMediaData = [
     id: 1,
     icon: instagram,
     alt: "Instagram",
-    count: 134701,
+    count: 154615,
     url: "https://www.instagram.com/adictos_al_techno/",
   },
   {
     id: 2,
     icon: whatsapp,
     alt: "Comunidad WhatsApp",
-    count: 668,
+    count: 680,
     url: "https://chat.whatsapp.com/EZkSGVq4BrpLc7SCxIHjNz",
   },
   {
@@ -31,7 +31,7 @@ const socialMediaData = [
     id: 4,
     icon: tiktok,
     alt: "TikTok",
-    count: 104,
+    count: 1216,
     url: "https://www.tiktok.com/@adictos.al.techno?_t=ZM-8vv8jszOOKz&_r=1",
   },
 ];
