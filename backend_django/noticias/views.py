@@ -1,7 +1,7 @@
 import threading
 
 from django.core.cache import cache
-from django.db.models import F, Q
+from django.db.models import F, Min, Q
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -48,9 +48,24 @@ class NoticiaViewSet(viewsets.ModelViewSet):
 
 @method_decorator(cache_page(CACHE_TTL), name='list')
 class EventoViewSet(viewsets.ModelViewSet):
-    queryset = Evento.objects.prefetch_related('tags', 'fotos').all().order_by('-fecha_hora')
+    queryset = Evento.objects.all()
     serializer_class = EventoSerializer
     lookup_field = "slug"
+
+    def get_queryset(self):
+        hoy = timezone.localdate()
+        return (
+            Evento.objects.prefetch_related('tags', 'fotos', 'fechas')
+            .annotate(
+                fecha_proxima=Min('fechas__fecha', filter=Q(fechas__fecha__gte=hoy)),
+                fecha_principal=Min('fechas__fecha'),
+            )
+            .order_by(
+                F('fecha_proxima').asc(nulls_last=True),
+                F('fecha_principal').desc(nulls_last=True),
+                'id',
+            )
+        )
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:

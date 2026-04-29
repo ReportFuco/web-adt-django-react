@@ -25,7 +25,7 @@ export default function NewsSection({
 
   return (
     <div className="max-w-7xl px-0 py-0" style={{ color: "var(--text)" }}>
-      <div className="section-title mb-10">
+      <div className="section-title mb-6 sm:mb-8 md:mb-10">
         <div>
           <h2 className="section-title-heading">{destacadas ? "Noticias Recientes" : "Más Noticias"}</h2>
           <p className="section-title-kicker">Latest from the scene</p>
@@ -36,18 +36,18 @@ export default function NewsSection({
         {filteredNews.map((news) => (
           <article
             key={news.id}
-            className={`editorial-card p-6 md:p-8 flex flex-col gap-6 group ${cardHeight}`}
+            className={`editorial-card p-4 sm:p-5 md:p-6 lg:p-7 flex flex-col gap-4 md:gap-5 group min-h-[23rem] sm:min-h-[24rem] md:min-h-0 ${cardHeight}`}
             onClick={() => {
               navigate(`/noticias/${news.id}/${news.slug}`);
               window.scrollTo(0, 0);
             }}
           >
-            <div className="relative flex-1 overflow-hidden transition-all duration-500">
+            <div className="relative h-36 sm:h-44 md:h-auto md:flex-1 min-h-[9rem] overflow-hidden transition-all duration-500">
               <img src={news.imagen} alt={news.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute top-4 left-4 theme-panel-strong text-[10px] font-bold px-3 py-1 uppercase tracking-tight">Noticia</div>
+              <div className="absolute top-3 left-3 md:top-4 md:left-4 theme-panel-strong text-[10px] font-bold px-3 py-1 uppercase tracking-tight">Noticia</div>
             </div>
-            <div className="flex flex-col gap-4">
-              <h3 className="text-2xl font-bold leading-tight uppercase" style={{ color: "var(--text)" }}>{news.titulo}</h3>
+            <div className="flex min-h-[11rem] flex-col gap-3">
+              <h3 className="text-xl sm:text-2xl lg:text-[1.7rem] font-bold leading-tight uppercase [overflow-wrap:anywhere]" style={{ color: "var(--text)" }}>{news.titulo}</h3>
               {Array.isArray(news.tags) && news.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {news.tags.slice(0, 3).map((tag) => (
@@ -57,7 +57,7 @@ export default function NewsSection({
                   ))}
                 </div>
               )}
-              <button className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 group/btn theme-text-soft">
+              <button className="mt-auto pt-2 text-[10px] font-bold uppercase tracking-[0.18em] flex items-center gap-2 group/btn theme-text-soft">
                 Leer más <span className="group-hover/btn:translate-x-2 transition-transform">→</span>
               </button>
             </div>

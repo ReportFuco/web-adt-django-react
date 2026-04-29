@@ -48,6 +48,13 @@ class FotoEventoSerializer(FotoBaseSerializer):
         read_only_fields = ['id', 'creada_en', 'url_publica']
 
 
+class FechaEventoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FechaEvento
+        fields = ['id', 'fecha']
+        read_only_fields = ['id']
+
+
 class FotoEntrevistaSerializer(FotoBaseSerializer):
     class Meta:
         model = FotoEntrevista
@@ -77,6 +84,8 @@ class NoticiaSerializer(serializers.ModelSerializer):
 class EventoSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     fotos = FotoEventoSerializer(many=True, read_only=True)
+    fechas = FechaEventoSerializer(many=True, read_only=True)
+    fecha_hora = serializers.DateField(read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True, write_only=True, required=False, source='tags'
     )

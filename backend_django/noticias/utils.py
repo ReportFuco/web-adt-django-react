@@ -3,6 +3,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from pathlib import Path
 
 
 EVOLUTION_API_URL = getattr(settings, "EVOLUTION_API_URL")
@@ -55,7 +56,7 @@ def optimizar_imagen(imagen_field, max_size=(1200, 1200), calidad=80, formato='W
         img.save(temp, format=formato, quality=calidad, optimize=True)
         temp.seek(0)
 
-        nombre_original = imagen_field.name
+        nombre_original = Path(imagen_field.name).name
         if '.' in nombre_original:
             nombre_original = nombre_original.rsplit('.', 1)[0]
         nuevo_nombre = f"{nombre_original}.{formato.lower()}"

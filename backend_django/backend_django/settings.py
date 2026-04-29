@@ -154,6 +154,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_PUBLIC_BASE_URL = config('MEDIA_PUBLIC_BASE_URL', default='')
 
+# Admin event/news forms can include rich HTML, gallery images and several inline rows.
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
+DATA_UPLOAD_MAX_NUMBER_FILES = 1000
+DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
+
 CORS_ALLOWED_ORIGINS = [
     "https://adictosaltechno.com",
     "http://localhost",
@@ -209,8 +215,16 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'plugins': 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
     'toolbar': 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-    'extended_valid_elements': 'iframe[src|width|height|frameborder|allowfullscreen]',
-    'valid_children': '+body[iframe]',
+    'convert_urls': False,
+    'relative_urls': False,
+    'remove_script_host': False,
+    'extended_valid_elements': (
+        'iframe[src|width|height|frameborder|allowfullscreen|allow|loading],'
+        'blockquote[class|style|cite|data-instgrm-permalink|data-instgrm-version|data-instgrm-captioned],'
+        'script[async|defer|src|charset]'
+    ),
+    'valid_children': '+body[iframe|script|blockquote]',
+    'custom_elements': '~instagram-embed',
 }
 
 

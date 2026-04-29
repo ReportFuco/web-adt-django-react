@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from .mixins import ImagenOptimizadaMixin
 
 
@@ -38,7 +39,6 @@ class Comentario(models.Model):
 class Evento(ImagenOptimizadaMixin, models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
-    fecha_hora = models.DateTimeField()
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
     destacado = models.BooleanField(default=False)
     website = models.CharField(max_length=255, blank=True, null=True)
@@ -51,6 +51,28 @@ class Evento(ImagenOptimizadaMixin, models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def fecha_hora(self):
+        hoy = timezone.localdate()
+        proxima_fecha = self.fechas.filter(fecha__gte=hoy).order_by('fecha', 'id').first()
+        if proxima_fecha:
+            return proxima_fecha.fecha
+        ultima_fecha = self.fechas.order_by('-fecha', '-id').first()
+        return ultima_fecha.fecha if ultima_fecha else None
+
+
+class FechaEvento(models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='fechas')
+    fecha = models.DateField()
+
+    class Meta:
+        ordering = ['fecha', 'id']
+        verbose_name = 'Fecha de evento'
+        verbose_name_plural = 'Fechas de eventos'
+
+    def __str__(self):
+        return f"{self.evento.nombre} - {self.fecha}"
 
 class Anuncio(ImagenOptimizadaMixin, models.Model):
     UBICACION_CHOICES = [

@@ -57,6 +57,38 @@ function NewsDetailPage() {
     loadNews();
   }, [slug]);
 
+  useEffect(() => {
+    if (!cleanContent.includes("instagram-media")) return;
+
+    const processEmbeds = () => {
+      window.instgrm?.Embeds?.process?.();
+    };
+
+    const processAfterRender = () => {
+      requestAnimationFrame(() => {
+        processEmbeds();
+        setTimeout(processEmbeds, 500);
+        setTimeout(processEmbeds, 1500);
+      });
+    };
+
+    const existingScript = document.querySelector('script[src="//www.instagram.com/embed.js"], script[src="https://www.instagram.com/embed.js"]');
+    if (existingScript) {
+      if (window.instgrm?.Embeds) {
+        processAfterRender();
+      } else {
+        existingScript.addEventListener("load", processAfterRender, { once: true });
+      }
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://www.instagram.com/embed.js";
+    script.onload = processAfterRender;
+    document.body.appendChild(script);
+  }, [cleanContent]);
+
   if (!noticia || !noticias) return <LoadingSpinner />;
 
   const noticiaDescription = (noticia.subtitulo || noticia.contenido || "")
@@ -109,7 +141,7 @@ function NewsDetailPage() {
 
       <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
         <div className="absolute inset-0">
-          <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover grayscale opacity-40 brightness-50" />
+          <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover opacity-70 brightness-75" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/60 to-black/20"></div>
         </div>
 
@@ -145,7 +177,7 @@ function NewsDetailPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_380px] gap-8">
-        <article className="border border-white/10 bg-[#101010] p-6 md:p-10 text-white/85 prose prose-invert prose-lg max-w-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:my-6 [&_iframe]:border [&_iframe]:border-white/10">
+        <article className="rich-content border border-white/10 bg-[#101010] p-6 md:p-10 text-white/85 prose prose-invert prose-lg max-w-none">
           {parse(cleanContent)}
         </article>
 

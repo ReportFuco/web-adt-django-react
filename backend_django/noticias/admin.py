@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.db import models as db_models
 from django.utils.html import format_html
 from tinymce.widgets import TinyMCE
 
@@ -10,12 +11,18 @@ from .models import *
 
 
 class NoticiaAdminForm(forms.ModelForm):
+    contenido = forms.CharField(
+        widget=TinyMCE(),
+        help_text=(
+            'Para Instagram, pega la URL del post en una línea propia o usa '
+            '[instagram]https://www.instagram.com/p/.../[/instagram].'
+        ),
+        required=False,
+    )
+
     class Meta:
         model = Noticia
         fields = '__all__'
-        widgets = {
-            'contenido': TinyMCE(),
-        }
 
 
 class EventoAdminForm(forms.ModelForm):
@@ -89,6 +96,12 @@ class FotoEventoInline(FotoAdminInlineMixin, admin.TabularInline):
     fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada')
 
 
+class FechaEventoInline(admin.TabularInline):
+    model = FechaEvento
+    fields = ('fecha',)
+    extra = 1
+
+
 class FotoEntrevistaInline(FotoAdminInlineMixin, admin.TabularInline):
     model = FotoEntrevista
     fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada')
@@ -120,10 +133,10 @@ class NoticiaAdmin(admin.ModelAdmin):
 @admin.register(Evento)
 class EventoAdmin(admin.ModelAdmin):
     form = EventoAdminForm
-    inlines = [FotoEventoInline]
-    list_display = ["id", "nombre", "lugar", "destacado", "vistas", "mostrar_tags", "fecha_hora"]
+    inlines = [FechaEventoInline, FotoEventoInline]
+    list_display = ["id", "nombre", "lugar", "destacado", "vistas", "mostrar_tags", "fecha_principal"]
     prepopulated_fields = {"slug": ("nombre",)}
-    list_filter = ("destacado", "tags", "fecha_hora", "lugar")
+    list_filter = ("destacado", "tags", "fechas__fecha", "lugar")
     search_fields = ["nombre", "descripcion", "lugar", "organizacion", "tags__nombre"]
     filter_horizontal = ("tags",)
     readonly_fields = ("vistas",)
@@ -131,6 +144,13 @@ class EventoAdmin(admin.ModelAdmin):
     @admin.display(description="Tags")
     def mostrar_tags(self, obj):
         return ", ".join(obj.tags.values_list("nombre", flat=True)) or "-"
+
+    @admin.display(description="Fecha principal", ordering="fecha_principal")
+    def fecha_principal(self, obj):
+        return obj.fecha_hora or "-"
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(fecha_principal=db_models.Min("fechas__fecha"))
 
 
 @admin.register(Entrevista)
@@ -176,5 +196,3 @@ class AnuncioAdmin(admin.ModelAdmin):
     search_fields = ["titulo", "contenido", "enlace"]
     ordering = ["ubicacion", "orden", "-id"]
     readonly_fields = ("clicks",)
-
-

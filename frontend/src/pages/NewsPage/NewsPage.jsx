@@ -101,7 +101,7 @@ function NewsPage() {
               noticias={noticias}
               destacadas={true}
               limit={10}
-              gridCols="grid-cols-2"
+              gridCols="grid-cols-1 sm:grid-cols-2"
               cardHeight="h-55 md:h-90"
             />
           </article>
@@ -110,7 +110,7 @@ function NewsPage() {
               noticias={noticias}
               destacadas={false}
               limit={10}
-              gridCols="grid-cols-2 md:grid-cols-4"
+              gridCols="grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
               cardHeight="h-55 md:h-90"
             />
           </article>

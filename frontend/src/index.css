@@ -175,6 +175,29 @@ iframe {
   aspect-ratio: 16/9;
 }
 
+.rich-content iframe:not(.instagram-media):not([src*="instagram.com"]) {
+  width: 100%;
+  border: 1px solid var(--border);
+  aspect-ratio: 16/9;
+}
+
+.rich-content blockquote.instagram-media,
+.rich-content iframe.instagram-media,
+.rich-content iframe[src*="instagram.com"] {
+  width: min(100%, 540px) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 2rem auto !important;
+  border: 0 !important;
+  aspect-ratio: auto !important;
+}
+
+.rich-content iframe.instagram-media,
+.rich-content iframe[src*="instagram.com"] {
+  min-height: 620px !important;
+  height: min(78vh, 760px) !important;
+}
+
 p {
   margin: 1rem 0;
 }

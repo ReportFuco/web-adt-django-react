@@ -14,6 +14,7 @@ import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
 import Socialmedia from "../../components/common/socialMedia";
 import Seo from "../../components/common/Seo";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import { formatEventDateRange, formatFullEventDate, getEventDateItems } from "../../utils/eventDates";
 
 function EventsDetailPage() {
   const { slug } = useParams();
@@ -51,10 +52,9 @@ function EventsDetailPage() {
     .slice(0, 160);
   const eventUrl = `https://adictosaltechno.com/eventos/${evento.id}/${slug}`;
 
-  const formatDate = (dateString) => {
-    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString("es-ES", options);
-  };
+  const eventDates = getEventDateItems(evento);
+  const primaryDate = eventDates[0]?.fecha || evento.fecha_hora;
+  const dateSummary = formatEventDateRange(eventDates);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -70,7 +70,7 @@ function EventsDetailPage() {
             "@type": "Event",
             name: evento.nombre,
             description: eventDescription || evento.nombre,
-            startDate: evento.fecha_hora,
+            startDate: primaryDate,
             eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
             eventStatus: "https://schema.org/EventScheduled",
             image: evento.imagen ? [evento.imagen] : undefined,
@@ -102,7 +102,7 @@ function EventsDetailPage() {
 
       <section className="relative min-h-[68vh] flex items-end overflow-hidden border-b border-white/10">
         <div className="absolute inset-0">
-          <img src={evento.imagen} alt={evento.nombre} className="w-full h-full object-cover grayscale opacity-40 brightness-50" />
+          <img src={evento.imagen} alt={evento.nombre} className="w-full h-full object-cover opacity-70 brightness-75" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/60 to-black/20"></div>
         </div>
 
@@ -114,7 +114,7 @@ function EventsDetailPage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[0.94] tracking-tight max-w-5xl mb-6">{evento.nombre}</h1>
           <div className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-8 text-[11px] uppercase tracking-[0.24em] text-white/60 font-bold">
             <span className="flex items-center gap-3"><FaMapMarkerAlt /> {evento.lugar}</span>
-            <span className="flex items-center gap-3"><FaCalendarAlt /> {formatDate(evento.fecha_hora)}</span>
+            {dateSummary && <span className="flex items-center gap-3"><FaCalendarAlt /> {dateSummary}</span>}
           </div>
           {Array.isArray(evento.tags) && evento.tags.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
@@ -136,8 +136,18 @@ function EventsDetailPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="border border-white/10 bg-[#101010] p-6">
-              <h3 className="text-sm uppercase tracking-[0.24em] text-white/50 mb-4 flex items-center gap-3"><FaCalendarAlt /> Fecha y hora</h3>
-              <p className="text-xl font-semibold text-white">{formatDate(evento.fecha_hora)}</p>
+              <h3 className="text-sm uppercase tracking-[0.24em] text-white/50 mb-4 flex items-center gap-3"><FaCalendarAlt /> Fechas</h3>
+              {eventDates.length > 0 ? (
+                <div className="flex flex-col gap-3">
+                  {eventDates.map((dateItem, index) => (
+                    <p key={dateItem.id ?? dateItem.fecha ?? index} className="text-xl font-semibold text-white">
+                      {formatFullEventDate(dateItem.fecha)}
+                    </p>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xl font-semibold text-white">Fecha por confirmar</p>
+              )}
             </div>
             <div className="border border-white/10 bg-[#101010] p-6">
               <h3 className="text-sm uppercase tracking-[0.24em] text-white/50 mb-4 flex items-center gap-3"><FaMapMarkerAlt /> Ubicación</h3>
