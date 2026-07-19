@@ -152,18 +152,25 @@ body {
   min-height: 100vh;
 }
 
-/* DESIGN §3.1 — encabezados de sección (display, uppercase, condensado) */
-h1,
-h2,
-h3,
-.titulo-impacto {
-  font-family: var(--adt-font-display);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.015em;
-  line-height: 0.99;
-  margin: 1.25rem 0 0.85rem;
-  color: var(--adt-text);
+/* DESIGN §3.1 — encabezados de sección (display, uppercase, condensado).
+   En `@layer base`: sin esto la regla queda sin capa y, por el orden de
+   cascade layers de Tailwind 4, gana SIEMPRE a utilidades de color como
+   `text-on-photo` sin importar especificidad — invisible en dark (el crema
+   de --adt-text y --adt-on-photo casi coinciden) pero rompe el contraste en
+   light, donde --adt-text es casi negro (ver Hero.jsx, DetailHero.jsx). */
+@layer base {
+  h1,
+  h2,
+  h3,
+  .titulo-impacto {
+    font-family: var(--adt-font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    line-height: 0.99;
+    margin: 1.25rem 0 0.85rem;
+    color: var(--adt-text);
+  }
 }
 
 p,

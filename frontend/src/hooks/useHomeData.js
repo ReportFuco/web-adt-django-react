@@ -43,7 +43,7 @@ function useHomeData() {
           (noticia) => !destacadas.some((destacada) => destacada.id === noticia.id)
         );
         const heroPool = [...destacadas, ...fillerNoticias].slice(0, 5);
-        const [heroLead, ...heroSupportSource] = heroPool;
+        const [, ...heroSupportSource] = heroPool;
         const heroSupportItems = heroSupportSource.map((noticia) => ({
           id: noticia.id,
           href: `/noticias/${noticia.id}/${noticia.slug}`,
@@ -60,7 +60,7 @@ function useHomeData() {
         setHeroNews({
           loading: false,
           error: destacadasRes.error || allNoticiasRes.error || null,
-          data: { heroLead, heroSupportItems, newsListItems },
+          data: { heroSlides: heroPool, heroSupportItems, newsListItems },
         });
       }
     );

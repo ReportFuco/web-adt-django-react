@@ -20,23 +20,20 @@ function Gallery({ fotos }) {
   if (!fotos?.length) return null;
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "grid grid-cols-3 gap-2 adt-reveal min-[561px]:grid-cols-4 min-[901px]:grid-cols-6",
-        inView && "is-visible"
-      )}
-    >
-      {fotos.map((foto) => {
+    <div ref={ref} className="grid grid-cols-3 gap-2 min-[561px]:grid-cols-4 min-[901px]:grid-cols-6">
+      {fotos.map((foto, index) => {
         const buildHref = DETAIL_ROUTE[foto.tipo];
         const alt = foto.titulo || foto.contenido_titulo || "";
-        const content = (
-          <Media ratio="11" src={foto.imagen} alt={alt} credit={foto.credito} className="rounded-adt" />
-        );
         return (
-          <Link key={`${foto.tipo}-${foto.id}`} to={buildHref ? buildHref(foto) : "#"}>
-            {content}
-          </Link>
+          <div
+            key={`${foto.tipo}-${foto.id}`}
+            style={{ transitionDelay: inView ? `${Math.min(index, 11) * 50}ms` : undefined }}
+            className={cn("adt-reveal", inView && "is-visible")}
+          >
+            <Link to={buildHref ? buildHref(foto) : "#"}>
+              <Media ratio="11" src={foto.imagen} alt={alt} credit={foto.credito} className="rounded-adt" />
+            </Link>
+          </div>
         );
       })}
     </div>

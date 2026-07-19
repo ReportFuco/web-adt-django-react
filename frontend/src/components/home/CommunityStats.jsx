@@ -17,8 +17,13 @@ function CommunityStats() {
   const [ref, inView] = useInViewOnce();
 
   return (
-    <div ref={ref} className={cn("grid border border-line adt-reveal min-[861px]:grid-cols-[1.1fr_1fr]", inView && "is-visible")}>
-      <div className="flex flex-col justify-center gap-3 border-b border-line p-8 min-[861px]:border-b-0 min-[861px]:border-r min-[861px]:p-12">
+    <div ref={ref} className="grid border border-line min-[861px]:grid-cols-[1.1fr_1fr]">
+      <div
+        className={cn(
+          "flex flex-col justify-center gap-3 border-b border-line p-8 adt-reveal min-[861px]:border-b-0 min-[861px]:border-r min-[861px]:p-12",
+          inView && "is-visible"
+        )}
+      >
         <Kicker>Comunidad</Kicker>
         <h2 className="text-[clamp(1.75rem,3vw,2.5rem)]">La escena está conectada</h2>
         <p className="max-w-[46ch] text-text-soft">
@@ -35,7 +40,12 @@ function CommunityStats() {
         {COMMUNITY_STATS.map(({ id, label, value, Icon }, index) => (
           <div
             key={id}
-            className={`flex flex-col gap-2 border-b border-line p-8 ${index % 2 === 0 ? "border-l-0" : "border-l"}`}
+            style={{ transitionDelay: inView ? `${80 + index * 70}ms` : undefined }}
+            className={cn(
+              "flex flex-col gap-2 border-b border-line p-8 adt-reveal",
+              index % 2 === 0 ? "border-l-0" : "border-l",
+              inView && "is-visible"
+            )}
           >
             <Icon className="h-5 w-5 text-signal" />
             <CommunityStatValue value={value} className="font-display text-2xl font-extrabold" />

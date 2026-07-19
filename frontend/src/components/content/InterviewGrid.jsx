@@ -15,41 +15,41 @@ function InterviewGrid({ entrevistas }) {
   if (!entrevistas?.length) return null;
 
   return (
-    <div
-      ref={ref}
-      className={cn("grid gap-6 adt-reveal min-[601px]:grid-cols-2 min-[901px]:grid-cols-3", inView && "is-visible")}
-    >
-      {entrevistas.map((entrevista) => {
+    <div ref={ref} className="grid gap-6 min-[601px]:grid-cols-2 min-[901px]:grid-cols-3">
+      {entrevistas.map((entrevista, index) => {
         const href = `/entrevistas/${entrevista.slug}`;
         return (
-          <article
+          <div
             key={entrevista.id}
-            className="group border border-line transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-within:-translate-y-0.5 focus-within:border-signal"
+            style={{ transitionDelay: inView ? `${index * 70}ms` : undefined }}
+            className={cn("adt-reveal h-full", inView && "is-visible")}
           >
-            <Link to={href}>
-              <Media
-                ratio="45"
-                src={entrevista.imagen_portada}
-                alt={`Retrato de ${entrevista.artista}`}
-                credit={entrevista.credito_foto_portada}
-                zoom
-              />
-            </Link>
-            <div className="p-4">
-              <Quote className="mb-2 h-[22px] w-[22px] text-signal" fill="currentColor" />
-              {entrevista.cita_destacada && (
-                <blockquote className="font-display text-[1.1875rem] font-bold normal-case leading-tight tracking-[0.005em]">
-                  <Link to={href} className="hover:text-signal">
-                    &ldquo;{entrevista.cita_destacada}&rdquo;
-                  </Link>
-                </blockquote>
-              )}
-              <p className="mt-3 text-xs font-bold uppercase tracking-[0.05em] text-text-muted">
-                <span className="text-text">{entrevista.artista}</span>
-                {entrevista.rol_entrevistado && <> · {entrevista.rol_entrevistado}</>}
-              </p>
-            </div>
-          </article>
+            <article className="group flex h-full flex-col border border-line transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-within:-translate-y-0.5 focus-within:border-signal">
+              <Link to={href}>
+                <Media
+                  ratio="45"
+                  src={entrevista.imagen_portada}
+                  alt={`Retrato de ${entrevista.artista}`}
+                  credit={entrevista.credito_foto_portada}
+                  zoom
+                />
+              </Link>
+              <div className="p-4">
+                <Quote className="mb-2 h-[22px] w-[22px] text-signal" fill="currentColor" />
+                {entrevista.cita_destacada && (
+                  <blockquote className="font-display text-[1.1875rem] font-bold normal-case leading-tight tracking-[0.005em]">
+                    <Link to={href} className="hover:text-signal">
+                      &ldquo;{entrevista.cita_destacada}&rdquo;
+                    </Link>
+                  </blockquote>
+                )}
+                <p className="mt-3 text-xs font-bold uppercase tracking-[0.05em] text-text-muted">
+                  <span className="text-text">{entrevista.artista}</span>
+                  {entrevista.rol_entrevistado && <> · {entrevista.rol_entrevistado}</>}
+                </p>
+              </div>
+            </article>
+          </div>
         );
       })}
     </div>

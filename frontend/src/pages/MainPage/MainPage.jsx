@@ -64,7 +64,7 @@ AdBillboard.propTypes = {
 function MainPage() {
   const { heroNews, events, interviews, gallery, ads } = useHomeData();
 
-  const heroLead = heroNews.data?.heroLead;
+  const heroSlides = heroNews.data?.heroSlides ?? [];
   const heroSupportItems = heroNews.data?.heroSupportItems ?? [];
   const newsListItems = heroNews.data?.newsListItems ?? [];
   const eventosList = events.data ?? [];
@@ -99,7 +99,7 @@ function MainPage() {
           <HeroSkeleton />
           <HeroSupportSkeleton />
         </section>
-      ) : heroLead ? (
+      ) : heroSlides.length ? (
         <section
           className="wrap grid grid-cols-1 gap-6 pt-6 pb-12 min-[960px]:grid-cols-[1.4fr_1fr] min-[1101px]:grid-cols-[1.7fr_1fr]"
           aria-labelledby="hero-heading"
@@ -107,7 +107,7 @@ function MainPage() {
           <h2 className="sr-only" id="hero-heading">
             Historia principal
           </h2>
-          <Hero noticia={heroLead} />
+          <Hero slides={heroSlides} />
           <HeroSupport items={heroSupportItems} />
         </section>
       ) : (
