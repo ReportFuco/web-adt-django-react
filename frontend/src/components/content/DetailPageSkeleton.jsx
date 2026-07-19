@@ -4,7 +4,7 @@ import Skeleton from "../ui/Skeleton";
 /** Forma de DetailHero.jsx mientras la página de detalle carga — Fase 7. */
 function DetailHeroSkeleton() {
   return (
-    <div className="relative flex min-h-[68vh] items-end overflow-hidden border-b border-line bg-surface">
+    <div className="relative flex min-h-[68vh] items-end overflow-hidden border-b border-line bg-surface-raised">
       <div className="wrap relative z-10 w-full py-16">
         <Skeleton className="mb-6 h-3 w-48" />
         <Skeleton className="mb-5 h-6 w-24" />

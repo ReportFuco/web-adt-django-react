@@ -7,10 +7,10 @@ import parse from "html-react-parser";
 import { getNoticia, getNoticias, postComment } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Comments from "../../components/features/Comments";
-import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
 import DetailHero from "../../components/content/DetailHero";
 import DetailGallery from "../../components/content/DetailGallery";
+import DetailPageSkeleton from "../../components/content/DetailPageSkeleton";
 import NewsList from "../../components/content/NewsList";
 import SectionHead from "../../components/ui/SectionHead";
 import { MetaRow, MetaItem } from "../../components/ui/MetaRow";
@@ -103,7 +103,7 @@ function NewsDetailPage() {
   }, [cleanContent]);
 
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar la noticia." />;
-  if (!noticia) return <LoadingState className="my-24" label="Cargando noticia…" />;
+  if (!noticia) return <DetailPageSkeleton type="noticia" />;
 
   const noticiaDescription = excerpt(noticia.subtitulo || noticia.contenido || "", 160);
   const noticiaUrl = `https://adictosaltechno.com/noticias/${id}/${slug}`;

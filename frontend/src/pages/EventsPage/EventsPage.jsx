@@ -6,10 +6,10 @@ import Seo from "../../components/common/Seo";
 import SectionHead from "../../components/ui/SectionHead";
 import TagFilterRow from "../../components/ui/TagFilterRow";
 import PaginationControls from "../../components/ui/PaginationControls";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import AgendaRow from "../../components/ui/AgendaRow";
+import AgendaListSkeleton from "../../components/content/AgendaListSkeleton";
 import { getEvents, getTags } from "../../services/api";
 import { getEventDateItems, getLocalDate } from "../../utils/eventDates";
 
@@ -77,7 +77,7 @@ function EventsPage() {
         />
 
         {state.loading ? (
-          <LoadingState label="Cargando eventos…" />
+          <AgendaListSkeleton />
         ) : state.error ? (
           <ErrorState description="No se pudieron cargar los eventos." />
         ) : state.results.length ? (

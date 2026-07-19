@@ -4,10 +4,10 @@ import parse from "html-react-parser";
 import { Calendar, ExternalLink, MapPin } from "lucide-react";
 
 import { getEventBySlug, getEvents } from "../../services/api";
-import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
 import DetailHero from "../../components/content/DetailHero";
 import DetailGallery from "../../components/content/DetailGallery";
+import DetailPageSkeleton from "../../components/content/DetailPageSkeleton";
 import EventCards from "../../components/content/EventCards";
 import SectionHead from "../../components/ui/SectionHead";
 import { MetaRow, MetaItem } from "../../components/ui/MetaRow";
@@ -49,7 +49,7 @@ function EventsDetailPage() {
   }, [slug]);
 
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar el evento." />;
-  if (!evento) return <LoadingState className="my-24" label="Cargando evento…" />;
+  if (!evento) return <DetailPageSkeleton type="evento" />;
 
   const eventDescription = excerpt(evento.descripcion || "", 160);
   const eventUrl = `https://adictosaltechno.com/eventos/${evento.id}/${slug}`;

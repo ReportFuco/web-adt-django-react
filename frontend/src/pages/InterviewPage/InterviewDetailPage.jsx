@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { Calendar, Instagram } from "lucide-react";
 
 import { getInterviewBySlug, getInterview } from "../../services/api";
-import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
 import DetailHero from "../../components/content/DetailHero";
 import DetailGallery from "../../components/content/DetailGallery";
+import DetailPageSkeleton from "../../components/content/DetailPageSkeleton";
 import InterviewGrid from "../../components/content/InterviewGrid";
 import SectionHead from "../../components/ui/SectionHead";
 import { MetaRow, MetaItem } from "../../components/ui/MetaRow";
@@ -47,7 +47,7 @@ function InterviewDetailPage() {
   }, [slug]);
 
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar la entrevista." />;
-  if (!interview) return <LoadingState className="my-24" label="Cargando entrevista…" />;
+  if (!interview) return <DetailPageSkeleton type="entrevista" />;
 
   const interviewDescription = excerpt(interview.cita_destacada || interview.contenido || "", 160);
   const interviewUrl = `https://adictosaltechno.com/entrevistas/${slug}`;

@@ -5,10 +5,10 @@ import Seo from "../../components/common/Seo";
 import SectionHead from "../../components/ui/SectionHead";
 import TagFilterRow from "../../components/ui/TagFilterRow";
 import PaginationControls from "../../components/ui/PaginationControls";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import NewsList from "../../components/content/NewsList";
+import NewsListSkeleton from "../../components/content/NewsListSkeleton";
 import { getNoticias, getTags } from "../../services/api";
 
 function NewsPage() {
@@ -70,7 +70,7 @@ function NewsPage() {
         />
 
         {state.loading ? (
-          <LoadingState label="Cargando noticias…" />
+          <NewsListSkeleton />
         ) : state.error ? (
           <ErrorState description="No se pudieron cargar las noticias." />
         ) : state.results.length ? (

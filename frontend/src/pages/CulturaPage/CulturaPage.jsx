@@ -4,10 +4,10 @@ import { useSearchParams } from "react-router-dom";
 import Seo from "../../components/common/Seo";
 import SectionHead from "../../components/ui/SectionHead";
 import PaginationControls from "../../components/ui/PaginationControls";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import Gallery from "../../components/home/Gallery";
+import GallerySkeleton from "../../components/home/GallerySkeleton";
 import { getGaleria } from "../../services/api";
 
 /**
@@ -59,7 +59,7 @@ function CulturaPage() {
         <SectionHead kicker="Escena" title="Cultura" />
 
         {state.loading ? (
-          <LoadingState label="Cargando galería…" />
+          <GallerySkeleton />
         ) : state.error ? (
           <ErrorState description="No se pudo cargar la galería." />
         ) : state.results.length ? (

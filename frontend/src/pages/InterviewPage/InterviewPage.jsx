@@ -5,10 +5,10 @@ import Seo from "../../components/common/Seo";
 import SectionHead from "../../components/ui/SectionHead";
 import TagFilterRow from "../../components/ui/TagFilterRow";
 import PaginationControls from "../../components/ui/PaginationControls";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import InterviewGrid from "../../components/content/InterviewGrid";
+import InterviewGridSkeleton from "../../components/content/InterviewGridSkeleton";
 import { getInterview, getTags } from "../../services/api";
 
 function InterviewPage() {
@@ -70,7 +70,7 @@ function InterviewPage() {
         />
 
         {state.loading ? (
-          <LoadingState label="Cargando entrevistas…" />
+          <InterviewGridSkeleton />
         ) : state.error ? (
           <ErrorState description="No se pudieron cargar las entrevistas." />
         ) : state.results.length ? (

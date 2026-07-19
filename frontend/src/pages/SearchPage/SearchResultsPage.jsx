@@ -6,9 +6,9 @@ import SectionHead from "../../components/ui/SectionHead";
 import Tag from "../../components/ui/Tag";
 import Media from "../../components/ui/Media";
 import PaginationControls from "../../components/ui/PaginationControls";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
+import SearchResultsSkeleton from "../../components/content/SearchResultsSkeleton";
 import { getBusqueda } from "../../services/api";
 import { formatShortDate } from "../../utils/formatDate";
 
@@ -95,7 +95,7 @@ function SearchResultsPage() {
         {!query ? (
           <EmptyState description="Escribe un término para buscar en noticias, eventos y entrevistas." />
         ) : state.loading ? (
-          <LoadingState label="Buscando…" />
+          <SearchResultsSkeleton />
         ) : state.error ? (
           <ErrorState description="No se pudo completar la búsqueda." />
         ) : state.results.length ? (
