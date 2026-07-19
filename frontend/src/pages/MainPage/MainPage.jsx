@@ -1,107 +1,138 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
-import NewsSection from "../NewsPage/NewsSection";
-import EventSections from "../EventsPage/EventSection";
-import InterviewSection from "../InterviewPage/InterviewSection";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { getNoticias, getInterview, getEvents, getAnunciosByUbicacion } from "../../services/api";
-import { getProductos } from "../../services/store.api";
-import Socialmedia from "../../components/common/socialMedia";
-import Form from "../../components/common/Form";
-import NoticiasCarousel from "../../components/common/NoticiasCarousel";
-import AdBanner from "../../components/common/AdBanner";
 import Seo from "../../components/common/Seo";
-import BannerSpotify from "../../assets/img/banners/banner-spotify.jpg";
+import Hero from "../../components/home/Hero";
+import HeroSupport from "../../components/home/HeroSupport";
+import Headlines from "../../components/home/Headlines";
+import Gallery from "../../components/home/Gallery";
+import CommunityStats from "../../components/home/CommunityStats";
+import ContactForm from "../../components/home/ContactForm";
+import NewsList from "../../components/content/NewsList";
+import EventCards from "../../components/content/EventCards";
+import InterviewGrid from "../../components/content/InterviewGrid";
+import SectionHead from "../../components/ui/SectionHead";
+import AdSlot from "../../components/ui/AdSlot";
+import LoadingState from "../../components/ui/LoadingState";
+import EmptyState from "../../components/ui/EmptyState";
+import ErrorState from "../../components/ui/ErrorState";
+import {
+  getAnunciosByUbicacion,
+  getEvents,
+  getGaleria,
+  getInterview,
+  getNoticias,
+  trackAnuncioClick,
+} from "../../services/api";
 
-function MainPage() {
-  const [data, setData] = useState({
-    noticias: [],
-    entrevistas: [],
-    eventos: [],
-    productos: [],
-    anuncios: { betweenNewsEvents: null },
-    loading: true,
-  });
+const AD_LOCATIONS = {
+  betweenNewsEvents: "home_between_news_events",
+  betweenEventsInterviews: "home_between_events_interviews",
+  afterInterviews: "home_after_interviews",
+};
 
-  function normalizeData(noticias, eventos) {
-    const noticiasNormalized = noticias.map((noticia) => ({
-      id: noticia.id,
-      titulo: noticia.titulo,
-      imagen: noticia.imagen,
-      tipo: "Noticias",
-      slug: noticia.slug,
-      fecha: noticia.fecha_publicacion,
-      destacado: noticia.destacado,
-      tags: noticia.tags || [],
-    }));
-
-    const eventosNormalized = eventos.map((evento) => ({
-      id: evento.id,
-      titulo: evento.nombre,
-      imagen: evento.imagen,
-      tipo: "Eventos",
-      slug: evento.slug,
-      fecha: evento.fecha_hora,
-      destacado: evento.destacado,
-      tags: evento.tags || [],
-    }));
-
-    return [...noticiasNormalized, ...eventosNormalized];
-  }
+/**
+ * Carga y arma los datos del home (PLAN.md Fase 4). Cada módulo declara su
+ * selector: hero = 1 destacada + 4 apoyo sin duplicar; noticias = últimas
+ * excluyendo el hero; eventos = próximos (excluye pasados aunque
+ * `fecha_hora` tenga fallback histórico, ver views.py `proximos`).
+ */
+function useHomeData() {
+  const [state, setState] = useState({ loading: true });
 
   useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const [noticias, entrevistas, eventos, productos, anunciosHome] = await Promise.all([
+    let cancelled = false;
+
+    async function load() {
+      const [destacadasRes, allNoticiasRes, proximosRes, entrevistasRes, galeriaRes, adsA, adsB, adsC] =
+        await Promise.all([
+          getNoticias({ destacado: true }),
           getNoticias(),
+          getEvents({ proximos: true }),
           getInterview(),
-          getEvents(),
-          getProductos(),
-          getAnunciosByUbicacion("home_between_news_events"),
+          getGaleria({ limit: 6 }),
+          getAnunciosByUbicacion(AD_LOCATIONS.betweenNewsEvents),
+          getAnunciosByUbicacion(AD_LOCATIONS.betweenEventsInterviews),
+          getAnunciosByUbicacion(AD_LOCATIONS.afterInterviews),
         ]);
-        const productosData = Array.isArray(productos?.data)
-          ? productos.data
-          : Array.isArray(productos?.data?.results)
-            ? productos.data.results
-            : [];
-        const combinado = normalizeData(noticias, eventos);
-        const destacados = combinado.filter((item) => item.destacado || false);
+      if (cancelled) return;
 
-        setData({
-          noticias,
-          entrevistas,
-          eventos,
-          productos: productosData,
-          anuncios: { betweenNewsEvents: anunciosHome?.[0] || null },
-          combinado,
-          destacados,
-          loading: false,
-        });
-      } catch (error) {
-        console.error("Error cargando datos:", error);
-        setData((prev) => ({ ...prev, loading: false }));
-      }
+      const destacadas = destacadasRes.results;
+      const fillerNoticias = allNoticiasRes.results.filter(
+        (noticia) => !destacadas.some((destacada) => destacada.id === noticia.id)
+      );
+      const heroPool = [...destacadas, ...fillerNoticias].slice(0, 5);
+      const [heroLead, ...heroSupportSource] = heroPool;
+      const heroSupportItems = heroSupportSource.map((noticia) => ({
+        id: noticia.id,
+        href: `/noticias/${noticia.id}/${noticia.slug}`,
+        titulo: noticia.titulo,
+        imagen: noticia.imagen,
+        tag: "Noticias",
+      }));
+
+      const heroIds = new Set(heroPool.map((noticia) => noticia.id));
+      const newsListItems = allNoticiasRes.results.filter((noticia) => !heroIds.has(noticia.id)).slice(0, 4);
+
+      setState({
+        loading: false,
+        heroLead,
+        heroSupportItems,
+        heroError: destacadasRes.error || allNoticiasRes.error,
+        newsListItems,
+        newsError: allNoticiasRes.error,
+        eventos: proximosRes.results,
+        eventosError: proximosRes.error,
+        entrevistas: entrevistasRes.results.slice(0, 3),
+        entrevistasError: entrevistasRes.error,
+        galeria: galeriaRes.results,
+        ads: {
+          betweenNewsEvents: adsA.results[0] || null,
+          betweenEventsInterviews: adsB.results[0] || null,
+          afterInterviews: adsC.results[0] || null,
+        },
+      });
+    }
+
+    load();
+    return () => {
+      cancelled = true;
     };
-
-    fetchAllData();
   }, []);
 
-  if (data.loading) return <LoadingSpinner />;
+  return state;
+}
 
-  const destacados = [
-    ...(data.destacados || []),
-    {
-      titulo: "Síguenos en nuestra playlist de Spotify",
-      imagen: BannerSpotify,
-      tipo: "Spotify",
-      slug: null,
-      id: "spotify-banner",
-      url: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH",
-    },
-  ];
+function AdBillboard({ anuncio }) {
+  if (!anuncio) return null;
+  return (
+    <div className="wrap py-12">
+      <AdSlot
+        variant="billboard"
+        title={anuncio.titulo}
+        href={anuncio.enlace}
+        ctaLabel={anuncio.cta_text || "Ver más"}
+        onCtaClick={() => trackAnuncioClick(anuncio.id)}
+      />
+    </div>
+  );
+}
+
+AdBillboard.propTypes = {
+  anuncio: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    titulo: PropTypes.string,
+    enlace: PropTypes.string,
+    cta_text: PropTypes.string,
+  }),
+};
+
+function MainPage() {
+  const data = useHomeData();
+
+  if (data.loading) {
+    return <LoadingState label="Cargando el home…" className="min-h-[60vh]" />;
+  }
 
   return (
     <>
@@ -118,108 +149,107 @@ function MainPage() {
           description: "Noticias de techno, eventos electrónicos, entrevistas y cultura club en Chile y el mundo.",
         }}
       />
-      <Header />
-      <main className="min-h-screen flex flex-col" style={{ color: "var(--text)" }}>
-        <NoticiasCarousel data={destacados} />
 
-        <section className="py-20 px-4 md:px-6 max-w-7xl mx-auto w-full flex flex-col gap-8">
-          <article className="section-shell">
-            <NewsSection
-              noticias={data.noticias}
-              destacadas={true}
-              limit={6}
-              gridCols="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              cardHeight="h-[28rem]"
-            />
-          </article>
-
-          {data.anuncios?.betweenNewsEvents && (
-            <article className="section-shell">
-              <AdBanner anuncio={data.anuncios.betweenNewsEvents} />
-            </article>
+      {data.heroLead ? (
+        <section className="wrap grid grid-cols-1 gap-6 pt-6 pb-12 min-[960px]:grid-cols-[1.4fr_1fr] min-[1101px]:grid-cols-[1.7fr_1fr]" aria-labelledby="hero-heading">
+          <h2 className="sr-only" id="hero-heading">
+            Historia principal
+          </h2>
+          <Hero noticia={data.heroLead} />
+          <HeroSupport items={data.heroSupportItems} />
+        </section>
+      ) : (
+        <div className="wrap py-12">
+          {data.heroError ? (
+            <ErrorState description="No se pudo cargar la portada." />
+          ) : (
+            <EmptyState description="Todavía no hay noticias destacadas para mostrar en portada." />
           )}
+        </div>
+      )}
 
-          <article className="section-shell">
-            <EventSections
-              event={data.eventos}
-              destacadas={true}
-              limit={6}
-              gridCols="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              cardHeight="h-[26rem]"
-            />
-          </article>
+      <Headlines eventos={data.eventos.slice(0, 3)} />
 
-          <article className="section-shell">
-            <InterviewSection
-              interview={data.entrevistas}
-              destacadas={true}
-              limit={6}
-              gridCols="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              cardHeight="h-[26rem]"
-            />
-          </article>
-        </section>
+      <AdBillboard anuncio={data.ads.betweenNewsEvents} />
 
-        <section
-          className="py-24"
-          style={{
-            background: "var(--bg-soft)",
-            borderTop: "1px solid var(--border)",
-            borderBottom: "1px solid var(--border)",
-          }}
-        >
-          <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <div className="flex flex-col md:flex-row justify-between items-baseline mb-12 gap-8">
-              <div className="flex flex-col gap-3">
-                <p className="text-[11px] uppercase tracking-[0.28em] font-semibold theme-text-muted">
-                  Agenda techno y cultura club
-                </p>
-                <h2
-                  className="text-5xl md:text-7xl font-black uppercase tracking-tighter"
-                  style={{ color: "var(--text)" }}
-                >
-                  Calendario <br /> de Eventos
-                </h2>
-              </div>
-              <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] p-4 theme-button-secondary">
-                <span className="theme-text-muted">Filtro:</span>
-                <button style={{ color: "var(--text)" }} className="underline">
-                  Todo
-                </button>
-                <button className="theme-text-soft">Chile</button>
-                <button className="theme-text-soft">Techno</button>
-              </div>
-            </div>
-            <EventSections
-              event={data.eventos}
-              destacadas={false}
-              limit={8}
-              gridCols="grid-cols-1 md:grid-cols-2"
-              cardHeight="h-[11rem] md:h-[12rem]"
+      <section className="wrap py-24" aria-labelledby="news-heading">
+        <SectionHead
+          kicker="Noticias"
+          title="Últimas noticias"
+          headingId="news-heading"
+          linkTo="/noticias"
+          linkLabel="Ver todas las noticias"
+        />
+        {data.newsListItems.length ? (
+          <NewsList noticias={data.newsListItems} />
+        ) : data.newsError ? (
+          <ErrorState description="No se pudieron cargar las noticias." />
+        ) : (
+          <EmptyState description="Todavía no hay noticias publicadas." />
+        )}
+      </section>
+
+      <section className="wrap py-24" aria-labelledby="events-heading">
+        <SectionHead
+          kicker="Eventos"
+          title="Próximos eventos"
+          headingId="events-heading"
+          linkTo="/eventos"
+          linkLabel="Ver calendario completo"
+        />
+        {data.eventos.length ? (
+          <EventCards eventos={data.eventos.slice(0, 4)} />
+        ) : data.eventosError ? (
+          <ErrorState description="No se pudieron cargar los eventos." />
+        ) : (
+          <EmptyState description="No hay eventos próximos por ahora." />
+        )}
+      </section>
+
+      <AdBillboard anuncio={data.ads.betweenEventsInterviews} />
+
+      <section className="wrap py-24" aria-labelledby="interviews-heading">
+        <SectionHead
+          kicker="Entrevistas"
+          title="Voces de la escena"
+          headingId="interviews-heading"
+          linkTo="/entrevistas"
+          linkLabel="Ver todas las entrevistas"
+        />
+        {data.entrevistas.length ? (
+          <InterviewGrid entrevistas={data.entrevistas} />
+        ) : data.entrevistasError ? (
+          <ErrorState description="No se pudieron cargar las entrevistas." />
+        ) : (
+          <EmptyState description="Todavía no hay entrevistas publicadas." />
+        )}
+      </section>
+
+      <AdBillboard anuncio={data.ads.afterInterviews} />
+
+      {data.galeria.length > 0 && (
+        <section className="bg-bg-soft py-24" aria-labelledby="gallery-heading">
+          <div className="wrap">
+            <SectionHead
+              kicker="Escena"
+              title="Galería"
+              headingId="gallery-heading"
+              linkTo="/cultura"
+              linkLabel="Ver galería completa"
             />
+            <Gallery fotos={data.galeria} />
           </div>
         </section>
+      )}
 
-        <section className="py-24 px-4 md:px-6">
-          <div className="max-w-5xl mx-auto theme-panel-strong p-10 md:p-20 flex flex-col items-center text-center gap-8">
-            <span className="text-5xl">∞</span>
-            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter" style={{ color: "var(--text)" }}>
-              Únete a la <br /> comunidad
-            </h2>
-            <p className="text-lg md:text-xl max-w-2xl font-medium theme-text-soft">
-              Acceso a noticias de techno, eventos, entrevistas y cultura electrónica desde una mirada editorial más profunda sobre la escena club.
-            </p>
-            <button className="theme-button px-12 py-5 text-sm font-bold uppercase tracking-[0.3em] hover:scale-105 transition-transform">
-              Explorar →
-            </button>
-          </div>
-        </section>
+      <section className="wrap py-24" aria-labelledby="community-heading">
+        <h2 className="sr-only" id="community-heading">
+          Comunidad
+        </h2>
+        <CommunityStats />
+      </section>
 
-        <Socialmedia />
-        <Form />
-        <SpotifyPlaylist />
-      </main>
-      <Footer />
+      <ContactForm />
     </>
   );
 }

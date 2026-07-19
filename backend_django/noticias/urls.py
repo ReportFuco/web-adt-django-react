@@ -16,6 +16,8 @@ router.register(r'franjasuperior', FranjaSuperiorViewSet)
 
 
 urlpatterns = [
+    path('api/galeria/', GaleriaView.as_view(), name='galeria'),
+    path('api/buscar/', BusquedaView.as_view(), name='buscar'),
     path('api/', include(router.urls)),
 ]
 

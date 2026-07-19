@@ -1,72 +1,50 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import Header from "../../components/layout/Header";
-import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import Footer from "../../components/layout/Footer";
-import NewsSection from "../NewsPage/NewsSection";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { getNoticias } from "../../services/api";
-import Socialmedia from "../../components/common/socialMedia";
-import NoticiasCarousel from "../../components/common/NoticiasCarousel";
 import Seo from "../../components/common/Seo";
+import SectionHead from "../../components/ui/SectionHead";
+import TagFilterRow from "../../components/ui/TagFilterRow";
+import PaginationControls from "../../components/ui/PaginationControls";
+import LoadingState from "../../components/ui/LoadingState";
+import EmptyState from "../../components/ui/EmptyState";
+import ErrorState from "../../components/ui/ErrorState";
+import NewsList from "../../components/content/NewsList";
+import { getNoticias, getTags } from "../../services/api";
 
 function NewsPage() {
-  const [noticias, setNoticias] = useState(null);
-  const [error, setError] = useState(null);
-  const [destacados, setDestacados] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tag = searchParams.get("tag");
+  const page = Number(searchParams.get("page")) || 1;
 
-  function normalizeData(noticias) {
-    return noticias.map((noticia) => ({
-      id: noticia.id,
-      titulo: noticia.titulo,
-      imagen: noticia.imagen,
-      tipo: "Noticias",
-      slug: noticia.slug,
-      fecha: noticia.fecha_publicacion,
-      destacado: noticia.destacado,
-    }));
-  }
+  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    async function loadNews() {
-      try {
-        const noticiasData = await getNoticias();
-
-        if (!Array.isArray(noticiasData)) {
-          throw new Error("Respuesta inválida al cargar noticias");
-        }
-
-        const normalizados = normalizeData(noticiasData);
-        setNoticias(noticiasData);
-        const destacadosFiltrados = normalizados.filter((item) => item.destacado);
-        setDestacados(destacadosFiltrados);
-      } catch (error) {
-        console.error("Error cargando noticias:", error);
-        setError("Error al cargar las noticias");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadNews();
+    getTags().then((res) => setTags(res.results));
   }, []);
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  useEffect(() => {
+    let cancelled = false;
+    setState((prev) => ({ ...prev, loading: true }));
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500 text-xl">{error}</p>
-      </div>
-    );
-  }
+    getNoticias({ tag: tag || undefined, page }).then((res) => {
+      if (cancelled) return;
+      setState({ loading: false, ...res });
+    });
 
-  if (!noticias) {
-    return <LoadingSpinner />;
-  }
+    return () => {
+      cancelled = true;
+    };
+  }, [tag, page]);
+
+  const updateParams = (next) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(next).forEach(([key, value]) => {
+      if (value === null || value === undefined) params.delete(key);
+      else params.set(key, value);
+    });
+    setSearchParams(params);
+  };
 
   return (
     <>
@@ -75,50 +53,41 @@ function NewsPage() {
         description="Últimas noticias de techno, lanzamientos, artistas, festivales y cultura electrónica en Chile y el mundo."
         canonical="https://adictosaltechno.com/noticias"
         schema={{
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          name: 'Noticias de techno y música electrónica',
-          url: 'https://adictosaltechno.com/noticias',
-          inLanguage: 'es-CL'
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Noticias de techno y música electrónica",
+          url: "https://adictosaltechno.com/noticias",
+          inLanguage: "es-CL",
         }}
       />
-      <Header />
-      <NoticiasCarousel data={destacados} />
-      <main className="min-h-screen flex flex-col">
-        <section className="md:col-span-4 flex flex-col gap-4 items-center my-4">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-white/45 font-semibold text-center">
-            Noticias techno, lanzamientos y escena electrónica
-          </p>
-          <h1 className="text-3xl text-white font-extrabold text-center ">
-            Últimas noticias de techno
-          </h1>
-          <p className="text-sm md:text-base text-white/60 text-center max-w-3xl px-4">
-            Cobertura editorial sobre techno, música electrónica, artistas, festivales, clubes y movimientos de la escena en Chile y el mundo.
-          </p>
 
-          <article className="p-0.5">
-            <NewsSection
-              noticias={noticias}
-              destacadas={true}
-              limit={10}
-              gridCols="grid-cols-1 sm:grid-cols-2"
-              cardHeight="h-55 md:h-90"
+      <section className="wrap py-16">
+        <SectionHead kicker="Noticias" title="Últimas noticias de techno" />
+        <TagFilterRow
+          tags={tags}
+          activeTag={tag}
+          onSelect={(nextTag) => updateParams({ tag: nextTag, page: null })}
+        />
+
+        {state.loading ? (
+          <LoadingState label="Cargando noticias…" />
+        ) : state.error ? (
+          <ErrorState description="No se pudieron cargar las noticias." />
+        ) : state.results.length ? (
+          <>
+            <NewsList noticias={state.results} />
+            <PaginationControls
+              page={page}
+              hasPrevious={Boolean(state.previous)}
+              hasNext={Boolean(state.next)}
+              onPrevious={() => updateParams({ page: page - 1 })}
+              onNext={() => updateParams({ page: page + 1 })}
             />
-          </article>
-          <article className="p-0.5">
-            <NewsSection
-              noticias={noticias}
-              destacadas={false}
-              limit={10}
-              gridCols="grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
-              cardHeight="h-55 md:h-90"
-            />
-          </article>
-        </section>
-        <Socialmedia />
-        <SpotifyPlaylist />
-        <Footer />
-      </main>
+          </>
+        ) : (
+          <EmptyState description={tag ? `No hay noticias con la etiqueta "${tag}".` : "Todavía no hay noticias publicadas."} />
+        )}
+      </section>
     </>
   );
 }

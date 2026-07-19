@@ -88,12 +88,12 @@ class FotoAdminInlineMixin:
 
 class FotoNoticiaInline(FotoAdminInlineMixin, admin.TabularInline):
     model = FotoNoticia
-    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada')
+    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada')
 
 
 class FotoEventoInline(FotoAdminInlineMixin, admin.TabularInline):
     model = FotoEvento
-    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada')
+    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada')
 
 
 class FechaEventoInline(admin.TabularInline):
@@ -104,7 +104,7 @@ class FechaEventoInline(admin.TabularInline):
 
 class FotoEntrevistaInline(FotoAdminInlineMixin, admin.TabularInline):
     model = FotoEntrevista
-    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada')
+    fields = ('imagen', 'preview_imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada')
 
 
 @admin.register(Tag)

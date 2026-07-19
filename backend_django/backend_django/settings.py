@@ -163,6 +163,8 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
 CORS_ALLOWED_ORIGINS = [
     "https://adictosaltechno.com",
     "http://localhost",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://n8n.fucolabs.dev",
     "http://209.126.1.114:5173"
 ]

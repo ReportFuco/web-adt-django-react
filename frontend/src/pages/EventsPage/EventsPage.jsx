@@ -1,75 +1,63 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { MapPin } from "lucide-react";
 
-import Header from "../../components/layout/Header";
-import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import Footer from "../../components/layout/Footer";
-import EventSection from "../EventsPage/EventSection";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import Socialmedia from "../../components/common/socialMedia";
-import NoticiasCarousel from "@/components/common/NoticiasCarousel";
-import { getEvents } from "../../services/api";
 import Seo from "../../components/common/Seo";
+import SectionHead from "../../components/ui/SectionHead";
+import TagFilterRow from "../../components/ui/TagFilterRow";
+import PaginationControls from "../../components/ui/PaginationControls";
+import LoadingState from "../../components/ui/LoadingState";
+import EmptyState from "../../components/ui/EmptyState";
+import ErrorState from "../../components/ui/ErrorState";
+import AgendaRow from "../../components/ui/AgendaRow";
+import { getEvents, getTags } from "../../services/api";
+import { getEventDateItems, getLocalDate } from "../../utils/eventDates";
+
+const isToday = (date) => {
+  const today = new Date();
+  return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+};
 
 function EventsPage() {
-  const [eventos, setEventos] = useState(null);
-  const [error, setError] = useState(null);
-  const [destacados, setDestacados] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tag = searchParams.get("tag");
+  const page = Number(searchParams.get("page")) || 1;
 
-  function normalizeData(eventos) {
-    return eventos.map((evento) => ({
-      id: evento.id,
-      titulo: evento.nombre,
-      nombre: evento.nombre,
-      imagen: evento.imagen,
-      tipo: "Eventos",
-      slug: evento.slug,
-      fecha_hora: evento.fecha_hora,
-      fechas: evento.fechas || [],
-      lugar: evento.lugar,
-      tags: evento.tags || [],
-      destacado: evento.destacado || false,
-    }));
-  }
+  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    async function loadNews() {
-      try {
-        const eventsData = await getEvents();
-
-        if (!Array.isArray(eventsData)) {
-          throw new Error("Respuesta inválida al cargar eventos");
-        }
-
-        const normalizados = normalizeData(eventsData);
-        setEventos(normalizados);
-        const destacadosFiltrados = normalizados.filter((item) => item.destacado);
-        setDestacados(destacadosFiltrados);
-      } catch (error) {
-        console.error("Error cargando eventos:", error);
-        setError("Error al cargar los eventos");
-      }
-    }
-
-    loadNews();
+    getTags().then((res) => setTags(res.results));
   }, []);
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500 text-xl">{error}</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    let cancelled = false;
+    setState((prev) => ({ ...prev, loading: true }));
 
-  if (!eventos) {
-    return <LoadingSpinner />;
-  }
+    getEvents({ tag: tag || undefined, proximos: true, page }).then((res) => {
+      if (cancelled) return;
+      setState({ loading: false, ...res });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tag, page]);
+
+  const updateParams = (next) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(next).forEach(([key, value]) => {
+      if (value === null || value === undefined) params.delete(key);
+      else params.set(key, value);
+    });
+    setSearchParams(params);
+  };
 
   return (
     <>
       <Seo
         title="Eventos techno y música electrónica | Adictos al Techno"
-        description="Agenda de eventos techno, fiestas electrónicas, festivales y fechas destacadas en Chile y el mundo."
+        description="Agenda de eventos, fiestas y festivales de techno y música electrónica en Chile y el mundo."
         canonical="https://adictosaltechno.com/eventos"
         schema={{
           "@context": "https://schema.org",
@@ -79,43 +67,59 @@ function EventsPage() {
           inLanguage: "es-CL",
         }}
       />
-      <Header />
-      <NoticiasCarousel data={destacados} />
-      <main className="min-h-screen flex flex-col">
-        <section className="md:col-span-4 flex flex-col gap-4 items-center">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-white/45 font-semibold text-center mt-4">
-            Agenda techno, fiestas electrónicas y festivales
-          </p>
-          <h1 className="text-3xl font-extrabold text-center my-1">
-            Eventos techno y música electrónica
-          </h1>
-          <p className="text-sm md:text-base text-white/60 text-center max-w-3xl px-4 mb-2">
-            Revisa fechas, fiestas, festivales y eventos de techno para seguir la escena electrónica en Chile y el mundo.
-          </p>
 
-          <article className="p-0.5 w-full max-w-6xl">
-            <EventSection
-              event={eventos}
-              destacadas={true}
-              limit={10}
-              gridCols="grid-cols-1 sm:grid-cols-2"
-              cardHeight="h-55 md:h-90"
+      <section className="wrap py-16">
+        <SectionHead kicker="Eventos" title="Calendario de eventos" />
+        <TagFilterRow
+          tags={tags}
+          activeTag={tag}
+          onSelect={(nextTag) => updateParams({ tag: nextTag, page: null })}
+        />
+
+        {state.loading ? (
+          <LoadingState label="Cargando eventos…" />
+        ) : state.error ? (
+          <ErrorState description="No se pudieron cargar los eventos." />
+        ) : state.results.length ? (
+          <>
+            <div className="border-t border-line">
+              {state.results.map((evento) => {
+                const dateItems = getEventDateItems(evento);
+                const primaryDate = getLocalDate(dateItems[0]?.fecha || evento.fecha_hora);
+                return (
+                  <AgendaRow
+                    key={evento.id}
+                    to={`/eventos/${evento.id}/${evento.slug}`}
+                    day={primaryDate ? primaryDate.getDate() : "—"}
+                    month={
+                      primaryDate
+                        ? primaryDate.toLocaleDateString("es-ES", { month: "short" }).replace(".", "").toUpperCase()
+                        : ""
+                    }
+                    isToday={primaryDate ? isToday(primaryDate) : false}
+                    title={evento.nombre}
+                    meta={
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin className="h-3 w-3" strokeWidth={2} />
+                        {evento.lugar}
+                      </span>
+                    }
+                  />
+                );
+              })}
+            </div>
+            <PaginationControls
+              page={page}
+              hasPrevious={Boolean(state.previous)}
+              hasNext={Boolean(state.next)}
+              onPrevious={() => updateParams({ page: page - 1 })}
+              onNext={() => updateParams({ page: page + 1 })}
             />
-          </article>
-          <article className="p-0.5 w-full max-w-6xl">
-            <EventSection
-              event={eventos}
-              destacadas={false}
-              limit={10}
-              gridCols="grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
-              cardHeight="h-55 md:h-90"
-            />
-          </article>
-        </section>
-        <Socialmedia />
-        <SpotifyPlaylist />
-        <Footer />
-      </main>
+          </>
+        ) : (
+          <EmptyState description={tag ? `No hay eventos próximos con la etiqueta "${tag}".` : "No hay eventos próximos por ahora."} />
+        )}
+      </section>
     </>
   );
 }

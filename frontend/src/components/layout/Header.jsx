@@ -1,251 +1,392 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useEffect, useState, useCallback, memo } from "react";
-import logoHeader from "../../assets/logo-final-header-cropped.png";
-import RedesSociales from "../common/RedesSociales";
-import Marquee from "react-fast-marquee";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Menu, Moon, Search, Sun, User, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useAuth } from "../../context/AuthContext";
-import { useCart } from "../../context/CartContext";
-import { toast } from "react-toastify";
-import CartButton from "../features/store/CartButton";
-import { franjaMensaje, trackFranjaClick } from "../../services/api";
+import { franjaMensaje, getNoticias, trackFranjaClick } from "../../services/api";
+import LinkGlyph from "../ui/LinkGlyph";
+import Ticker from "../ui/Ticker";
+import { SOCIAL_LINKS } from "../ui/SocialIcons";
 
-const Header = () => {
-  const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const { cart, removeFromCart, updateQuantity } = useCart();
-  const [franja, setFranja] = useState(null);
+const NAV_ITEMS = [
+  { label: "Noticias", to: "/noticias" },
+  { label: "Eventos", to: "/eventos" },
+  { label: "Entrevistas", to: "/entrevistas" },
+  { label: "Cultura", to: "/cultura" },
+];
 
-  const menuItems = [
-    { label: "Eventos", path: "/eventos" },
-    { label: "Noticias", path: "/noticias" },
-    { label: "Entrevistas", path: "/entrevistas" },
-  ];
-
-  const UserAvatar = memo(({ user }) => (
-    <div className="flex items-center justify-center w-8 h-8 border border-white/20 bg-white text-black font-bold">
-      {user.username.charAt(0).toUpperCase()}
-    </div>
-  ));
+function useTheme() {
+  const [theme, setTheme] = useState(() => localStorage.getItem("adt-theme") || "dark");
 
   useEffect(() => {
-    const loadFranja = async () => {
-      try {
-        const res = await franjaMensaje();
-        if (res) setFranja(res);
-      } catch (e) {
-        console.error("Error al obtener la franja:", e);
-        setFranja({
-          contenido: "Adictos al Techno / Cultura underground / Noticias / Eventos",
-        });
-      }
-    };
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("adt-theme", theme);
+  }, [theme]);
 
-    loadFranja();
+  return [theme, () => setTheme((prev) => (prev === "dark" ? "light" : "dark"))];
+}
+
+function useTickerItems() {
+  const [items, setItems] = useState([]);
+  const [franja, setFranja] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const [franjaRes, noticiasRes] = await Promise.all([
+        franjaMensaje().catch(() => null),
+        getNoticias(),
+      ]);
+      if (cancelled) return;
+
+      setFranja(franjaRes || null);
+      const headlineItems = (noticiasRes.results || []).slice(0, 4).map((noticia) => ({
+        id: `noticia-${noticia.id}`,
+        label: noticia.titulo,
+        href: `/noticias/${noticia.id}/${noticia.slug}`,
+      }));
+
+      const franjaItem = franjaRes?.contenido
+        ? [{ id: `franja-${franjaRes.id}`, label: franjaRes.contenido, href: franjaRes.url || undefined, franjaId: franjaRes.id }]
+        : [];
+
+      setItems([...franjaItem, ...headlineItems]);
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleFranjaClick = useCallback(async (event) => {
-    if (!franja?.url) return;
-    event.preventDefault();
-    try {
-      if (franja?.id) await trackFranjaClick(franja.id);
-    } catch (e) {
-      console.error("Error al trackear la franja:", e);
-    } finally {
-      window.open(franja.url, "_blank", "noopener,noreferrer");
-    }
-  }, [franja]);
-
-  const MarqueeText = memo(() => (
-    <Marquee
-      speed={45}
-      className="py-2 text-white uppercase tracking-[0.16em] text-[12px] md:text-[13px] font-bold"
-    >
-      {franja?.url ? (
-        <a
-          href={franja.url}
-          onClick={handleFranjaClick}
-          className="no-underline px-6 hover:text-white transition-colors"
-        >
-          {franja?.contenido || "Cargando..."}
-        </a>
-      ) : (
-        <span className="px-6">{franja?.contenido || "Cargando..."}</span>
-      )}
-    </Marquee>
-  ));
-
-  const handleLogout = useCallback(async () => {
-    await logout();
-    navigate("/");
-    setIsMenuOpen(false);
-  }, [logout, navigate]);
-
-  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
-
-  const navigateAndClose = useCallback(
-    (path) => {
-      navigate(path);
-      setIsMenuOpen(false);
+  const handleItemClick = useCallback(
+    (item) => {
+      if (item.franjaId) trackFranjaClick(item.franjaId);
     },
-    [navigate],
+    []
   );
 
-  const handleRemoveItem = (productId) => {
-    removeFromCart(productId);
-    toast.success("Producto eliminado del carrito");
+  return { items, handleItemClick, franja };
+}
+
+function useMobileNav() {
+  const [open, setOpen] = useState(false);
+  const panelRef = useRef(null);
+  const toggleRef = useRef(null);
+  const location = useLocation();
+
+  const close = useCallback(() => {
+    setOpen(false);
+    toggleRef.current?.focus();
+  }, []);
+
+  // Cierra al navegar (DESIGN §9.4).
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  // Cierra al cruzar el breakpoint de escritorio y con Escape; bloquea scroll
+  // y gestiona el foco mientras el panel está abierto.
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const mql = window.matchMedia("(min-width: 860px)");
+    const handleResize = (event) => {
+      if (event.matches) setOpen(false);
+    };
+    mql.addEventListener("change", handleResize);
+
+    const handleKeydown = (event) => {
+      if (event.key === "Escape") {
+        close();
+        return;
+      }
+      if (event.key !== "Tab" || !panelRef.current) return;
+      const focusable = panelRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeydown);
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panelRef.current?.querySelector("a, button")?.focus();
+
+    return () => {
+      mql.removeEventListener("change", handleResize);
+      document.removeEventListener("keydown", handleKeydown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, close]);
+
+  return { open, setOpen, close, panelRef, toggleRef };
+}
+
+function HeaderSearch() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!query.trim()) return;
+    navigate(`/buscar?q=${encodeURIComponent(query.trim())}`);
+    setOpen(false);
+    setQuery("");
   };
 
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Buscar en el sitio"
+        className="flex h-11 w-11 items-center justify-center rounded-adt text-text transition-colors hover:border-line hover:bg-surface"
+      >
+        <Search className="h-[19px] w-[19px]" strokeWidth={2} />
+      </button>
+    );
+  }
+
   return (
-    <>
-      <header className="fixed top-0 w-full z-50 bg-black/92 backdrop-blur-md border-b border-white/8">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-5 lg:px-6 h-[82px] sm:h-[88px] md:h-[94px] flex items-center justify-between gap-2 md:gap-3">
-          <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1 overflow-hidden">
-            <button
-              className="flex items-center min-w-0 flex-1 max-w-[86vw] sm:max-w-[82vw] md:max-w-[72vw] lg:max-w-none"
-              onClick={() => navigate("/")}
-              aria-label="Ir al inicio"
-            >
-              <img
-                src={logoHeader}
-                alt="Adictos al Techno"
-                className="block h-3 sm:h-4 md:h-4 lg:h-5 xl:h-5 w-auto max-w-full object-contain opacity-95"
-                loading="eager"
-              />
-            </button>
-
-            <nav className="hidden lg:flex items-center gap-5 xl:gap-6 uppercase text-[11px] xl:text-[12px] font-bold tracking-[0.14em] text-white/82">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="hover:text-white transition-colors duration-300 whitespace-nowrap"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          <div className="hidden lg:flex items-center gap-4 lg:gap-5 text-white shrink-0">
-            {user ? (
-              <div className="flex items-center gap-3">
-                <UserAvatar user={user} />
-                <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">
-                  {user.username}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-[10px] uppercase tracking-[0.18em] border border-white/15 px-4 py-2 hover:bg-white hover:text-black transition-all duration-300"
-                >
-                  Salir
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-white text-black px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] hover:bg-white/90 transition-all duration-300"
-              >
-                Login
-              </Link>
-            )}
-            <div className="pl-3 border-l border-white/10">
-              <CartButton
-                cart={cart}
-                updateQuantity={updateQuantity}
-                handleRemoveItem={handleRemoveItem}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center lg:hidden space-x-2 text-white shrink-0">
-            <CartButton
-              cart={cart}
-              updateQuantity={updateQuantity}
-              handleRemoveItem={handleRemoveItem}
-            />
-            <button
-              className="focus:outline-none scale-110"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-              aria-expanded={isMenuOpen}
-            >
-              <svg
-                className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? "rotate-90" : "rotate-0"}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div className="border-t border-white/10 bg-black/95">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-6">
-            <div className="flex-1 overflow-hidden">
-              <MarqueeText />
-            </div>
-            <div className="hidden sm:flex items-center gap-3 border-l border-white/10 pl-4 py-2">
-              <RedesSociales classNameDiseño="" dark />
-            </div>
-          </div>
-        </div>
-
-        <div
-          className={`lg:hidden w-full bg-black transition-all duration-300 ease-in-out overflow-hidden ${
-            isMenuOpen
-              ? "max-h-screen opacity-100 border-t border-white/10"
-              : "max-h-0 opacity-0"
-          }`}
-        >
-          <ul className="flex flex-col py-3 uppercase tracking-[0.16em] text-[12px] text-white/85 font-bold">
-            {menuItems.map((item) => (
-              <li key={item.path}>
-                <button
-                  onClick={() => navigateAndClose(item.path)}
-                  className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors"
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-
-            <li className="border-t border-white/10 mt-2">
-              {user ? (
-                <div className="flex flex-col px-5 py-4 gap-3">
-                  <div className="flex items-center gap-3">
-                    <UserAvatar user={user} />
-                    <span className="text-white">{user.username}</span>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full py-2 text-black bg-white hover:bg-white/90 transition-colors"
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => navigateAndClose("/login")}
-                  className="w-full text-left py-3 px-5 hover:bg-white hover:text-black transition-colors"
-                >
-                  Login
-                </button>
-              )}
-            </li>
-          </ul>
-        </div>
-      </header>
-      <div className="mt-[108px] sm:mt-[116px] md:mt-[124px] lg:mt-[136px]"></div>
-    </>
+    <form role="search" onSubmit={handleSubmit} className="flex items-center gap-1">
+      <label htmlFor="header-search-input" className="sr-only">
+        Buscar noticias, eventos y entrevistas
+      </label>
+      <input
+        id="header-search-input"
+        ref={inputRef}
+        type="search"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Buscar…"
+        className="h-11 w-32 rounded-adt border border-control-line bg-surface px-3 text-sm text-text focus:border-signal focus:outline-none sm:w-44"
+      />
+      <button
+        type="button"
+        onClick={() => setOpen(false)}
+        aria-label="Cerrar búsqueda"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-adt text-text-muted hover:text-text"
+      >
+        <X className="h-[18px] w-[18px]" strokeWidth={2} />
+      </button>
+    </form>
   );
-};
+}
 
-export default memo(Header);
+function AccountControl() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  if (!user) {
+    return (
+      <Link
+        to="/login"
+        className="flex h-11 items-center gap-2 rounded-adt px-3 text-xs font-bold uppercase tracking-[0.08em] text-text hover:bg-surface"
+      >
+        <User className="h-[18px] w-[18px]" strokeWidth={2} />
+        <span className="hidden sm:inline">Login</span>
+      </Link>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`Cuenta de ${user.username}`}
+        className="flex h-11 w-11 items-center justify-center rounded-adt text-text hover:bg-surface"
+      >
+        <span className="flex h-7 w-7 items-center justify-center rounded-adt bg-text text-xs font-bold text-bg">
+          {user.username?.charAt(0).toUpperCase()}
+        </span>
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full mt-2 min-w-[160px] rounded-adt border border-line bg-surface py-2 shadow-lg"
+        >
+          <p className="truncate px-4 py-1 text-xs uppercase tracking-[0.06em] text-text-muted">{user.username}</p>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={async () => {
+              await logout();
+              setOpen(false);
+              navigate("/");
+            }}
+            className="w-full px-4 py-2 text-left text-sm font-semibold uppercase tracking-[0.04em] hover:bg-surface-raised hover:text-signal"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Header() {
+  const [theme, toggleTheme] = useTheme();
+  const { items: tickerItems, handleItemClick } = useTickerItems();
+  const mobileNav = useMobileNav();
+
+  const navLinkClass = useCallback(
+    ({ isActive }) =>
+      cn(
+        "relative py-2 text-sm font-semibold uppercase tracking-[0.06em] after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:bg-signal after:transition-transform after:duration-[var(--adt-dur-fast)] after:content-['']",
+        isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"
+      ),
+    []
+  );
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-line bg-bg">
+      <div className="wrap flex items-center justify-between gap-6 py-4">
+        <div className="flex min-w-0 items-center gap-12">
+          <Link
+            to="/"
+            aria-label="Adictos al Techno — inicio"
+            className="flex shrink-0 items-center gap-2.5 font-display text-[clamp(1.05rem,4.4vw,1.35rem)] font-extrabold tracking-[0.02em]"
+          >
+            <LinkGlyph size={26} className="shrink-0 text-signal" />
+            <span className="hidden min-[421px]:inline">ADICTOS AL TECHNO</span>
+            <span className="min-[421px]:hidden" aria-hidden="true">ADT</span>
+          </Link>
+
+          <nav aria-label="Navegación principal" className="hidden items-center gap-6 min-[861px]:flex">
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.to} to={item.to} className={navLinkClass}>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-0.5">
+          <div
+            aria-label="Redes sociales de Adictos al Techno"
+            className="hidden items-center gap-0.5 min-[761px]:flex"
+          >
+            {SOCIAL_LINKS.map(({ key, label, href, Icon }) => (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                title={label}
+                className="flex h-[38px] w-[38px] items-center justify-center rounded-adt text-text-soft transition-colors hover:border hover:border-line hover:bg-surface hover:text-signal"
+              >
+                <Icon width={17} height={17} />
+              </a>
+            ))}
+          </div>
+          <span aria-hidden="true" className="mx-1.5 hidden h-6 w-px bg-line min-[761px]:block" />
+
+          <HeaderSearch />
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            aria-pressed={theme === "light"}
+            className="flex h-11 w-11 items-center justify-center rounded-adt text-text hover:bg-surface"
+          >
+            {theme === "dark" ? <Sun className="h-[19px] w-[19px]" strokeWidth={2} /> : <Moon className="h-[19px] w-[19px]" strokeWidth={2} />}
+          </button>
+
+          <AccountControl />
+
+          <button
+            ref={mobileNav.toggleRef}
+            type="button"
+            onClick={() => mobileNav.setOpen(true)}
+            aria-label="Abrir menú"
+            aria-expanded={mobileNav.open}
+            aria-controls="mobile-nav"
+            className="flex h-11 w-11 items-center justify-center rounded-adt text-text hover:bg-surface min-[861px]:hidden"
+          >
+            <Menu className="h-5 w-5" strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+
+      <Ticker items={tickerItems} onItemClick={handleItemClick} />
+
+      {mobileNav.open && (
+        <div
+          id="mobile-nav"
+          ref={mobileNav.panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú de navegación"
+          className="fixed inset-0 z-50 flex flex-col bg-bg min-[861px]:hidden"
+        >
+          <div className="wrap flex items-center justify-between py-4">
+            <span className="font-display text-lg font-extrabold uppercase">Menú</span>
+            <button
+              type="button"
+              onClick={mobileNav.close}
+              aria-label="Cerrar menú"
+              className="flex h-11 w-11 items-center justify-center rounded-adt text-text hover:bg-surface"
+            >
+              <X className="h-5 w-5" strokeWidth={2} />
+            </button>
+          </div>
+          <nav aria-label="Navegación principal" className="wrap flex flex-1 flex-col gap-1 py-4">
+            {NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    "border-b border-line py-4 text-lg font-bold uppercase tracking-[0.04em]",
+                    isActive && "text-signal"
+                  )
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="wrap flex items-center gap-2 border-t border-line py-4">
+            {SOCIAL_LINKS.map(({ key, label, href, Icon }) => (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-11 w-11 items-center justify-center rounded-adt border border-line text-text-soft hover:border-signal hover:text-signal"
+              >
+                <Icon width={17} height={17} />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+export default Header;

@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import AppShell from "./components/layout/AppShell";
 
 const Register = lazy(() => import("./pages/LoginPage/Register"));
 const Login = lazy(() => import("./pages/LoginPage/Login"));
@@ -15,28 +15,17 @@ const EventsDetailPage = lazy(() => import("./pages/EventsPage/EventsDetailPage"
 const InterviewDetailPage = lazy(() => import("./pages/InterviewPage/InterviewDetailPage"));
 const ForgotPassword = lazy(() => import("./pages/LoginPage/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/LoginPage/ResetPassword"));
-
-function ThemeToggle() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("adt-theme") || "dark");
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("adt-theme", theme);
-  }, [theme]);
-
-  return (
-    <button
-      onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
-      className="fixed bottom-5 right-5 z-[70] theme-panel-strong px-4 py-3 text-[10px] md:text-xs uppercase tracking-[0.24em] font-bold shadow-sm hover:opacity-90 transition"
-      aria-label="Cambiar tema"
-      title="Cambiar tema"
-    >
-      {theme === "dark" ? "Modo blanco" : "Modo negro"}
-    </button>
-  );
-}
+const CulturaPage = lazy(() => import("./pages/CulturaPage/CulturaPage"));
+const SearchResultsPage = lazy(() => import("./pages/SearchPage/SearchResultsPage"));
+const PoliticaEditorialPage = lazy(() => import("./pages/LegalPage/PoliticaEditorialPage"));
+const CreditosFotograficosPage = lazy(() => import("./pages/LegalPage/CreditosFotograficosPage"));
+// Harness de componentes de Fase 2 (docs/rediseño/PLAN.md) — solo dev, nunca en producción.
+const ComponentKit = import.meta.env.DEV ? lazy(() => import("./dev/ComponentKit")) : null;
 
 function App() {
+  // Fase 3 (docs/rediseño/PLAN.md): el theme-toggle vive en el Header;
+  // esto solo aplica el tema guardado antes del primer render para evitar
+  // un flash del tema incorrecto.
   useEffect(() => {
     const savedTheme = localStorage.getItem("adt-theme") || "dark";
     document.documentElement.dataset.theme = savedTheme;
@@ -44,10 +33,10 @@ function App() {
 
   return (
     <BrowserRouter>
-      <CartProvider>
-        <AuthProvider>
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
+      <AuthProvider>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route element={<AppShell />}>
               <Route path="/" element={<MainPage />} />
               <Route path="/noticias" element={<NewsPage />} />
               <Route path="/noticias/:id/:slug" element={<NewsDetailPage />} />
@@ -55,16 +44,20 @@ function App() {
               <Route path="/eventos/:id/:slug" element={<EventsDetailPage />} />
               <Route path="/entrevistas" element={<InterviewPage />} />
               <Route path="/entrevistas/:slug" element={<InterviewDetailPage />} />
+              <Route path="/cultura" element={<CulturaPage />} />
+              <Route path="/buscar" element={<SearchResultsPage />} />
+              <Route path="/politica-editorial" element={<PoliticaEditorialPage />} />
+              <Route path="/creditos-fotograficos" element={<CreditosFotograficosPage />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-            <ThemeToggle />
-          </Suspense>
-        </AuthProvider>
-      </CartProvider>
+              {import.meta.env.DEV && <Route path="/__kit" element={<ComponentKit />} />}
+            </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Suspense>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

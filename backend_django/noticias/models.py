@@ -79,6 +79,12 @@ class Anuncio(ImagenOptimizadaMixin, models.Model):
         ('home_between_news_events', 'Home entre Noticias y Eventos'),
         ('home_between_events_interviews', 'Home entre Eventos y Entrevistas'),
         ('home_after_interviews', 'Home después de Entrevistas'),
+        ('listado_noticias', 'Listado de Noticias'),
+        ('listado_eventos', 'Listado de Eventos'),
+        ('listado_entrevistas', 'Listado de Entrevistas'),
+        ('detalle_noticia', 'Detalle de Noticia'),
+        ('detalle_evento', 'Detalle de Evento'),
+        ('detalle_entrevista', 'Detalle de Entrevista'),
     ]
 
     titulo = models.CharField(max_length=255)
@@ -109,6 +115,18 @@ class Entrevista(ImagenOptimizadaMixin, models.Model):
     tags = models.ManyToManyField('Tag', blank=True)
     destacado = models.BooleanField(default=False)
     vistas = models.PositiveIntegerField(default=0)
+    rol_entrevistado = models.CharField(
+        max_length=150, blank=True, null=True,
+        help_text='Rol o cargo del entrevistado (ej. "DJ y productor").',
+    )
+    cita_destacada = models.TextField(
+        blank=True, null=True,
+        help_text='Cita corta para tarjetas/portadas. No se deriva del contenido.',
+    )
+    credito_foto_portada = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text='Crédito fotográfico de imagen_portada (ej. "Foto: Juan Pérez").',
+    )
 
     def __str__(self):
         return f"Entrevista con {self.artista} - {self.fecha_publicacion}"
@@ -118,6 +136,10 @@ class FotoNoticia(ImagenOptimizadaMixin, models.Model):
     imagen = models.ImageField(upload_to='noticias/galeria/')
     titulo = models.CharField(max_length=255, blank=True, null=True)
     descripcion = models.TextField(blank=True, null=True)
+    credito = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text='Crédito fotográfico (ej. "Foto: Juan Pérez").',
+    )
     orden = models.PositiveIntegerField(default=0)
     destacada = models.BooleanField(default=False)
     creada_en = models.DateTimeField(auto_now_add=True)
@@ -136,6 +158,10 @@ class FotoEvento(ImagenOptimizadaMixin, models.Model):
     imagen = models.ImageField(upload_to='eventos/galeria/')
     titulo = models.CharField(max_length=255, blank=True, null=True)
     descripcion = models.TextField(blank=True, null=True)
+    credito = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text='Crédito fotográfico (ej. "Foto: Juan Pérez").',
+    )
     orden = models.PositiveIntegerField(default=0)
     destacada = models.BooleanField(default=False)
     creada_en = models.DateTimeField(auto_now_add=True)
@@ -154,6 +180,10 @@ class FotoEntrevista(ImagenOptimizadaMixin, models.Model):
     imagen = models.ImageField(upload_to='entrevistas/galeria/')
     titulo = models.CharField(max_length=255, blank=True, null=True)
     descripcion = models.TextField(blank=True, null=True)
+    credito = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text='Crédito fotográfico (ej. "Foto: Juan Pérez").',
+    )
     orden = models.PositiveIntegerField(default=0)
     destacada = models.BooleanField(default=False)
     creada_en = models.DateTimeField(auto_now_add=True)

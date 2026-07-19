@@ -1,54 +1,56 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import Header from "../../components/layout/Header";
-import SpotifyPlaylist from "../../components/common/SpotifyPlaylist";
-import Footer from "../../components/layout/Footer";
-import InterviewSection from "./InterviewSection";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { getInterview } from "../../services/api";
-import Socialmedia from "../../components/common/socialMedia";
 import Seo from "../../components/common/Seo";
+import SectionHead from "../../components/ui/SectionHead";
+import TagFilterRow from "../../components/ui/TagFilterRow";
+import PaginationControls from "../../components/ui/PaginationControls";
+import LoadingState from "../../components/ui/LoadingState";
+import EmptyState from "../../components/ui/EmptyState";
+import ErrorState from "../../components/ui/ErrorState";
+import InterviewGrid from "../../components/content/InterviewGrid";
+import { getInterview, getTags } from "../../services/api";
 
 function InterviewPage() {
-  const [interview, setInterview] = useState(null);
-  const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tag = searchParams.get("tag");
+  const page = Number(searchParams.get("page")) || 1;
+
+  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    async function loadNews() {
-      try {
-        const interviewsData = await getInterview();
-
-        if (!Array.isArray(interviewsData)) {
-          throw new Error("Respuesta inválida al cargar entrevistas");
-        }
-
-        setInterview(interviewsData);
-      } catch (error) {
-        console.error("Error cargando entrevistas:", error);
-        setError("Error al cargar las entrevistas");
-      }
-    }
-
-    loadNews();
+    getTags().then((res) => setTags(res.results));
   }, []);
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500 text-xl">{error}</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    let cancelled = false;
+    setState((prev) => ({ ...prev, loading: true }));
 
-  if (!interview) {
-    return <LoadingSpinner />;
-  }
+    getInterview({ tag: tag || undefined, page }).then((res) => {
+      if (cancelled) return;
+      setState({ loading: false, ...res });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tag, page]);
+
+  const updateParams = (next) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(next).forEach(([key, value]) => {
+      if (value === null || value === undefined) params.delete(key);
+      else params.set(key, value);
+    });
+    setSearchParams(params);
+  };
 
   return (
     <>
       <Seo
         title="Entrevistas de techno y cultura electrónica | Adictos al Techno"
-        description="Entrevistas a DJs, productores y protagonistas de la escena techno y electrónica en Chile y el mundo."
+        description="Conversaciones con DJs, productores, artistas y protagonistas de la cultura techno en Chile y el circuito internacional."
         canonical="https://adictosaltechno.com/entrevistas"
         schema={{
           "@context": "https://schema.org",
@@ -58,43 +60,34 @@ function InterviewPage() {
           inLanguage: "es-CL",
         }}
       />
-      <Header />
-      <main className="min-h-screen flex flex-col">
-        <section className="md:col-span-4 flex flex-col gap-4 items-center">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-white/45 font-semibold text-center mt-4">
-            Voces de la escena techno y electrónica
-          </p>
-          <h1 className="text-3xl font-extrabold text-center my-1">
-            Entrevistas de techno y cultura electrónica
-          </h1>
-          <p className="text-sm md:text-base text-white/60 text-center max-w-3xl px-4 mb-2">
-            Conversaciones con DJs, productores, artistas y protagonistas de la cultura techno en Chile y el circuito internacional.
-          </p>
 
-          <article className="p-0.5">
-            <InterviewSection
-              interview={interview}
-              destacadas={true}
-              limit={10}
-              gridCols="grid-cols-2"
-              cardHeight="h-55 md:h-90"
-            />
-          </article>
-          <article className="p-0.5">
-            <InterviewSection
-              interview={interview}
-              destacadas={false}
-              limit={10}
-              gridCols="grid-cols-2 md:grid-cols-4"
-              cardHeight="h-55 md:h-90"
-            />
-          </article>
-        </section>
+      <section className="wrap py-16">
+        <SectionHead kicker="Entrevistas" title="Voces de la escena" />
+        <TagFilterRow
+          tags={tags}
+          activeTag={tag}
+          onSelect={(nextTag) => updateParams({ tag: nextTag, page: null })}
+        />
 
-        <Socialmedia />
-        <SpotifyPlaylist />
-        <Footer />
-      </main>
+        {state.loading ? (
+          <LoadingState label="Cargando entrevistas…" />
+        ) : state.error ? (
+          <ErrorState description="No se pudieron cargar las entrevistas." />
+        ) : state.results.length ? (
+          <>
+            <InterviewGrid entrevistas={state.results} />
+            <PaginationControls
+              page={page}
+              hasPrevious={Boolean(state.previous)}
+              hasNext={Boolean(state.next)}
+              onPrevious={() => updateParams({ page: page - 1 })}
+              onNext={() => updateParams({ page: page + 1 })}
+            />
+          </>
+        ) : (
+          <EmptyState description={tag ? `No hay entrevistas con la etiqueta "${tag}".` : "Todavía no hay entrevistas publicadas."} />
+        )}
+      </section>
     </>
   );
 }

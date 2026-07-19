@@ -1,52 +1,100 @@
-import RedesSociales from "../common/RedesSociales";
-import logo from "../../assets/logo-adt.png";
+import { Link } from "react-router-dom";
+import LinkGlyph from "../ui/LinkGlyph";
+import { SOCIAL_LINKS } from "../ui/SocialIcons";
 
-const Footer = () => {
+const NAV_LINKS = [
+  { label: "Noticias", to: "/noticias" },
+  { label: "Eventos", to: "/eventos" },
+  { label: "Entrevistas", to: "/entrevistas" },
+  { label: "Cultura", to: "/cultura" },
+];
+
+// DECISIONES.md #13: páginas legales estáticas simples, sin newsletter
+// (no hay proveedor integrado todavía).
+const SITE_LINKS = [
+  { label: "Contacto", to: "/#contacto" },
+  { label: "Política editorial", to: "/politica-editorial" },
+  { label: "Créditos fotográficos", to: "/creditos-fotograficos" },
+];
+
+/** Footer global del sitio (DESIGN.md §9.8). */
+function Footer() {
   return (
-    <footer className="bg-[#0a0a0a] border-t border-white/10 py-20 px-4 text-white mt-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-14">
-        <div className="flex flex-col gap-6">
-          <img src={logo} alt="Adictos al Techno" className="h-10 w-auto object-contain brightness-0 invert" />
-          <p className="text-[11px] text-white/40 leading-loose uppercase tracking-[0.28em]">
-            Noticias, eventos, entrevistas y cultura underground para quienes viven el techno como lenguaje.
-          </p>
-        </div>
+    <footer className="border-t border-line bg-bg-soft py-12">
+      <div className="wrap">
+        <div className="mb-8 grid grid-cols-1 gap-8 border-b border-line pb-12 min-[521px]:grid-cols-2 min-[861px]:grid-cols-[1.3fr_1fr_1fr_1fr]">
+          <div>
+            <p className="flex items-center gap-2 font-display text-2xl font-extrabold tracking-[0.01em]">
+              <LinkGlyph size={22} className="text-signal" />
+              ADICTOS AL TECHNO
+            </p>
+            <span className="mt-1.5 block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-muted">
+              Noticias · Eventos · Cultura · Comunidad
+            </span>
+          </div>
 
-        <div className="flex flex-col gap-6">
-          <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Navegación</h5>
-          <ul className="flex flex-col gap-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">
-            <li><a className="hover:text-white transition-colors" href="/noticias">Noticias</a></li>
-            <li><a className="hover:text-white transition-colors" href="/entrevistas">Entrevistas</a></li>
-            <li><a className="hover:text-white transition-colors" href="/eventos">Eventos</a></li>
-            <li><a className="hover:text-white transition-colors" href="/tienda">Tienda</a></li>
-          </ul>
-        </div>
+          <div>
+            <h3 className="mb-4 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-text-muted">
+              Navegación
+            </h3>
+            <ul className="flex flex-col gap-2.5">
+              {NAV_LINKS.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="text-[0.9375rem] hover:text-signal">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex flex-col gap-6">
-          <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Social</h5>
-          <RedesSociales dark />
-          <p className="text-xs text-white/40 uppercase tracking-[0.22em]">Contacto: adictos.al.techno@gmail.com</p>
-        </div>
+          <div>
+            <h3 className="mb-4 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-text-muted">Sitio</h3>
+            <ul className="flex flex-col gap-2.5">
+              {SITE_LINKS.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="text-[0.9375rem] hover:text-signal">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex flex-col gap-6">
-          <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Newsletter</h5>
-          <p className="text-xs text-white/40 uppercase tracking-[0.22em]">Sincroniza con el ritmo. Recibe lo mejor en tu correo.</p>
-          <div className="flex border-b border-white/40 focus-within:border-white transition-colors">
-            <input className="bg-transparent border-none text-xs font-bold uppercase tracking-[0.22em] w-full py-4 focus:ring-0 placeholder:text-white/20 outline-none" placeholder="Email" type="email" />
-            <button className="text-white text-xl">→</button>
+          <div>
+            <h3 className="mb-4 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-text-muted">Comunidad</h3>
+            <ul className="flex flex-col gap-2.5">
+              {SOCIAL_LINKS.map(({ key, label, href }) => (
+                <li key={key}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-[0.9375rem] hover:text-signal">
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </div>
-      <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-40">
-        <p className="text-[10px] font-bold uppercase tracking-[0.24em]">© {new Date().getFullYear()} Adictos al Techno. All rights reserved.</p>
-        <div className="flex gap-8 text-[10px] font-bold uppercase tracking-[0.24em]">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Contact</a>
+
+        <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-text-muted">
+          <p>&copy; {new Date().getFullYear()} Adictos al Techno. Todos los derechos reservados.</p>
+          <div className="flex gap-2">
+            {SOCIAL_LINKS.map(({ key, label, href, Icon }) => (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-9 w-9 items-center justify-center rounded-adt border border-line hover:border-signal hover:text-signal"
+              >
+                <Icon width={16} height={16} />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;

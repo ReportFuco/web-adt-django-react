@@ -8,12 +8,34 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// Fase 0 (docs/rediseño/AUDITORIA.md #4): normaliza la forma paginada del
+// backend sin descartar count/next/previous, para que loading/empty/error
+// sean distinguibles y los listados puedan paginar.
 const normalizeListResponse = (response) => {
   const payload = response?.data;
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.results)) return payload.results;
-  return [];
+  if (Array.isArray(payload)) {
+    return { results: payload, count: payload.length, next: null, previous: null };
+  }
+  if (payload && Array.isArray(payload.results)) {
+    return {
+      results: payload.results,
+      count: payload.count ?? payload.results.length,
+      next: payload.next ?? null,
+      previous: payload.previous ?? null,
+    };
+  }
+  return { results: [], count: 0, next: null, previous: null };
 };
+
+// Resultado de error explícito: `error` truthy distingue "fallo" de "vacío"
+// (un vacío real trae error: null y results: []).
+const emptyListResult = (error) => ({
+  results: [],
+  count: 0,
+  next: null,
+  previous: null,
+  error,
+});
 
 const isTokenExpired = (token) => {
   if (!token) return true;
@@ -48,6 +70,14 @@ export const refreshAccessToken = async () => {
       return null;
     }
     localStorage.setItem("accessToken", accessToken);
+    // Fase 0 / DECISIONES.md: ROTATE_REFRESH_TOKENS=True en el backend
+    // invalida (blacklist) el refresh usado y devuelve uno nuevo. Si no lo
+    // persistimos aquí, la siguiente renovación falla porque el refresh
+    // guardado ya fue invalidado.
+    const rotatedRefreshToken = response.data?.refresh;
+    if (rotatedRefreshToken) {
+      localStorage.setItem("refreshToken", rotatedRefreshToken);
+    }
     return accessToken;
   } catch {
     clearAuthStorage();
@@ -121,10 +151,10 @@ export const trackFranjaClick = async (franjaId) => {
 export const getAnunciosByUbicacion = async (ubicacion) => {
   try {
     const response = await api.get(`anuncios/?ubicacion=${ubicacion}`);
-    return normalizeListResponse(response);
+    return { ...normalizeListResponse(response), error: null };
   } catch (e) {
     console.error("Error al obtener anuncios", e);
-    return [];
+    return emptyListResult(e);
   }
 };
 
@@ -177,23 +207,23 @@ export const getNoticia = async (slug) => {
   }
 };
 
-export const getNoticias = async () => {
+export const getNoticias = async (params = {}) => {
   try {
-    const response = await api.get("noticias/");
-    return normalizeListResponse(response);
-  } catch {
-    console.error("Error al obtener las noticias");
-    return [];
+    const response = await api.get("noticias/", { params });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al obtener las noticias", error);
+    return emptyListResult(error);
   }
 };
 
-export const getInterview = async () => {
+export const getInterview = async (params = {}) => {
   try {
-    const response = await api.get("entrevistas/");
-    return normalizeListResponse(response);
-  } catch {
-    console.error("Error al obtener las entrevistas");
-    return [];
+    const response = await api.get("entrevistas/", { params });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al obtener las entrevistas", error);
+    return emptyListResult(error);
   }
 };
 
@@ -243,13 +273,46 @@ export const registerUser = async (userData) => {
   }
 };
 
-export const getEvents = async () => {
+export const getTags = async (params = {}) => {
   try {
-    const response = await api.get("eventos/");
-    return normalizeListResponse(response);
+    const response = await api.get("tags/", { params });
+    return { ...normalizeListResponse(response), error: null };
   } catch (error) {
-    console.error("Error al obtener los datos", error);
-    return [];
+    console.error("Error al obtener los tags", error);
+    return emptyListResult(error);
+  }
+};
+
+export const getEvents = async (params = {}) => {
+  try {
+    const response = await api.get("eventos/", { params });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al obtener los eventos", error);
+    return emptyListResult(error);
+  }
+};
+
+// Fase 0 / DECISIONES.md #11: endpoint agregado liviano de fotos
+// (noticias/eventos/entrevistas), usado por Gallery (home) y /cultura.
+export const getGaleria = async (params = {}) => {
+  try {
+    const response = await api.get("galeria/", { params });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al obtener la galería", error);
+    return emptyListResult(error);
+  }
+};
+
+// Fase 0 / DECISIONES.md #4: búsqueda básica por título/tag.
+export const getBusqueda = async (query, params = {}) => {
+  try {
+    const response = await api.get("buscar/", { params: { ...params, q: query } });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al buscar", error);
+    return emptyListResult(error);
   }
 };
 

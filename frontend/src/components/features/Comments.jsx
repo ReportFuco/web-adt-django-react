@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { getComments } from "../../services/api";
 
 function Comments({ id }) {
@@ -15,19 +16,23 @@ function Comments({ id }) {
   }, [id]);
 
   if (!comentarios.length) {
-    return <p className="text-center text-white/40 mt-10 uppercase tracking-[0.18em] text-xs">Sin comentarios</p>;
+    return <p className="mt-10 text-center text-xs uppercase tracking-[0.18em] text-text-muted">Sin comentarios</p>;
   }
 
   return (
     <div className="space-y-4">
       {comentarios.map((coment) => (
-        <div key={coment.id} className="border border-white/10 bg-black/60 p-4 text-sm text-white/80">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-white/40 mb-2">{coment.autor_username}</p>
+        <div key={coment.id} className="border border-line bg-bg-soft p-4 text-sm text-text-soft">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.22em] text-text-muted">{coment.autor_username}</p>
           <p>{coment.contenido}</p>
         </div>
       ))}
     </div>
   );
 }
+
+Comments.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
 
 export default Comments;

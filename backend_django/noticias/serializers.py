@@ -37,14 +37,14 @@ class FotoBaseSerializer(serializers.ModelSerializer):
 class FotoNoticiaSerializer(FotoBaseSerializer):
     class Meta:
         model = FotoNoticia
-        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada', 'creada_en']
         read_only_fields = ['id', 'creada_en', 'url_publica']
 
 
 class FotoEventoSerializer(FotoBaseSerializer):
     class Meta:
         model = FotoEvento
-        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada', 'creada_en']
         read_only_fields = ['id', 'creada_en', 'url_publica']
 
 
@@ -58,7 +58,7 @@ class FechaEventoSerializer(serializers.ModelSerializer):
 class FotoEntrevistaSerializer(FotoBaseSerializer):
     class Meta:
         model = FotoEntrevista
-        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'orden', 'destacada', 'creada_en']
+        fields = ['id', 'imagen', 'url_publica', 'titulo', 'descripcion', 'credito', 'orden', 'destacada', 'creada_en']
         read_only_fields = ['id', 'creada_en', 'url_publica']
 
 
