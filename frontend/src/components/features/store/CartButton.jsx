@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const CartButton = ({
   cart,
@@ -223,6 +224,21 @@ const CartButton = ({
       )}
     </div>
   );
+};
+
+CartButton.propTypes = {
+  cart: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      nombre: PropTypes.string,
+      imagen: PropTypes.string,
+      precio: PropTypes.number,
+      quantity: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  updateQuantity: PropTypes.func.isRequired,
+  handleRemoveItem: PropTypes.func.isRequired,
+  mobileVersion: PropTypes.bool,
 };
 
 export default CartButton;

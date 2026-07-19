@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function Maps({ direccion }) {
   if (!direccion || typeof direccion !== "string") {
     return (
@@ -18,5 +20,9 @@ function Maps({ direccion }) {
     />
   );
 }
+
+Maps.propTypes = {
+  direccion: PropTypes.string,
+};
 
 export default Maps;

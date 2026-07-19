@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getProductos, getCategorias } from "../../../services/store.api";
 import ProductCard from "./ProductCard";
 import FilterBar from "./FilterBar";

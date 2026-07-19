@@ -1,6 +1,7 @@
 "use client";;
 import { useInView, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
 import { cn } from "@/lib/utils";
 
@@ -52,3 +53,12 @@ export function NumberTicker({
     </span>
   );
 }
+
+NumberTicker.propTypes = {
+  value: PropTypes.number.isRequired,
+  startValue: PropTypes.number,
+  direction: PropTypes.oneOf(["up", "down"]),
+  delay: PropTypes.number,
+  className: PropTypes.string,
+  decimalPlaces: PropTypes.number,
+};

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const CartContext = createContext();
 
@@ -123,4 +124,8 @@ export const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
+};
+
+CartProvider.propTypes = {
+  children: PropTypes.node,
 };

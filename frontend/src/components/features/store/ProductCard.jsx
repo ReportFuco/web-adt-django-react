@@ -1,5 +1,6 @@
 import { useCart } from "../../../context/CartContext";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const ProductCard = ({ producto }) => {
   const { addToCart, isInCart, cart } = useCart();
@@ -96,6 +97,19 @@ const ProductCard = ({ producto }) => {
       </div>
     </Link>
   );
+};
+
+ProductCard.propTypes = {
+  producto: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    slug: PropTypes.string.isRequired,
+    nombre: PropTypes.string.isRequired,
+    imagen: PropTypes.string,
+    categoria_nombre: PropTypes.string,
+    descripcion: PropTypes.string,
+    precio: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default ProductCard;

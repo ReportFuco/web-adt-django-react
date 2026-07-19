@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
 
 import { clearAuthStorage, ensureValidAccessToken, getLogin } from "../services/api";
@@ -68,4 +69,8 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node,
 };

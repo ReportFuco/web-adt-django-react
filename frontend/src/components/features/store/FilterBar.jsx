@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 
 const FilterBar = ({ filters, setFilters, categories }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,6 +90,21 @@ const FilterBar = ({ filters, setFilters, categories }) => {
       </div>
     </div>
   );
+};
+
+FilterBar.propTypes = {
+  filters: PropTypes.shape({
+    searchQuery: PropTypes.string,
+    category: PropTypes.string,
+    minPrice: PropTypes.number,
+  }).isRequired,
+  setFilters: PropTypes.func.isRequired,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+      nombre: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default FilterBar;

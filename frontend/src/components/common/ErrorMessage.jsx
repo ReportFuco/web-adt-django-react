@@ -1,5 +1,5 @@
 // src/components/common/ErrorMessage.jsx
-import React from "react";
+import PropTypes from "prop-types";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 const ErrorMessage = ({
@@ -25,6 +25,12 @@ const ErrorMessage = ({
       )}
     </div>
   );
+};
+
+ErrorMessage.propTypes = {
+  message: PropTypes.node,
+  className: PropTypes.string,
+  onRetry: PropTypes.func,
 };
 
 export default ErrorMessage;

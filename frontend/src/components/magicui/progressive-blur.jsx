@@ -1,6 +1,6 @@
 "use client";;
 import { cn } from "@/lib/utils";
-import React from "react";
+import PropTypes from "prop-types";
 
 export function ProgressiveBlur({
   className,
@@ -95,5 +95,12 @@ export function ProgressiveBlur({
     </div>
   );
 }
+
+ProgressiveBlur.propTypes = {
+  className: PropTypes.string,
+  height: PropTypes.string,
+  position: PropTypes.oneOf(["top", "bottom", "both"]),
+  blurLevels: PropTypes.arrayOf(PropTypes.number),
+};
 
 export default ProgressiveBlur;

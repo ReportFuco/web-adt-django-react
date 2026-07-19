@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { motion, useScroll } from "motion/react";
 import React from "react";
+import PropTypes from "prop-types";
 
 export const ScrollProgress = React.forwardRef(({ className, ...props }, ref) => {
   const { scrollYProgress } = useScroll();
@@ -21,3 +22,7 @@ export const ScrollProgress = React.forwardRef(({ className, ...props }, ref) =>
 });
 
 ScrollProgress.displayName = "ScrollProgress";
+
+ScrollProgress.propTypes = {
+  className: PropTypes.string,
+};

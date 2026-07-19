@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import PropTypes from "prop-types";
 
 const DEFAULTS = {
   title: "Adictos al Techno | Noticias, eventos y cultura electrónica",
@@ -128,3 +129,12 @@ export default function Seo({
 
   return null;
 }
+
+Seo.propTypes = {
+  title: PropTypes.string,
+  description: PropTypes.string,
+  image: PropTypes.string,
+  canonical: PropTypes.string,
+  type: PropTypes.string,
+  schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};

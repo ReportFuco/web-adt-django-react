@@ -1,4 +1,6 @@
 // components/features/store/ProductImageGallery.jsx
+import PropTypes from "prop-types";
+
 const ProductImageGallery = ({ producto }) => {
     return (
       <div className="space-y-4">
@@ -17,4 +19,11 @@ const ProductImageGallery = ({ producto }) => {
     );
   };
   
-  export default ProductImageGallery;
+ProductImageGallery.propTypes = {
+  producto: PropTypes.shape({
+    imagen: PropTypes.string,
+    nombre: PropTypes.string,
+  }).isRequired,
+};
+
+export default ProductImageGallery;

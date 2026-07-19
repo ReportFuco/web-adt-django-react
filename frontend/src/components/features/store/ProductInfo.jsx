@@ -1,4 +1,5 @@
 import { useCart } from "../../../context/CartContext";
+import PropTypes from "prop-types";
 
 const ProductInfo = ({ producto }) => {
   const { cart, isInCart } = useCart();
@@ -39,6 +40,17 @@ const ProductInfo = ({ producto }) => {
       )}
     </div>
   );
+};
+
+ProductInfo.propTypes = {
+  producto: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    nombre: PropTypes.string.isRequired,
+    categoria_nombre: PropTypes.string,
+    precio: PropTypes.number.isRequired,
+    descripcion: PropTypes.string,
+    stock: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default ProductInfo;
