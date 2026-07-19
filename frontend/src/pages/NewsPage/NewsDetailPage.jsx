@@ -16,6 +16,7 @@ import SectionHead from "../../components/ui/SectionHead";
 import { MetaRow, MetaItem } from "../../components/ui/MetaRow";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import { formatShortDate } from "../../utils/formatDate";
+import { excerpt } from "../../utils/textExcerpt";
 import Seo from "../../components/common/Seo";
 
 function NewsDetailPage() {
@@ -104,11 +105,7 @@ function NewsDetailPage() {
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar la noticia." />;
   if (!noticia) return <LoadingState className="my-24" label="Cargando noticia…" />;
 
-  const noticiaDescription = (noticia.subtitulo || noticia.contenido || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 160);
+  const noticiaDescription = excerpt(noticia.subtitulo || noticia.contenido || "", 160);
   const noticiaUrl = `https://adictosaltechno.com/noticias/${id}/${slug}`;
   const relacionadas = noticias.filter((item) => item.id !== noticia.id).slice(0, 4);
 

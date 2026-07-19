@@ -13,6 +13,7 @@ import { MetaRow, MetaItem } from "../../components/ui/MetaRow";
 import Seo from "../../components/common/Seo";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import { formatShortDate } from "../../utils/formatDate";
+import { excerpt } from "../../utils/textExcerpt";
 
 function InterviewDetailPage() {
   const { slug } = useParams();
@@ -48,11 +49,7 @@ function InterviewDetailPage() {
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar la entrevista." />;
   if (!interview) return <LoadingState className="my-24" label="Cargando entrevista…" />;
 
-  const interviewDescription = (interview.cita_destacada || interview.contenido || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 160);
+  const interviewDescription = excerpt(interview.cita_destacada || interview.contenido || "", 160);
   const interviewUrl = `https://adictosaltechno.com/entrevistas/${slug}`;
   const relacionadas = interviews.filter((item) => item.id !== interview.id).slice(0, 3);
 

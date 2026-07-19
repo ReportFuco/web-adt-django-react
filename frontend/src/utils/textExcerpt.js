@@ -7,10 +7,12 @@
  * aproximación explícita, no una verdad de contenido.
  */
 export function stripHtml(html = "") {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  if (!html) return "";
+  // DOMParser decodifica entidades (&eacute;, &uacute;…) además de quitar
+  // tags; un regex de solo-tags dejaba el texto con entidades crudas
+  // (contenido real autoría con &aacute;/&eacute;/etc. sin normalizar).
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
 }
 
 export function excerpt(html, length = 160) {

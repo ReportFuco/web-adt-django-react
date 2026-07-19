@@ -15,6 +15,7 @@ import Maps from "../../components/features/Maps";
 import Seo from "../../components/common/Seo";
 import { sanitizeHTML } from "../../utils/htmlSanitizer";
 import { formatEventDateRange, formatFullEventDate, getEventDateItems } from "../../utils/eventDates";
+import { excerpt } from "../../utils/textExcerpt";
 
 function EventsDetailPage() {
   const { slug } = useParams();
@@ -50,11 +51,7 @@ function EventsDetailPage() {
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar el evento." />;
   if (!evento) return <LoadingState className="my-24" label="Cargando evento…" />;
 
-  const eventDescription = (evento.descripcion || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 160);
+  const eventDescription = excerpt(evento.descripcion || "", 160);
   const eventUrl = `https://adictosaltechno.com/eventos/${evento.id}/${slug}`;
   const eventDates = getEventDateItems(evento);
   const primaryDate = eventDates[0]?.fecha || evento.fecha_hora;
