@@ -102,6 +102,40 @@ html {
   scroll-behavior: smooth;
 }
 
+/* DESIGN §4 — contenedor global. Usado como className="wrap" en Header,
+   Footer, Ticker y todas las secciones de página; sin esto el contenido
+   corre de borde a borde en cualquier viewport. */
+.wrap {
+  max-width: var(--adt-container);
+  margin-inline: auto;
+  padding-inline: var(--adt-space-4);
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    padding-inline: var(--adt-space-3);
+  }
+}
+
+/* Logos de marca (Header/Footer): los assets están dibujados para fondo
+   oscuro (relleno claro, contorno oscuro); en tema claro se invierten
+   para seguir siendo legibles sobre fondo blanco. */
+.brand-logo {
+  filter: none;
+}
+
+:root[data-theme="light"] .brand-logo {
+  filter: invert(1);
+}
+
+.brand-mark {
+  filter: brightness(0) invert(1);
+}
+
+:root[data-theme="light"] .brand-mark {
+  filter: brightness(0);
+}
+
 body {
   background: var(--adt-bg);
   font-family: var(--adt-font-body);

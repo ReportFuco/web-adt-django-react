@@ -4,7 +4,7 @@ import { Menu, Moon, Search, Sun, User, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../../context/AuthContext";
 import { franjaMensaje, getNoticias, trackFranjaClick } from "../../services/api";
-import LinkGlyph from "../ui/LinkGlyph";
+import logoHeader from "../../assets/logo-final-header-cropped.png";
 import Ticker from "../ui/Ticker";
 import { SOCIAL_LINKS } from "../ui/SocialIcons";
 
@@ -262,15 +262,17 @@ function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg">
       <div className="wrap flex items-center justify-between gap-6 py-4">
-        <div className="flex min-w-0 items-center gap-12">
+        <div className="flex min-w-0 flex-1 items-center gap-12">
           <Link
             to="/"
             aria-label="Adictos al Techno — inicio"
-            className="flex shrink-0 items-center gap-2.5 font-display text-[clamp(1.05rem,4.4vw,1.35rem)] font-extrabold tracking-[0.02em]"
+            className="flex min-w-0 max-w-[55vw] shrink items-center overflow-hidden sm:max-w-none"
           >
-            <LinkGlyph size={26} className="shrink-0 text-signal" />
-            <span className="hidden min-[421px]:inline">ADICTOS AL TECHNO</span>
-            <span className="min-[421px]:hidden" aria-hidden="true">ADT</span>
+            <img
+              src={logoHeader}
+              alt="Adictos al Techno"
+              className="brand-logo h-4 w-auto object-contain sm:h-5"
+            />
           </Link>
 
           <nav aria-label="Navegación principal" className="hidden items-center gap-6 min-[861px]:flex">

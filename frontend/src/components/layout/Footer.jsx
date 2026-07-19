@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LinkGlyph from "../ui/LinkGlyph";
+import logoFooter from "../../assets/logo-adt.png";
 import { SOCIAL_LINKS } from "../ui/SocialIcons";
 
 const NAV_LINKS = [
@@ -24,11 +24,8 @@ function Footer() {
       <div className="wrap">
         <div className="mb-8 grid grid-cols-1 gap-8 border-b border-line pb-12 min-[521px]:grid-cols-2 min-[861px]:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <p className="flex items-center gap-2 font-display text-2xl font-extrabold tracking-[0.01em]">
-              <LinkGlyph size={22} className="text-signal" />
-              ADICTOS AL TECHNO
-            </p>
-            <span className="mt-1.5 block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-muted">
+            <img src={logoFooter} alt="Adictos al Techno" className="brand-mark h-10 w-auto" />
+            <span className="mt-3 block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-muted">
               Noticias · Eventos · Cultura · Comunidad
             </span>
           </div>
