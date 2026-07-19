@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoFooter from "../../assets/logo-adt.png";
+import logoFooter from "../../assets/logo-final-header-cropped.png";
 import { SOCIAL_LINKS } from "../ui/SocialIcons";
 
 const NAV_LINKS = [
@@ -24,7 +24,7 @@ function Footer() {
       <div className="wrap">
         <div className="mb-8 grid grid-cols-1 gap-8 border-b border-line pb-12 min-[521px]:grid-cols-2 min-[861px]:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <img src={logoFooter} alt="Adictos al Techno" className="brand-mark h-10 w-auto" />
+            <img src={logoFooter} alt="Adictos al Techno" className="brand-logo h-6 w-auto" />
             <span className="mt-3 block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-muted">
               Noticias · Eventos · Cultura · Comunidad
             </span>

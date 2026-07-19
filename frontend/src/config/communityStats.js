@@ -9,10 +9,10 @@ import { InstagramIcon, SpotifyIcon, TikTokIcon, WhatsAppIcon } from "../compone
  * formatea con Intl.NumberFormat("es-CL").
  */
 export const COMMUNITY_STATS = [
-  { id: "instagram", label: "Instagram", value: 35613, Icon: InstagramIcon },
+  { id: "instagram", label: "Instagram", value: 169986, Icon: InstagramIcon },
   { id: "whatsapp", label: "Comunidad WhatsApp", value: 157, Icon: WhatsAppIcon },
   { id: "spotify", label: "Oyentes en Spotify", value: 229, Icon: SpotifyIcon },
   { id: "tiktok", label: "TikTok", value: 280, Icon: TikTokIcon },
 ];
 
-export const COMMUNITY_STATS_UPDATED_AT = "18 jul 2026";
+export const COMMUNITY_STATS_UPDATED_AT = "19 jul 2026";

@@ -54,7 +54,7 @@ export function TikTokIcon(props) {
 
 export const SOCIAL_LINKS = [
   { key: "instagram", label: "Instagram", href: "https://www.instagram.com/adictos_al_techno/", Icon: InstagramIcon },
-  { key: "whatsapp", label: "Comunidad de WhatsApp", href: "https://chat.whatsapp.com/EZkSGVq4BrpLc7SCxIHjNz", Icon: WhatsAppIcon },
+  { key: "whatsapp", label: "Comunidad de WhatsApp", href: "https://chat.whatsapp.com/HGiCQbH6KOdKE1VKbxpKgV?s=sh&p=i&ilr=4", Icon: WhatsAppIcon },
   { key: "spotify", label: "Spotify", href: "https://open.spotify.com/playlist/4uDeR4NrQHknGI4XMVEwRH?si=65BaoIh9RC-JPxE7NokKdQ", Icon: SpotifyIcon },
   { key: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@adictos.al.techno?_t=ZM-8vv8jszOOKz&_r=1", Icon: TikTokIcon },
 ];
