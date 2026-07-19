@@ -16,9 +16,9 @@ function NewsList({ noticias }) {
         <Link
           key={noticia.id}
           to={`/noticias/${noticia.id}/${noticia.slug}`}
-          className="group grid grid-cols-[96px_1fr] items-center gap-4 border-b border-line py-4 first:border-t min-[721px]:grid-cols-[160px_1fr_auto]"
+          className="group grid grid-cols-[96px_1fr] items-center gap-4 border-b border-line py-4 first:border-t transition-colors duration-[var(--adt-dur-fast)] hover:bg-surface focus-visible:bg-surface min-[721px]:grid-cols-[160px_1fr_auto]"
         >
-          <Media ratio="43" src={noticia.imagen} alt="" className="w-full" />
+          <Media ratio="43" src={noticia.imagen} alt="" zoom className="w-full" />
           <span className="min-w-0">
             <span className="block font-body text-lg font-bold leading-snug group-hover:text-signal">
               {noticia.titulo}

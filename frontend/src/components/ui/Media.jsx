@@ -25,6 +25,7 @@ function Media({
   credit,
   creditPosition = "bottom",
   priority = false,
+  zoom = false,
   className,
 }) {
   return (
@@ -35,7 +36,11 @@ function Media({
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover",
+            zoom &&
+              "transition-transform duration-[var(--adt-dur-med)] ease-[var(--adt-ease-standard)] group-hover:scale-105"
+          )}
         />
       ) : (
         <div
@@ -66,6 +71,7 @@ Media.propTypes = {
   credit: PropTypes.string,
   creditPosition: PropTypes.oneOf(["top", "bottom"]),
   priority: PropTypes.bool,
+  zoom: PropTypes.bool,
   className: PropTypes.string,
 };
 

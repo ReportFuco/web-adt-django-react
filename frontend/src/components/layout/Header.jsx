@@ -297,7 +297,7 @@ function Header() {
                 rel="noopener noreferrer"
                 aria-label={label}
                 title={label}
-                className="flex h-[38px] w-[38px] items-center justify-center rounded-adt text-text-soft transition-colors hover:border hover:border-line hover:bg-surface hover:text-signal"
+                className="flex h-[38px] w-[38px] items-center justify-center rounded-adt text-text-soft transition-[transform,background-color,border-color,color] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border hover:border-line hover:bg-surface hover:text-signal focus-visible:-translate-y-0.5 focus-visible:border focus-visible:border-line focus-visible:bg-surface focus-visible:text-signal"
               >
                 <Icon width={17} height={17} />
               </a>

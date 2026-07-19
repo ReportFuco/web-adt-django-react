@@ -82,7 +82,7 @@ function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex h-9 w-9 items-center justify-center rounded-adt border border-line hover:border-signal hover:text-signal"
+                className="flex h-9 w-9 items-center justify-center rounded-adt border border-line transition-[transform,border-color,color] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal hover:text-signal focus-visible:-translate-y-0.5 focus-visible:border-signal focus-visible:text-signal"
               >
                 <Icon width={16} height={16} />
               </a>

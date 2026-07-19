@@ -16,13 +16,17 @@ function InterviewGrid({ entrevistas }) {
       {entrevistas.map((entrevista) => {
         const href = `/entrevistas/${entrevista.slug}`;
         return (
-          <article key={entrevista.id} className="border border-line">
+          <article
+            key={entrevista.id}
+            className="group border border-line transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-within:-translate-y-0.5 focus-within:border-signal"
+          >
             <Link to={href}>
               <Media
                 ratio="45"
                 src={entrevista.imagen_portada}
                 alt={`Retrato de ${entrevista.artista}`}
                 credit={entrevista.credito_foto_portada}
+                zoom
               />
             </Link>
             <div className="p-4">

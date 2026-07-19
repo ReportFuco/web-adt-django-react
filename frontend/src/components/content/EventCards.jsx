@@ -14,9 +14,9 @@ function EventCards({ eventos }) {
         <Link
           key={evento.id}
           to={`/eventos/${evento.id}/${evento.slug}`}
-          className="group flex flex-col border border-line bg-surface transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal"
+          className="group flex flex-col border border-line bg-surface transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-visible:-translate-y-0.5 focus-visible:border-signal"
         >
-          <Media ratio="11" src={evento.imagen} alt="" className="border-b border-line" />
+          <Media ratio="11" src={evento.imagen} alt="" zoom className="border-b border-line" />
           <div className="flex flex-1 flex-col gap-2 p-4">
             <span className="inline-flex items-center gap-1.5 font-display text-[0.8125rem] font-extrabold uppercase tracking-[0.04em] tabular-nums text-signal">
               <Calendar className="h-[13px] w-[13px] shrink-0" strokeWidth={2} />
