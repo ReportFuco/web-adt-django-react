@@ -1,7 +1,10 @@
+import { cn } from "@/lib/utils";
 import Kicker from "../ui/Kicker";
 import Cta from "../ui/Cta";
+import CommunityStatValue from "./CommunityStatValue";
 import { COMMUNITY_STATS, COMMUNITY_STATS_UPDATED_AT } from "../../config/communityStats";
 import { SOCIAL_LINKS } from "../ui/SocialIcons";
+import useInViewOnce from "../../hooks/useInViewOnce";
 
 const WHATSAPP_COMMUNITY_URL = SOCIAL_LINKS.find((link) => link.key === "whatsapp")?.href;
 
@@ -11,8 +14,10 @@ const WHATSAPP_COMMUNITY_URL = SOCIAL_LINKS.find((link) => link.key === "whatsap
  * `src/config/communityStats.js`.
  */
 function CommunityStats() {
+  const [ref, inView] = useInViewOnce();
+
   return (
-    <div className="grid border border-line min-[861px]:grid-cols-[1.1fr_1fr]">
+    <div ref={ref} className={cn("grid border border-line adt-reveal min-[861px]:grid-cols-[1.1fr_1fr]", inView && "is-visible")}>
       <div className="flex flex-col justify-center gap-3 border-b border-line p-8 min-[861px]:border-b-0 min-[861px]:border-r min-[861px]:p-12">
         <Kicker>Comunidad</Kicker>
         <h2 className="text-[clamp(1.75rem,3vw,2.5rem)]">La escena está conectada</h2>
@@ -33,7 +38,7 @@ function CommunityStats() {
             className={`flex flex-col gap-2 border-b border-line p-8 ${index % 2 === 0 ? "border-l-0" : "border-l"}`}
           >
             <Icon className="h-5 w-5 text-signal" />
-            <span className="font-display text-2xl font-extrabold">{value}</span>
+            <CommunityStatValue value={value} className="font-display text-2xl font-extrabold" />
             <span className="text-xs uppercase tracking-[0.04em] text-text-muted">{label}</span>
           </div>
         ))}

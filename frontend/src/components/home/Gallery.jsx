@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import Media from "../ui/Media";
+import useInViewOnce from "../../hooks/useInViewOnce";
 
 const DETAIL_ROUTE = {
   noticia: (item) => `/noticias/${item.contenido_id}/${item.contenido_slug}`,
@@ -14,10 +16,17 @@ const DETAIL_ROUTE = {
  * FotoNoticia/FotoEvento/FotoEntrevista vía `/api/galeria/` (Fase 0).
  */
 function Gallery({ fotos }) {
+  const [ref, inView] = useInViewOnce();
   if (!fotos?.length) return null;
 
   return (
-    <div className="grid grid-cols-3 gap-2 min-[561px]:grid-cols-4 min-[901px]:grid-cols-6">
+    <div
+      ref={ref}
+      className={cn(
+        "grid grid-cols-3 gap-2 adt-reveal min-[561px]:grid-cols-4 min-[901px]:grid-cols-6",
+        inView && "is-visible"
+      )}
+    >
       {fotos.map((foto) => {
         const buildHref = DETAIL_ROUTE[foto.tipo];
         const alt = foto.titulo || foto.contenido_titulo || "";

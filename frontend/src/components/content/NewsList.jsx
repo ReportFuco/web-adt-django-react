@@ -1,17 +1,20 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Media from "../ui/Media";
 import Tag from "../ui/Tag";
 import { MetaRow, MetaItem } from "../ui/MetaRow";
 import { formatShortDate } from "../../utils/formatDate";
+import useInViewOnce from "../../hooks/useInViewOnce";
 
 /** Últimas noticias en filas editoriales (DESIGN.md §9.6 — `news-row`). */
 function NewsList({ noticias }) {
+  const [ref, inView] = useInViewOnce();
   if (!noticias?.length) return null;
 
   return (
-    <div className="flex flex-col">
+    <div ref={ref} className={cn("flex flex-col adt-reveal", inView && "is-visible")}>
       {noticias.map((noticia) => (
         <Link
           key={noticia.id}

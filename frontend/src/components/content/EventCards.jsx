@@ -1,15 +1,21 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Media from "../ui/Media";
 import { formatEventDateBadge } from "../../utils/eventDates";
+import useInViewOnce from "../../hooks/useInViewOnce";
 
 /** Próximos eventos en tarjetas cuadradas (DESIGN.md §9.6 — `event-card`). */
 function EventCards({ eventos }) {
+  const [ref, inView] = useInViewOnce();
   if (!eventos?.length) return null;
 
   return (
-    <div className="grid gap-6 min-[461px]:grid-cols-2 min-[1001px]:grid-cols-4">
+    <div
+      ref={ref}
+      className={cn("grid gap-6 adt-reveal min-[461px]:grid-cols-2 min-[1001px]:grid-cols-4", inView && "is-visible")}
+    >
       {eventos.map((evento) => (
         <Link
           key={evento.id}

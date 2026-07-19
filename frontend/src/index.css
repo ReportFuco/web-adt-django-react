@@ -228,6 +228,21 @@ body::selection {
   }
 }
 
+/* Fase 7 §D.2 — entrada al hacer scroll de contenedores principales del home
+   (NewsList, EventCards, InterviewGrid, Gallery, CommunityStats) vía
+   useInViewOnce. Visible por defecto; solo se oculta cuando el hook confirma
+   soporte de IntersectionObserver y aún no intersectó. */
+.adt-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--adt-dur-med) var(--adt-ease-standard), transform var(--adt-dur-med) var(--adt-ease-standard);
+}
+
+.adt-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
