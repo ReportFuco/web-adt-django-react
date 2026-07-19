@@ -1,26 +1,27 @@
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import LoadingSpinner from "./components/common/LoadingSpinner";
+import RouteProgressOverlay from "./components/common/RouteProgressOverlay";
 import AppShell from "./components/layout/AppShell";
+import { lazyWithProgress } from "./utils/lazyWithProgress";
 
-const Register = lazy(() => import("./pages/LoginPage/Register"));
-const Login = lazy(() => import("./pages/LoginPage/Login"));
-const MainPage = lazy(() => import("./pages/MainPage/MainPage"));
-const NewsDetailPage = lazy(() => import("./pages/NewsPage/NewsDetailPage"));
-const InterviewPage = lazy(() => import("./pages/InterviewPage/InterviewPage"));
-const EventsPage = lazy(() => import("./pages/EventsPage/EventsPage"));
-const NewsPage = lazy(() => import("./pages/NewsPage/NewsPage"));
-const EventsDetailPage = lazy(() => import("./pages/EventsPage/EventsDetailPage"));
-const InterviewDetailPage = lazy(() => import("./pages/InterviewPage/InterviewDetailPage"));
-const ForgotPassword = lazy(() => import("./pages/LoginPage/ForgotPassword"));
-const ResetPassword = lazy(() => import("./pages/LoginPage/ResetPassword"));
-const CulturaPage = lazy(() => import("./pages/CulturaPage/CulturaPage"));
-const SearchResultsPage = lazy(() => import("./pages/SearchPage/SearchResultsPage"));
-const PoliticaEditorialPage = lazy(() => import("./pages/LegalPage/PoliticaEditorialPage"));
-const CreditosFotograficosPage = lazy(() => import("./pages/LegalPage/CreditosFotograficosPage"));
+const Register = lazyWithProgress(() => import("./pages/LoginPage/Register"));
+const Login = lazyWithProgress(() => import("./pages/LoginPage/Login"));
+const MainPage = lazyWithProgress(() => import("./pages/MainPage/MainPage"));
+const NewsDetailPage = lazyWithProgress(() => import("./pages/NewsPage/NewsDetailPage"));
+const InterviewPage = lazyWithProgress(() => import("./pages/InterviewPage/InterviewPage"));
+const EventsPage = lazyWithProgress(() => import("./pages/EventsPage/EventsPage"));
+const NewsPage = lazyWithProgress(() => import("./pages/NewsPage/NewsPage"));
+const EventsDetailPage = lazyWithProgress(() => import("./pages/EventsPage/EventsDetailPage"));
+const InterviewDetailPage = lazyWithProgress(() => import("./pages/InterviewPage/InterviewDetailPage"));
+const ForgotPassword = lazyWithProgress(() => import("./pages/LoginPage/ForgotPassword"));
+const ResetPassword = lazyWithProgress(() => import("./pages/LoginPage/ResetPassword"));
+const CulturaPage = lazyWithProgress(() => import("./pages/CulturaPage/CulturaPage"));
+const SearchResultsPage = lazyWithProgress(() => import("./pages/SearchPage/SearchResultsPage"));
+const PoliticaEditorialPage = lazyWithProgress(() => import("./pages/LegalPage/PoliticaEditorialPage"));
+const CreditosFotograficosPage = lazyWithProgress(() => import("./pages/LegalPage/CreditosFotograficosPage"));
 // Harness de componentes de Fase 2 (docs/rediseño/PLAN.md) — solo dev, nunca en producción.
-const ComponentKit = import.meta.env.DEV ? lazy(() => import("./dev/ComponentKit")) : null;
+const ComponentKit = import.meta.env.DEV ? lazyWithProgress(() => import("./dev/ComponentKit")) : null;
 
 function App() {
   // Fase 3 (docs/rediseño/PLAN.md): el theme-toggle vive en el Header;
@@ -34,7 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<LoadingSpinner />}>
+        <RouteProgressOverlay />
+        <Suspense fallback={null}>
           <Routes>
             <Route element={<AppShell />}>
               <Route path="/" element={<MainPage />} />
