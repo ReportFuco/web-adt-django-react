@@ -14,7 +14,7 @@ function HeroSupport({ items }) {
   return (
     <aside
       aria-label="Enlaces de apoyo a la historia principal"
-      className="flex flex-col border border-line bg-surface px-6 pb-2 pt-6 animate-[adt-hero-fade-up_700ms_var(--adt-ease-standard)_120ms_both]"
+      className="flex flex-col border border-line bg-surface px-4 pb-1 pt-4 animate-[adt-hero-fade-up_700ms_var(--adt-ease-standard)_120ms_both] sm:px-6 sm:pb-2 sm:pt-6"
     >
       <p className="mb-1 border-b border-line pb-3 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
         También en portada
@@ -23,12 +23,14 @@ function HeroSupport({ items }) {
         <Link
           key={item.id}
           to={item.href}
-          className="group flex items-start gap-4 border-b border-line py-4 last:border-b-0"
+          className={`group items-start gap-4 border-b border-line py-3 last:border-b-0 sm:flex sm:py-4 ${
+            index < 2 ? "flex" : "hidden"
+          }`}
         >
           <span className="font-display min-w-[1.4ch] shrink-0 text-2xl font-extrabold leading-none text-text-muted">
             {String(index + 1).padStart(2, "0")}
           </span>
-          <Media ratio="11" src={item.imagen} alt="" className="w-16 shrink-0 self-center rounded-adt" />
+          <Media ratio="11" src={item.imagen} alt="" className="w-12 shrink-0 self-center rounded-adt sm:w-16" />
           <span className="min-w-0">
             <span className="block font-body text-[0.9375rem] font-semibold leading-snug group-hover:text-signal">
               {item.titulo}
