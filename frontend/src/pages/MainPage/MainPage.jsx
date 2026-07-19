@@ -1,109 +1,42 @@
-import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Seo from "../../components/common/Seo";
 import Hero from "../../components/home/Hero";
+import HeroSkeleton from "../../components/home/HeroSkeleton";
 import HeroSupport from "../../components/home/HeroSupport";
+import HeroSupportSkeleton from "../../components/home/HeroSupportSkeleton";
 import Headlines from "../../components/home/Headlines";
+import HeadlinesSkeleton from "../../components/home/HeadlinesSkeleton";
 import Gallery from "../../components/home/Gallery";
+import GallerySkeleton from "../../components/home/GallerySkeleton";
 import CommunityStats from "../../components/home/CommunityStats";
 import ContactForm from "../../components/home/ContactForm";
 import NewsList from "../../components/content/NewsList";
+import NewsListSkeleton from "../../components/content/NewsListSkeleton";
 import EventCards from "../../components/content/EventCards";
+import EventCardsSkeleton from "../../components/content/EventCardsSkeleton";
 import InterviewGrid from "../../components/content/InterviewGrid";
+import InterviewGridSkeleton from "../../components/content/InterviewGridSkeleton";
 import SectionHead from "../../components/ui/SectionHead";
 import AdSlot from "../../components/ui/AdSlot";
-import LoadingState from "../../components/ui/LoadingState";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
-import {
-  getAnunciosByUbicacion,
-  getEvents,
-  getGaleria,
-  getInterview,
-  getNoticias,
-  trackAnuncioClick,
-} from "../../services/api";
-
-const AD_LOCATIONS = {
-  betweenNewsEvents: "home_between_news_events",
-  betweenEventsInterviews: "home_between_events_interviews",
-  afterInterviews: "home_after_interviews",
-};
+import { trackAnuncioClick } from "../../services/api";
+import useHomeData from "../../hooks/useHomeData";
 
 /**
- * Carga y arma los datos del home (PLAN.md Fase 4). Cada módulo declara su
- * selector: hero = 1 destacada + 4 apoyo sin duplicar; noticias = últimas
- * excluyendo el hero; eventos = próximos (excluye pasados aunque
- * `fecha_hora` tenga fallback histórico, ver views.py `proximos`).
+ * Placeholder de anuncio (Fase 7 §C): mientras `ads` está loading reserva el
+ * alto del billboard para no insertarlo tarde encima de contenido visible;
+ * si ya resolvió y no hay anuncio para esa ubicación, no ocupa espacio.
  */
-function useHomeData() {
-  const [state, setState] = useState({ loading: true });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      const [destacadasRes, allNoticiasRes, proximosRes, entrevistasRes, galeriaRes, adsA, adsB, adsC] =
-        await Promise.all([
-          getNoticias({ destacado: true }),
-          getNoticias(),
-          getEvents({ proximos: true }),
-          getInterview(),
-          getGaleria({ limit: 6 }),
-          getAnunciosByUbicacion(AD_LOCATIONS.betweenNewsEvents),
-          getAnunciosByUbicacion(AD_LOCATIONS.betweenEventsInterviews),
-          getAnunciosByUbicacion(AD_LOCATIONS.afterInterviews),
-        ]);
-      if (cancelled) return;
-
-      const destacadas = destacadasRes.results;
-      const fillerNoticias = allNoticiasRes.results.filter(
-        (noticia) => !destacadas.some((destacada) => destacada.id === noticia.id)
-      );
-      const heroPool = [...destacadas, ...fillerNoticias].slice(0, 5);
-      const [heroLead, ...heroSupportSource] = heroPool;
-      const heroSupportItems = heroSupportSource.map((noticia) => ({
-        id: noticia.id,
-        href: `/noticias/${noticia.id}/${noticia.slug}`,
-        titulo: noticia.titulo,
-        imagen: noticia.imagen,
-        tag: "Noticias",
-      }));
-
-      const heroIds = new Set(heroPool.map((noticia) => noticia.id));
-      const newsListItems = allNoticiasRes.results.filter((noticia) => !heroIds.has(noticia.id)).slice(0, 4);
-
-      setState({
-        loading: false,
-        heroLead,
-        heroSupportItems,
-        heroError: destacadasRes.error || allNoticiasRes.error,
-        newsListItems,
-        newsError: allNoticiasRes.error,
-        eventos: proximosRes.results,
-        eventosError: proximosRes.error,
-        entrevistas: entrevistasRes.results.slice(0, 3),
-        entrevistasError: entrevistasRes.error,
-        galeria: galeriaRes.results,
-        ads: {
-          betweenNewsEvents: adsA.results[0] || null,
-          betweenEventsInterviews: adsB.results[0] || null,
-          afterInterviews: adsC.results[0] || null,
-        },
-      });
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return state;
-}
-
-function AdBillboard({ anuncio }) {
+function AdBillboard({ anuncio, loading }) {
+  if (loading) {
+    return (
+      <div className="wrap py-12">
+        <div aria-hidden="true" className="min-h-[220px]" />
+      </div>
+    );
+  }
   if (!anuncio) return null;
   return (
     <div className="wrap py-12">
@@ -125,14 +58,19 @@ AdBillboard.propTypes = {
     enlace: PropTypes.string,
     cta_text: PropTypes.string,
   }),
+  loading: PropTypes.bool,
 };
 
 function MainPage() {
-  const data = useHomeData();
+  const { heroNews, events, interviews, gallery, ads } = useHomeData();
 
-  if (data.loading) {
-    return <LoadingState label="Cargando el home…" className="min-h-[60vh]" />;
-  }
+  const heroLead = heroNews.data?.heroLead;
+  const heroSupportItems = heroNews.data?.heroSupportItems ?? [];
+  const newsListItems = heroNews.data?.newsListItems ?? [];
+  const eventosList = events.data ?? [];
+  const entrevistasList = interviews.data ?? [];
+  const galeriaList = gallery.data ?? [];
+  const adsData = ads.data ?? {};
 
   return (
     <>
@@ -150,17 +88,31 @@ function MainPage() {
         }}
       />
 
-      {data.heroLead ? (
-        <section className="wrap grid grid-cols-1 gap-6 pt-6 pb-12 min-[960px]:grid-cols-[1.4fr_1fr] min-[1101px]:grid-cols-[1.7fr_1fr]" aria-labelledby="hero-heading">
+      {heroNews.loading ? (
+        <section
+          className="wrap grid grid-cols-1 gap-6 pt-6 pb-12 min-[960px]:grid-cols-[1.4fr_1fr] min-[1101px]:grid-cols-[1.7fr_1fr]"
+          aria-labelledby="hero-heading"
+        >
           <h2 className="sr-only" id="hero-heading">
             Historia principal
           </h2>
-          <Hero noticia={data.heroLead} />
-          <HeroSupport items={data.heroSupportItems} />
+          <HeroSkeleton />
+          <HeroSupportSkeleton />
+        </section>
+      ) : heroLead ? (
+        <section
+          className="wrap grid grid-cols-1 gap-6 pt-6 pb-12 min-[960px]:grid-cols-[1.4fr_1fr] min-[1101px]:grid-cols-[1.7fr_1fr]"
+          aria-labelledby="hero-heading"
+        >
+          <h2 className="sr-only" id="hero-heading">
+            Historia principal
+          </h2>
+          <Hero noticia={heroLead} />
+          <HeroSupport items={heroSupportItems} />
         </section>
       ) : (
         <div className="wrap py-12">
-          {data.heroError ? (
+          {heroNews.error ? (
             <ErrorState description="No se pudo cargar la portada." />
           ) : (
             <EmptyState description="Todavía no hay noticias destacadas para mostrar en portada." />
@@ -168,9 +120,9 @@ function MainPage() {
         </div>
       )}
 
-      <Headlines eventos={data.eventos.slice(0, 3)} />
+      {events.loading ? <HeadlinesSkeleton /> : <Headlines eventos={eventosList.slice(0, 3)} />}
 
-      <AdBillboard anuncio={data.ads.betweenNewsEvents} />
+      <AdBillboard anuncio={adsData.betweenNewsEvents} loading={ads.loading} />
 
       <section className="wrap py-24" aria-labelledby="news-heading">
         <SectionHead
@@ -180,9 +132,11 @@ function MainPage() {
           linkTo="/noticias"
           linkLabel="Ver todas las noticias"
         />
-        {data.newsListItems.length ? (
-          <NewsList noticias={data.newsListItems} />
-        ) : data.newsError ? (
+        {heroNews.loading ? (
+          <NewsListSkeleton />
+        ) : newsListItems.length ? (
+          <NewsList noticias={newsListItems} />
+        ) : heroNews.error ? (
           <ErrorState description="No se pudieron cargar las noticias." />
         ) : (
           <EmptyState description="Todavía no hay noticias publicadas." />
@@ -197,16 +151,18 @@ function MainPage() {
           linkTo="/eventos"
           linkLabel="Ver calendario completo"
         />
-        {data.eventos.length ? (
-          <EventCards eventos={data.eventos.slice(0, 4)} />
-        ) : data.eventosError ? (
+        {events.loading ? (
+          <EventCardsSkeleton />
+        ) : eventosList.length ? (
+          <EventCards eventos={eventosList.slice(0, 4)} />
+        ) : events.error ? (
           <ErrorState description="No se pudieron cargar los eventos." />
         ) : (
           <EmptyState description="No hay eventos próximos por ahora." />
         )}
       </section>
 
-      <AdBillboard anuncio={data.ads.betweenEventsInterviews} />
+      <AdBillboard anuncio={adsData.betweenEventsInterviews} loading={ads.loading} />
 
       <section className="wrap py-24" aria-labelledby="interviews-heading">
         <SectionHead
@@ -216,18 +172,20 @@ function MainPage() {
           linkTo="/entrevistas"
           linkLabel="Ver todas las entrevistas"
         />
-        {data.entrevistas.length ? (
-          <InterviewGrid entrevistas={data.entrevistas} />
-        ) : data.entrevistasError ? (
+        {interviews.loading ? (
+          <InterviewGridSkeleton />
+        ) : entrevistasList.length ? (
+          <InterviewGrid entrevistas={entrevistasList} />
+        ) : interviews.error ? (
           <ErrorState description="No se pudieron cargar las entrevistas." />
         ) : (
           <EmptyState description="Todavía no hay entrevistas publicadas." />
         )}
       </section>
 
-      <AdBillboard anuncio={data.ads.afterInterviews} />
+      <AdBillboard anuncio={adsData.afterInterviews} loading={ads.loading} />
 
-      {data.galeria.length > 0 && (
+      {gallery.loading ? (
         <section className="bg-bg-soft py-24" aria-labelledby="gallery-heading">
           <div className="wrap">
             <SectionHead
@@ -237,9 +195,37 @@ function MainPage() {
               linkTo="/cultura"
               linkLabel="Ver galería completa"
             />
-            <Gallery fotos={data.galeria} />
+            <GallerySkeleton />
           </div>
         </section>
+      ) : gallery.error ? (
+        <section className="bg-bg-soft py-24" aria-labelledby="gallery-heading">
+          <div className="wrap">
+            <SectionHead
+              kicker="Escena"
+              title="Galería"
+              headingId="gallery-heading"
+              linkTo="/cultura"
+              linkLabel="Ver galería completa"
+            />
+            <ErrorState description="No se pudo cargar la galería." />
+          </div>
+        </section>
+      ) : (
+        galeriaList.length > 0 && (
+          <section className="bg-bg-soft py-24" aria-labelledby="gallery-heading">
+            <div className="wrap">
+              <SectionHead
+                kicker="Escena"
+                title="Galería"
+                headingId="gallery-heading"
+                linkTo="/cultura"
+                linkLabel="Ver galería completa"
+              />
+              <Gallery fotos={galeriaList} />
+            </div>
+          </section>
+        )
       )}
 
       <section className="wrap py-24" aria-labelledby="community-heading">
