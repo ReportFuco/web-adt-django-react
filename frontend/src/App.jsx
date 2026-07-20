@@ -1,9 +1,19 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
 import { AuthProvider } from "./context/AuthContext";
 import RouteProgressOverlay from "./components/common/RouteProgressOverlay";
 import AppShell from "./components/layout/AppShell";
 import { lazyWithProgress } from "./utils/lazyWithProgress";
+
+const ReactQueryDevtools = import.meta.env.DEV
+  ? lazy(() =>
+      import("@tanstack/react-query-devtools").then((mod) => ({
+        default: mod.ReactQueryDevtools,
+      })),
+    )
+  : null;
 
 const Register = lazyWithProgress(() => import("./pages/LoginPage/Register"));
 const Login = lazyWithProgress(() => import("./pages/LoginPage/Login"));
@@ -35,33 +45,40 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <RouteProgressOverlay />
-        <Suspense fallback={null}>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/noticias" element={<NewsPage />} />
-              <Route path="/noticias/:id/:slug" element={<NewsDetailPage />} />
-              <Route path="/eventos" element={<EventsPage />} />
-              <Route path="/eventos/:id/:slug" element={<EventsDetailPage />} />
-              <Route path="/entrevistas" element={<InterviewPage />} />
-              <Route path="/entrevistas/:slug" element={<InterviewDetailPage />} />
-              <Route path="/cultura" element={<CulturaPage />} />
-              <Route path="/buscar" element={<SearchResultsPage />} />
-              <Route path="/politica-editorial" element={<PoliticaEditorialPage />} />
-              <Route path="/creditos-fotograficos" element={<CreditosFotograficosPage />} />
-              <Route path="/politica-de-privacidad" element={<PoliticaDePrivacidadPage />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
-              {import.meta.env.DEV && <Route path="/__kit" element={<ComponentKit />} />}
-            </Route>
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </Suspense>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RouteProgressOverlay />
+          <Suspense fallback={null}>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/noticias" element={<NewsPage />} />
+                <Route path="/noticias/:id/:slug" element={<NewsDetailPage />} />
+                <Route path="/eventos" element={<EventsPage />} />
+                <Route path="/eventos/:id/:slug" element={<EventsDetailPage />} />
+                <Route path="/entrevistas" element={<InterviewPage />} />
+                <Route path="/entrevistas/:slug" element={<InterviewDetailPage />} />
+                <Route path="/cultura" element={<CulturaPage />} />
+                <Route path="/buscar" element={<SearchResultsPage />} />
+                <Route path="/politica-editorial" element={<PoliticaEditorialPage />} />
+                <Route path="/creditos-fotograficos" element={<CreditosFotograficosPage />} />
+                <Route path="/politica-de-privacidad" element={<PoliticaDePrivacidadPage />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+                {import.meta.env.DEV && <Route path="/__kit" element={<ComponentKit />} />}
+              </Route>
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </Suspense>
+          {ReactQueryDevtools && (
+            <Suspense fallback={null}>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Suspense>
+          )}
+        </AuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }
