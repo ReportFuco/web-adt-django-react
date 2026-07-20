@@ -41,6 +41,21 @@ function PoliticaDePrivacidadPage() {
         </a>
         .
       </p>
+      <h2>Analítica</h2>
+      <p>
+        Usamos Google Analytics para entender cómo se usa el sitio (páginas visitadas, tiempo de permanencia,
+        origen del tráfico). Este servicio también usa cookies y puede recibir datos como tu dirección IP. Puedes
+        inhabilitar el seguimiento de Google Analytics instalando el{" "}
+        <a
+          href="https://tools.google.com/dlpage/gaoptout"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-text hover:text-signal"
+        >
+          complemento de inhabilitación para navegadores
+        </a>
+        .
+      </p>
       <h2>Contacto</h2>
       <p>
         Para consultas sobre tus datos, escríbenos a{" "}
