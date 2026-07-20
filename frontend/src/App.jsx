@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { AuthProvider } from "./context/AuthContext";
 import RouteProgressOverlay from "./components/common/RouteProgressOverlay";
+import ScrollToTop from "./components/common/ScrollToTop";
 import AppShell from "./components/layout/AppShell";
 import { lazyWithProgress } from "./utils/lazyWithProgress";
 
@@ -47,6 +48,7 @@ function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <ScrollToTop />
           <RouteProgressOverlay />
           <Suspense fallback={null}>
             <Routes>
