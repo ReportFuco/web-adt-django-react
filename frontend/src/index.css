@@ -107,12 +107,15 @@ html {
   background: var(--adt-bg);
   /* Evita el bounce/rubber-band al llegar al final del scroll (iOS/Chrome). */
   overscroll-behavior-y: none;
-  /* Red de seguridad: si algún contenido (tabla ancha, URL/token largo sin
-     espacios dentro de `.rich-content`, etc.) fuerza un ancho mayor al del
-     viewport, esto lo recorta en vez de dejar un "gutter" visible a la
-     derecha del contenido en mobile mientras el header sticky sigue
-     ocupando el ancho completo. */
-  overflow-x: hidden;
+  /* OJO: NO poner overflow-x: hidden acá. html/body son ancestros de
+     <Header> pase lo que pase más abajo en el árbol, y en iOS Safari
+     cualquier ancestro con overflow-x (u overflow-y) distinto de `visible`
+     rompe `position: sticky` en los descendientes — el "ancestro de scroll
+     más cercano" pasa a ser ese elemento en vez del viewport real, y como
+     su caja se ajusta exactamente al contenido (sin overflow real), sticky
+     nunca llega a fijarse. El recorte horizontal de contenido ancho vive
+     ahora en el wrapper de AppShell.jsx (envuelve <main>/<Footer> pero no
+     <Header>), ver ese archivo para el detalle. */
 }
 
 /* DESIGN §4 — contenedor global. Usado como className="wrap" en Header,
@@ -166,7 +169,9 @@ body {
   color: var(--adt-text);
   min-height: 100vh;
   overscroll-behavior-y: none;
-  overflow-x: hidden;
+  /* Ver comentario en `html` de arriba: overflow-x acá también rompería el
+     sticky de <Header> en iOS Safari. Recorte horizontal movido a
+     AppShell.jsx. */
   transition: background-color var(--adt-dur-med) var(--adt-ease-standard),
     color var(--adt-dur-med) var(--adt-ease-standard);
 }
