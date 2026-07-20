@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { IoSend } from "react-icons/io5";
 import { Calendar } from "lucide-react";
 import parse from "html-react-parser";
-import { getNoticia, getNoticias, postComment } from "../../services/api";
+import { postComment } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchNoticia, fetchNoticias } from "../../queries/fetchers";
 import { useAuth } from "../../context/AuthContext";
 import Comments from "../../components/features/Comments";
 import ErrorState from "../../components/ui/ErrorState";
@@ -22,10 +25,7 @@ import Seo from "../../components/common/Seo";
 function NewsDetailPage() {
   const { token } = useAuth();
   const { slug, id } = useParams();
-  const [noticia, setNoticia] = useState(null);
-  const [noticias, setNoticias] = useState([]);
-  const [loadError, setLoadError] = useState(null);
-  const [refresh, setRefresh] = useState(false);
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -33,40 +33,39 @@ function NewsDetailPage() {
     reset,
   } = useForm();
 
-  const onSubmit = async (data) => {
-    const response = await postComment(id, data.comments);
-    if (response.success) {
-      setRefresh((prev) => !prev);
-      reset();
-    } else {
-      console.error("Error al enviar comentario", response.error);
-    }
+  const commentMutation = useMutation({
+    mutationFn: (contenido) => postComment(id, contenido),
+    onSuccess: (response) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: qk.comments(id) });
+        reset();
+      } else {
+        console.error("Error al enviar comentario", response.error);
+      }
+    },
+  });
+
+  const onSubmit = (data) => {
+    commentMutation.mutate(data.comments);
   };
 
-  const cleanContent = noticia ? sanitizeHTML(noticia.contenido) : "";
+  const noticiaQuery = useQuery({
+    queryKey: qk.noticias.detail(slug),
+    queryFn: () => fetchNoticia(slug),
+    enabled: Boolean(slug),
+    staleTime: 10 * 60 * 1000,
+  });
+  const relacionadasParams = { tag: undefined, page: 1 };
+  const relacionadasQuery = useQuery({
+    queryKey: qk.noticias.list(relacionadasParams),
+    queryFn: () => fetchNoticias(relacionadasParams),
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    async function loadNews() {
-      try {
-        if (slug) {
-          const res = await getNoticia(slug);
-          if (!cancelled) setNoticia(res);
-        }
-        const { results, error } = await getNoticias();
-        if (cancelled) return;
-        if (error) throw error;
-        setNoticias(results);
-      } catch (error) {
-        console.error("Error al cargar la noticia:", error);
-        if (!cancelled) setLoadError(error);
-      }
-    }
-    loadNews();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
+  const noticia = noticiaQuery.data;
+  const noticias = relacionadasQuery.data?.results ?? [];
+  const loadError = noticiaQuery.error || relacionadasQuery.error;
+
+  const cleanContent = noticia ? sanitizeHTML(noticia.contenido) : "";
 
   useEffect(() => {
     if (!cleanContent.includes("instagram-media")) return;
@@ -175,7 +174,7 @@ function NewsDetailPage() {
           <aside className="flex max-h-[620px] flex-col border border-line bg-surface p-5 md:p-6">
             <h2 className="mb-4 text-xl">Comentarios</h2>
             <div className="mb-4 flex-grow overflow-y-auto pr-1">
-              <Comments id={id} key={refresh} />
+              <Comments id={id} />
             </div>
             {token ? (
               <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2 border-t border-line pt-4">

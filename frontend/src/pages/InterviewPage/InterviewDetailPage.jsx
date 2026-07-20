@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Calendar, Instagram } from "lucide-react";
 
-import { getInterviewBySlug, getInterview } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchEntrevista, fetchEntrevistas } from "../../queries/fetchers";
 import ErrorState from "../../components/ui/ErrorState";
 import DetailHero from "../../components/content/DetailHero";
 import DetailGallery from "../../components/content/DetailGallery";
@@ -17,34 +18,24 @@ import { excerpt } from "../../utils/textExcerpt";
 
 function InterviewDetailPage() {
   const { slug } = useParams();
-  const [interview, setInterview] = useState(null);
-  const [interviews, setInterviews] = useState([]);
-  const [loadError, setLoadError] = useState(null);
+
+  const interviewQuery = useQuery({
+    queryKey: qk.entrevistas.detail(slug),
+    queryFn: () => fetchEntrevista(slug),
+    enabled: Boolean(slug),
+    staleTime: 10 * 60 * 1000,
+  });
+  const relacionadasParams = { tag: undefined, page: 1 };
+  const relacionadasQuery = useQuery({
+    queryKey: qk.entrevistas.list(relacionadasParams),
+    queryFn: () => fetchEntrevistas(relacionadasParams),
+  });
+
+  const interview = interviewQuery.data;
+  const interviews = relacionadasQuery.data?.results ?? [];
+  const loadError = interviewQuery.error || relacionadasQuery.error;
 
   const cleanContent = interview?.contenido ? sanitizeHTML(interview.contenido) : "";
-
-  useEffect(() => {
-    let cancelled = false;
-    async function loadInterviews() {
-      try {
-        if (slug) {
-          const res = await getInterviewBySlug(slug);
-          if (!cancelled) setInterview(res);
-        }
-        const { results, error } = await getInterview();
-        if (cancelled) return;
-        if (error) throw error;
-        setInterviews(results);
-      } catch (error) {
-        console.error("Error al cargar la entrevista:", error);
-        if (!cancelled) setLoadError(error);
-      }
-    }
-    loadInterviews();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
 
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar la entrevista." />;
   if (!interview) return <DetailPageSkeleton type="entrevista" />;

@@ -4,6 +4,7 @@ import { Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Media from "../ui/Media";
 import useInViewOnce from "../../hooks/useInViewOnce";
+import { usePrefetchDetail } from "../../queries/usePrefetchDetail";
 
 /**
  * Retratos + cita destacada (DESIGN.md §9.6 — `interview-card`). La cita
@@ -12,6 +13,7 @@ import useInViewOnce from "../../hooks/useInViewOnce";
  */
 function InterviewGrid({ entrevistas }) {
   const [ref, inView] = useInViewOnce();
+  const { prefetchEntrevista } = usePrefetchDetail();
   if (!entrevistas?.length) return null;
 
   return (
@@ -25,7 +27,7 @@ function InterviewGrid({ entrevistas }) {
             className={cn("adt-reveal h-full", inView && "is-visible")}
           >
             <article className="group flex h-full flex-col border border-line transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-within:-translate-y-0.5 focus-within:border-signal">
-              <Link to={href}>
+              <Link to={href} onMouseEnter={() => prefetchEntrevista(entrevista.slug)} onFocus={() => prefetchEntrevista(entrevista.slug)}>
                 <Media
                   ratio="45"
                   src={entrevista.imagen_portada}
@@ -38,7 +40,12 @@ function InterviewGrid({ entrevistas }) {
                 <Quote className="mb-2 h-[22px] w-[22px] text-signal" fill="currentColor" />
                 {entrevista.cita_destacada && (
                   <blockquote className="font-display text-[1.1875rem] font-bold normal-case leading-tight tracking-[0.005em]">
-                    <Link to={href} className="hover:text-signal">
+                    <Link
+                      to={href}
+                      onMouseEnter={() => prefetchEntrevista(entrevista.slug)}
+                      onFocus={() => prefetchEntrevista(entrevista.slug)}
+                      className="hover:text-signal"
+                    >
                       &ldquo;{entrevista.cita_destacada}&rdquo;
                     </Link>
                   </blockquote>

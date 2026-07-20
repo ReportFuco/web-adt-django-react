@@ -1,19 +1,14 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
-import { getComments } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchComments } from "../../queries/fetchers";
 
 function Comments({ id }) {
-  const [comentarios, setComentarios] = useState([]);
-
-  useEffect(() => {
-    async function loadComments() {
-      if (id) {
-        const res = await getComments(id);
-        setComentarios(res);
-      }
-    }
-    loadComments();
-  }, [id]);
+  const { data: comentarios = [] } = useQuery({
+    queryKey: qk.comments(id),
+    queryFn: () => fetchComments(id),
+    enabled: Boolean(id),
+  });
 
   if (!comentarios.length) {
     return <p className="mt-10 text-center text-xs uppercase tracking-[0.18em] text-text-muted">Sin comentarios</p>;

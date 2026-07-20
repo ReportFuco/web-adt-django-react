@@ -5,10 +5,12 @@ import { cn } from "@/lib/utils";
 import Media from "../ui/Media";
 import { formatEventDateBadge } from "../../utils/eventDates";
 import useInViewOnce from "../../hooks/useInViewOnce";
+import { usePrefetchDetail } from "../../queries/usePrefetchDetail";
 
 /** Próximos eventos en tarjetas cuadradas (DESIGN.md §9.6 — `event-card`). */
 function EventCards({ eventos }) {
   const [ref, inView] = useInViewOnce();
+  const { prefetchEvento } = usePrefetchDetail();
   if (!eventos?.length) return null;
 
   return (
@@ -21,6 +23,8 @@ function EventCards({ eventos }) {
         >
           <Link
             to={`/eventos/${evento.id}/${evento.slug}`}
+            onMouseEnter={() => prefetchEvento(evento.slug)}
+            onFocus={() => prefetchEvento(evento.slug)}
             className="group flex h-full flex-col border border-line bg-surface transition-[border-color,transform] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border-signal focus-visible:-translate-y-0.5 focus-visible:border-signal"
           >
             <Media ratio="11" src={evento.imagen} alt="" zoom className="border-b border-line" />

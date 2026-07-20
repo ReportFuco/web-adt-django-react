@@ -7,10 +7,12 @@ import Tag from "../ui/Tag";
 import { MetaRow, MetaItem } from "../ui/MetaRow";
 import { formatShortDate } from "../../utils/formatDate";
 import useInViewOnce from "../../hooks/useInViewOnce";
+import { usePrefetchDetail } from "../../queries/usePrefetchDetail";
 
 /** Últimas noticias en filas editoriales (DESIGN.md §9.6 — `news-row`). */
 function NewsList({ noticias }) {
   const [ref, inView] = useInViewOnce();
+  const { prefetchNoticia } = usePrefetchDetail();
   if (!noticias?.length) return null;
 
   return (
@@ -23,6 +25,8 @@ function NewsList({ noticias }) {
         >
           <Link
             to={`/noticias/${noticia.id}/${noticia.slug}`}
+            onMouseEnter={() => prefetchNoticia(noticia.slug)}
+            onFocus={() => prefetchNoticia(noticia.slug)}
             className="group grid grid-cols-[96px_1fr] items-center gap-4 border-b border-line py-4 first:border-t transition-colors duration-[var(--adt-dur-fast)] hover:bg-surface focus-visible:bg-surface min-[721px]:grid-cols-[160px_1fr_auto]"
           >
             <Media ratio="43" src={noticia.imagen} alt="" zoom className="w-full" />

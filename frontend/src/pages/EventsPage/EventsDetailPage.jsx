@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import parse from "html-react-parser";
 import { Calendar, ExternalLink, MapPin } from "lucide-react";
 
-import { getEventBySlug, getEvents } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchEvento, fetchEventos } from "../../queries/fetchers";
 import ErrorState from "../../components/ui/ErrorState";
 import DetailHero from "../../components/content/DetailHero";
 import DetailGallery from "../../components/content/DetailGallery";
@@ -19,34 +20,24 @@ import { excerpt } from "../../utils/textExcerpt";
 
 function EventsDetailPage() {
   const { slug } = useParams();
-  const [evento, setEvento] = useState(null);
-  const [eventos, setEventos] = useState([]);
-  const [loadError, setLoadError] = useState(null);
+
+  const eventoQuery = useQuery({
+    queryKey: qk.eventos.detail(slug),
+    queryFn: () => fetchEvento(slug),
+    enabled: Boolean(slug),
+    staleTime: 10 * 60 * 1000,
+  });
+  const relacionadosParams = { tag: undefined, proximos: true, page: 1 };
+  const relacionadosQuery = useQuery({
+    queryKey: qk.eventos.list(relacionadosParams),
+    queryFn: () => fetchEventos(relacionadosParams),
+  });
+
+  const evento = eventoQuery.data;
+  const eventos = relacionadosQuery.data?.results ?? [];
+  const loadError = eventoQuery.error || relacionadosQuery.error;
 
   const cleanContent = evento ? sanitizeHTML(evento.descripcion) : "";
-
-  useEffect(() => {
-    let cancelled = false;
-    async function loadEvents() {
-      try {
-        if (slug) {
-          const res = await getEventBySlug(slug);
-          if (!cancelled) setEvento(res.data);
-        }
-        const { results, error } = await getEvents({ proximos: true });
-        if (cancelled) return;
-        if (error) throw error;
-        setEventos(results);
-      } catch (error) {
-        console.error("Error al cargar el evento:", error);
-        if (!cancelled) setLoadError(error);
-      }
-    }
-    loadEvents();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
 
   if (loadError) return <ErrorState className="my-24" description="No se pudo cargar el evento." />;
   if (!evento) return <DetailPageSkeleton type="evento" />;
