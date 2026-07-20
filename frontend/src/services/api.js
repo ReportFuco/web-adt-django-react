@@ -316,6 +316,16 @@ export const getBusqueda = async (query, params = {}) => {
   }
 };
 
+export const getRedesSociales = async (params = {}) => {
+  try {
+    const response = await api.get("redes-sociales/", { params });
+    return { ...normalizeListResponse(response), error: null };
+  } catch (error) {
+    console.error("Error al obtener las redes sociales", error);
+    return emptyListResult(error);
+  }
+};
+
 export const getEventBySlug = async (slug) => {
   try {
     return await api.get(`eventos/${slug}`);

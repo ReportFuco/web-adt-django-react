@@ -13,6 +13,7 @@ router.register(r'tags', TagViewSet)
 router.register(r'entrevistas', EntrevistaViewSet)
 router.register(r'contacto', ContactoViewSet)
 router.register(r'franjasuperior', FranjaSuperiorViewSet)
+router.register(r'redes-sociales', RedSocialViewSet)
 
 
 urlpatterns = [

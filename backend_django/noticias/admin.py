@@ -189,6 +189,15 @@ class FranjaSuperiorAdmin(admin.ModelAdmin):
     readonly_fields = ("vistas",)
 
 
+@admin.register(RedSocial)
+class RedSocialAdmin(admin.ModelAdmin):
+    list_display = ["id", "red", "label", "url", "contador", "activo", "orden", "actualizado_en"]
+    list_filter = ["activo", "red"]
+    search_fields = ["label", "url"]
+    ordering = ["orden", "id"]
+    readonly_fields = ("actualizado_en",)
+
+
 @admin.register(Anuncio)
 class AnuncioAdmin(admin.ModelAdmin):
     list_display = ["id", "titulo", "ubicacion", "activo", "orden", "clicks", "fecha_inicio", "fecha_fin"]

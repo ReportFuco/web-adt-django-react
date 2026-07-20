@@ -6,7 +6,8 @@ import { useAuth } from "../../context/AuthContext";
 import { franjaMensaje, getNoticias, trackFranjaClick } from "../../services/api";
 import logoHeader from "../../assets/logo-final-header-cropped.png";
 import Ticker from "../ui/Ticker";
-import { SOCIAL_LINKS } from "../ui/SocialIcons";
+import { ICONS_BY_RED } from "../ui/SocialIcons";
+import useRedesSociales from "../../hooks/useRedesSociales";
 
 const NAV_ITEMS = [
   { label: "Noticias", to: "/noticias" },
@@ -15,15 +16,43 @@ const NAV_ITEMS = [
   { label: "Cultura", to: "/cultura" },
 ];
 
+// Mantiene la barra de estado/URL de Safari (iOS) y el color detrás del
+// overscroll en sync con el tema activo — sin esto quedan fijos en los
+// valores estáticos de index.html (dark), y en tema claro el status bar
+// "black-translucent" pinta íconos blancos sobre fondo blanco (invisibles).
+function syncAppleMeta(theme) {
+  const bg = getComputedStyle(document.documentElement).getPropertyValue("--adt-bg").trim();
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeColorMeta && bg) themeColorMeta.setAttribute("content", bg);
+
+  const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+  if (statusBarMeta) statusBarMeta.setAttribute("content", theme === "dark" ? "black-translucent" : "default");
+}
+
 function useTheme() {
   const [theme, setTheme] = useState(() => localStorage.getItem("adt-theme") || "dark");
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("adt-theme", theme);
+    syncAppleMeta(theme);
   }, [theme]);
 
   return [theme, () => setTheme((prev) => (prev === "dark" ? "light" : "dark"))];
+}
+
+// Header más grande y levemente transparente en el tope de la página;
+// compacto y sólido apenas se hace scroll.
+function useAtTop() {
+  const [atTop, setAtTop] = useState(() => (typeof window === "undefined" ? true : window.scrollY <= 4));
+
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY <= 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return atTop;
 }
 
 function useTickerItems() {
@@ -249,6 +278,8 @@ function Header() {
   const [theme, toggleTheme] = useTheme();
   const { items: tickerItems, handleItemClick } = useTickerItems();
   const mobileNav = useMobileNav();
+  const { redes } = useRedesSociales();
+  const atTop = useAtTop();
 
   const navLinkClass = useCallback(
     ({ isActive }) =>
@@ -260,8 +291,18 @@ function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg">
-      <div className="wrap flex items-center justify-between gap-6 py-4">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b border-line transition-colors duration-[var(--adt-dur-fast)]",
+        atTop ? "bg-bg/90" : "bg-bg"
+      )}
+    >
+      <div
+        className={cn(
+          "wrap flex items-center justify-between gap-6 transition-[padding] duration-[var(--adt-dur-fast)]",
+          atTop ? "py-6" : "py-4"
+        )}
+      >
         <div className="flex min-w-0 flex-1 items-center gap-12">
           <Link
             to="/"
@@ -289,19 +330,22 @@ function Header() {
             aria-label="Redes sociales de Adictos al Techno"
             className="hidden items-center gap-0.5 min-[761px]:flex"
           >
-            {SOCIAL_LINKS.map(({ key, label, href, Icon }) => (
-              <a
-                key={key}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                title={label}
-                className="flex h-[38px] w-[38px] items-center justify-center rounded-adt text-text-soft transition-[transform,background-color,border-color,color] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border hover:border-line hover:bg-surface hover:text-signal focus-visible:-translate-y-0.5 focus-visible:border focus-visible:border-line focus-visible:bg-surface focus-visible:text-signal"
-              >
-                <Icon width={17} height={17} />
-              </a>
-            ))}
+            {redes.map(({ id, red, label, url }) => {
+              const Icon = ICONS_BY_RED[red];
+              return (
+                <a
+                  key={id}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  title={label}
+                  className="flex h-[38px] w-[38px] items-center justify-center rounded-adt text-text-soft transition-[transform,background-color,border-color,color] duration-[var(--adt-dur-fast)] hover:-translate-y-0.5 hover:border hover:border-line hover:bg-surface hover:text-signal focus-visible:-translate-y-0.5 focus-visible:border focus-visible:border-line focus-visible:bg-surface focus-visible:text-signal"
+                >
+                  <Icon width={17} height={17} />
+                </a>
+              );
+            })}
           </div>
           <span aria-hidden="true" className="mx-1.5 hidden h-6 w-px bg-line min-[761px]:block" />
 
@@ -372,18 +416,21 @@ function Header() {
             ))}
           </nav>
           <div className="wrap flex items-center gap-2 border-t border-line py-4">
-            {SOCIAL_LINKS.map(({ key, label, href, Icon }) => (
-              <a
-                key={key}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="flex h-11 w-11 items-center justify-center rounded-adt border border-line text-text-soft hover:border-signal hover:text-signal"
-              >
-                <Icon width={17} height={17} />
-              </a>
-            ))}
+            {redes.map(({ id, red, label, url }) => {
+              const Icon = ICONS_BY_RED[red];
+              return (
+                <a
+                  key={id}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-11 w-11 items-center justify-center rounded-adt border border-line text-text-soft hover:border-signal hover:text-signal"
+                >
+                  <Icon width={17} height={17} />
+                </a>
+              );
+            })}
           </div>
         </div>
       )}

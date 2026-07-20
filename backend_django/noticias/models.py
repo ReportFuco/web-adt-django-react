@@ -205,6 +205,37 @@ class FranjaSuperior(models.Model):
     def __str__(self):
         return f"Haz click aca para modificar la Franja"
 
+class RedSocial(models.Model):
+    RED_CHOICES = [
+        ('instagram', 'Instagram'),
+        ('whatsapp', 'Comunidad de WhatsApp'),
+        ('spotify', 'Spotify'),
+        ('tiktok', 'TikTok'),
+    ]
+
+    red = models.CharField(max_length=20, choices=RED_CHOICES, unique=True)
+    label = models.CharField(
+        max_length=100,
+        help_text='Texto visible del link (ej. "Comunidad de WhatsApp").',
+    )
+    url = models.URLField()
+    contador = models.PositiveIntegerField(
+        blank=True, null=True,
+        help_text='Seguidores/miembros a mostrar en el panel de Comunidad. Vacío = no se muestra la cifra.',
+    )
+    activo = models.BooleanField(default=True)
+    orden = models.PositiveIntegerField(default=0)
+    actualizado_en = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['orden', 'id']
+        verbose_name = 'Red social'
+        verbose_name_plural = 'Redes sociales'
+
+    def __str__(self):
+        return self.get_red_display()
+
+
 class Contacto(models.Model):
     nombre_contacto = models.CharField(max_length=50, null=False)
     apellido_contacto = models.CharField(max_length=50)

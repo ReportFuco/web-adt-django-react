@@ -100,12 +100,27 @@
 
 html {
   scroll-behavior: smooth;
+  /* Sin esto, el "rubber-band" de iOS Safari al pasar el final del scroll
+     deja ver el blanco por defecto del canvas en vez de --adt-bg (se nota
+     sobre todo en tema oscuro). `body` ya tiene su propio background, pero
+     el área de overscroll pinta el fondo de `html`, no el de `body`. */
+  background: var(--adt-bg);
+  /* Evita el bounce/rubber-band al llegar al final del scroll (iOS/Chrome). */
+  overscroll-behavior-y: none;
 }
 
 /* DESIGN §4 — contenedor global. Usado como className="wrap" en Header,
    Footer, Ticker y todas las secciones de página; sin esto el contenido
-   corre de borde a borde en cualquier viewport. */
+   corre de borde a borde en cualquier viewport. `width: 100%` es necesario
+   porque `.wrap` se usa también como hijo directo de contenedores
+   `flex flex-col` (menú móvil del Header): ahí, `margin-inline: auto` sin un
+   `width` explícito hace que flexbox trate los márgenes automáticos como
+   alineación en el eje cruzado (los "absorbe" para centrar en vez de
+   estirar), y el contenido de `.wrap` colapsa a su ancho mínimo en vez de
+   ocupar todo el ancho disponible.
+ */
 .wrap {
+  width: 100%;
   max-width: var(--adt-container);
   margin-inline: auto;
   padding-inline: var(--adt-space-4);
@@ -144,6 +159,7 @@ body {
   font-size: 16px;
   color: var(--adt-text);
   min-height: 100vh;
+  overscroll-behavior-y: none;
   transition: background-color var(--adt-dur-med) var(--adt-ease-standard),
     color var(--adt-dur-med) var(--adt-ease-standard);
 }

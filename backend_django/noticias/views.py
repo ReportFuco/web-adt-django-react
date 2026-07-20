@@ -241,6 +241,22 @@ class FranjaSuperiorViewSet(viewsets.ModelViewSet):
         return Response({'id': franja.id, 'vistas': franja.vistas})
 
 
+class RedSocialViewSet(viewsets.ModelViewSet):
+    queryset = RedSocial.objects.all()
+    serializer_class = RedSocialSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
+
+    def get_queryset(self):
+        qs = RedSocial.objects.all()
+        if self.action in ['list', 'retrieve']:
+            qs = qs.filter(activo=True)
+        return qs
+
+
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = Contacto.objects.all()
     serializer_class = ContactoSerializer

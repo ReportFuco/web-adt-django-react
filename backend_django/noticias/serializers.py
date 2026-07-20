@@ -132,3 +132,11 @@ class FranjaSuperiorSerializer(serializers.ModelSerializer):
     class Meta:
         model = FranjaSuperior
         fields = '__all__'
+
+
+class RedSocialSerializer(serializers.ModelSerializer):
+    red_display = serializers.CharField(source='get_red_display', read_only=True)
+
+    class Meta:
+        model = RedSocial
+        fields = '__all__'
