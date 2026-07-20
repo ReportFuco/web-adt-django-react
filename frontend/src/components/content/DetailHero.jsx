@@ -24,7 +24,7 @@ function DetailHero({ kicker, title, breadcrumbItems, imagen, imageAlt = "", dek
       <div className="wrap relative z-10 py-16 text-on-photo">
         <Breadcrumbs items={breadcrumbItems} />
         <Tag className="mb-5 border-on-photo/30 text-on-photo">{kicker}</Tag>
-        <h1 className="mb-4 max-w-5xl text-on-photo text-[clamp(2.2rem,5vw,4rem)]">{title}</h1>
+        <h1 className="mb-4 max-w-5xl break-words text-on-photo text-[clamp(2.2rem,5vw,4rem)]">{title}</h1>
         {dek && <p className="mb-4 max-w-3xl text-lg text-on-photo/82">{dek}</p>}
         {meta}
         {tags?.length > 0 && (

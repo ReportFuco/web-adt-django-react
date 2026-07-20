@@ -48,6 +48,20 @@ const replaceInstagramShortcodes = (html) => (
   html.replace(INSTAGRAM_SHORTCODE_PATTERN, (_match, url) => buildInstagramEmbed(url))
 );
 
+// TinyMCE permite pegar contenido con `style` inline (típico al copiar desde
+// Word/Google Docs), y el sanitizador lo deja pasar para no perder estilos
+// legítimos (negrita, alineación, etc.). Pero `background`/`color` inline
+// rompen el tema oscuro/claro (ej. un `<p style="background:#fff">` queda
+// blanco fijo aunque el sitio esté en tema oscuro) — se despojan acá.
+const THEME_BREAKING_STYLE_PROPS = ["background", "background-color", "background-image", "color"];
+
+const stripThemeBreakingStyles = (doc) => {
+  doc.querySelectorAll("[style]").forEach((el) => {
+    THEME_BREAKING_STYLE_PROPS.forEach((prop) => el.style.removeProperty(prop));
+    if (!el.getAttribute("style")?.trim()) el.removeAttribute("style");
+  });
+};
+
 const replaceInstagramLinks = (doc) => {
   doc.querySelectorAll("p").forEach((paragraph) => {
     const text = paragraph.textContent.trim();
@@ -81,7 +95,8 @@ export const sanitizeHTML = (dirtyHTML, baseUrl = API_ORIGIN) => {
   const doc = new DOMParser().parseFromString(sanitized, 'text/html');
 
   replaceInstagramLinks(doc);
-  
+  stripThemeBreakingStyles(doc);
+
   doc.querySelectorAll('img[src*="media/"]').forEach(img => {
     // Elimina todos los ../ y reemplaza con la URL base correcta
     const correctedSrc = img.src.replace(/\.\.\//g, '').replace(/\/media\//, 'media/');

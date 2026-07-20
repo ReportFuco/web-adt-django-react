@@ -107,6 +107,12 @@ html {
   background: var(--adt-bg);
   /* Evita el bounce/rubber-band al llegar al final del scroll (iOS/Chrome). */
   overscroll-behavior-y: none;
+  /* Red de seguridad: si algún contenido (tabla ancha, URL/token largo sin
+     espacios dentro de `.rich-content`, etc.) fuerza un ancho mayor al del
+     viewport, esto lo recorta en vez de dejar un "gutter" visible a la
+     derecha del contenido en mobile mientras el header sticky sigue
+     ocupando el ancho completo. */
+  overflow-x: hidden;
 }
 
 /* DESIGN §4 — contenedor global. Usado como className="wrap" en Header,
@@ -160,6 +166,7 @@ body {
   color: var(--adt-text);
   min-height: 100vh;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
   transition: background-color var(--adt-dur-med) var(--adt-ease-standard),
     color var(--adt-dur-med) var(--adt-ease-standard);
 }
@@ -282,7 +289,14 @@ body::selection {
 }
 
 /* Estilos de contenido rico (TinyMCE) — DESIGN §7/§11.2, usados por
-   .rich-content en las páginas de detalle. */
+   .rich-content en las páginas de detalle. Texto/URLs largos sin espacios
+   dentro del contenido editorial pueden ensanchar el documento en mobile;
+   `overflow-wrap` + los `overflow-x: auto` de abajo lo contienen sin dejar
+   un gutter horizontal (ver comentario en `html { overflow-x: hidden }`). */
+.rich-content {
+  overflow-wrap: break-word;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
@@ -291,11 +305,36 @@ table {
   background: color-mix(in srgb, var(--adt-surface) 96%, transparent);
 }
 
+.rich-content table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 th,
 td {
   border: 1px solid var(--adt-border);
   padding: 8px;
   text-align: left;
+}
+
+.rich-content pre,
+.rich-content code {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* El sanitizador (src/utils/htmlSanitizer.js) permite `style` inline para
+   soportar contenido pegado desde TinyMCE; despoja `background`/`color` ahí
+   mismo, pero esto es la red de seguridad visual — cualquier inline style
+   que se escape (o contenido ya guardado antes de ese fix) no debe romper
+   el tema oscuro/claro. */
+.rich-content [style*="background" i],
+.rich-content [style*="color" i] {
+  background: transparent !important;
+  color: inherit !important;
 }
 
 iframe {

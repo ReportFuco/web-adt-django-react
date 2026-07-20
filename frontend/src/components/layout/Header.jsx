@@ -162,6 +162,37 @@ function useMobileNav() {
   return { open, setOpen, close, panelRef, toggleRef };
 }
 
+const MOBILE_NAV_TRANSITION_MS = 250;
+
+// Mantiene el panel montado durante la transición de salida (`entered`
+// controla el estado visual; `mounted` controla el DOM) — sin esto,
+// `mobileNav.open && (...)` desmonta el panel de inmediato y no hay nada
+// que animar al cerrar. El `requestAnimationFrame` en la apertura asegura
+// que el navegador pinte primero el estado "cerrado" antes de pasar a
+// "abierto", para que la transición de entrada también se vea.
+function useMountTransition(isOpen, duration = MOBILE_NAV_TRANSITION_MS) {
+  const [mounted, setMounted] = useState(isOpen);
+  const [entered, setEntered] = useState(isOpen);
+
+  useEffect(() => {
+    let raf;
+    let timeout;
+    if (isOpen) {
+      setMounted(true);
+      raf = requestAnimationFrame(() => setEntered(true));
+    } else {
+      setEntered(false);
+      timeout = setTimeout(() => setMounted(false), duration);
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timeout);
+    };
+  }, [isOpen, duration]);
+
+  return { mounted, entered };
+}
+
 function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -280,6 +311,7 @@ function Header() {
   const mobileNav = useMobileNav();
   const { redes } = useRedesSociales();
   const atTop = useAtTop();
+  const { mounted: mobileNavMounted, entered: mobileNavEntered } = useMountTransition(mobileNav.open);
 
   const navLinkClass = useCallback(
     ({ isActive }) =>
@@ -379,14 +411,17 @@ function Header() {
 
       <Ticker items={tickerItems} onItemClick={handleItemClick} />
 
-      {mobileNav.open && (
+      {mobileNavMounted && (
         <div
           id="mobile-nav"
           ref={mobileNav.panelRef}
           role="dialog"
           aria-modal="true"
           aria-label="Menú de navegación"
-          className="fixed inset-0 z-50 flex flex-col bg-bg min-[861px]:hidden"
+          className={cn(
+            "fixed inset-0 z-50 flex flex-col bg-bg transition-[opacity,transform] duration-[250ms] ease-[var(--adt-ease-standard)] min-[861px]:hidden",
+            mobileNavEntered ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"
+          )}
         >
           <div className="wrap flex items-center justify-between py-4">
             <span className="font-display text-lg font-extrabold uppercase">Menú</span>
@@ -400,13 +435,15 @@ function Header() {
             </button>
           </div>
           <nav aria-label="Navegación principal" className="wrap flex flex-1 flex-col gap-1 py-4">
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map((item, index) => (
               <NavLink
                 key={item.to}
                 to={item.to}
+                style={{ transitionDelay: mobileNavEntered ? `${80 + index * 45}ms` : undefined }}
                 className={({ isActive }) =>
                   cn(
-                    "border-b border-line py-4 text-lg font-bold uppercase tracking-[0.04em]",
+                    "adt-reveal border-b border-line py-4 text-lg font-bold uppercase tracking-[0.04em]",
+                    mobileNavEntered && "is-visible",
                     isActive && "text-signal"
                   )
                 }
