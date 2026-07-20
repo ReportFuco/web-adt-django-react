@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 
 import Seo from "../../components/common/Seo";
@@ -9,7 +10,8 @@ import PaginationControls from "../../components/ui/PaginationControls";
 import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import SearchResultsSkeleton from "../../components/content/SearchResultsSkeleton";
-import { getBusqueda } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchBusqueda } from "../../queries/fetchers";
 import { formatShortDate } from "../../utils/formatDate";
 
 const TIPO_LABEL = { noticia: "Noticias", evento: "Eventos", entrevista: "Entrevistas" };
@@ -25,27 +27,19 @@ function SearchResultsPage() {
   const query = searchParams.get("q") || "";
   const page = Number(searchParams.get("page")) || 1;
   const [inputValue, setInputValue] = useState(query);
-  const [state, setState] = useState({ loading: false, results: [], count: 0, next: null, previous: null, error: null });
 
   useEffect(() => {
     setInputValue(query);
-    if (!query) {
-      setState({ loading: false, results: [], count: 0, next: null, previous: null, error: null });
-      return undefined;
-    }
+  }, [query]);
 
-    let cancelled = false;
-    setState((prev) => ({ ...prev, loading: true }));
-
-    getBusqueda(query, { page }).then((res) => {
-      if (cancelled) return;
-      setState({ loading: false, ...res });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [query, page]);
+  const params = { page };
+  const { data, isPending, isError, isPlaceholderData } = useQuery({
+    queryKey: qk.busqueda(query, params),
+    queryFn: () => fetchBusqueda(query, params),
+    enabled: Boolean(query),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
+  });
 
   const updateParams = (next) => {
     const params = new URLSearchParams(searchParams);
@@ -94,14 +88,14 @@ function SearchResultsPage() {
 
         {!query ? (
           <EmptyState description="Escribe un término para buscar en noticias, eventos y entrevistas." />
-        ) : state.loading ? (
+        ) : isPending ? (
           <SearchResultsSkeleton />
-        ) : state.error ? (
+        ) : isError ? (
           <ErrorState description="No se pudo completar la búsqueda." />
-        ) : state.results.length ? (
-          <>
+        ) : data.results.length ? (
+          <div aria-busy={isPlaceholderData}>
             <div className="flex flex-col">
-              {state.results.map((item) => (
+              {data.results.map((item) => (
                 <Link
                   key={`${item.tipo}-${item.id}`}
                   to={buildHref(item)}
@@ -124,12 +118,12 @@ function SearchResultsPage() {
             </div>
             <PaginationControls
               page={page}
-              hasPrevious={Boolean(state.previous)}
-              hasNext={Boolean(state.next)}
+              hasPrevious={Boolean(data.previous)}
+              hasNext={Boolean(data.next)}
               onPrevious={() => updateParams({ page: page - 1 })}
               onNext={() => updateParams({ page: page + 1 })}
             />
-          </>
+          </div>
         ) : (
           <EmptyState description={`No encontramos resultados para "${query}".`} />
         )}

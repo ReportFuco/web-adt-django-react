@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { MapPin } from "lucide-react";
 
@@ -10,7 +10,8 @@ import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import AgendaRow from "../../components/ui/AgendaRow";
 import AgendaListSkeleton from "../../components/content/AgendaListSkeleton";
-import { getEvents, getTags } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchEventos, fetchTags } from "../../queries/fetchers";
 import { getEventDateItems, getLocalDate } from "../../utils/eventDates";
 
 const isToday = (date) => {
@@ -23,26 +24,19 @@ function EventsPage() {
   const tag = searchParams.get("tag");
   const page = Number(searchParams.get("page")) || 1;
 
-  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
-  const [tags, setTags] = useState([]);
+  const params = { tag: tag || undefined, proximos: true, page };
+  const { data, isPending, isError, isPlaceholderData } = useQuery({
+    queryKey: qk.eventos.list(params),
+    queryFn: () => fetchEventos(params),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    getTags().then((res) => setTags(res.results));
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    setState((prev) => ({ ...prev, loading: true }));
-
-    getEvents({ tag: tag || undefined, proximos: true, page }).then((res) => {
-      if (cancelled) return;
-      setState({ loading: false, ...res });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [tag, page]);
+  const { data: tagsData } = useQuery({
+    queryKey: qk.tags(),
+    queryFn: () => fetchTags(),
+    staleTime: 30 * 60 * 1000,
+  });
+  const tags = tagsData?.results ?? [];
 
   const updateParams = (next) => {
     const params = new URLSearchParams(searchParams);
@@ -76,14 +70,14 @@ function EventsPage() {
           onSelect={(nextTag) => updateParams({ tag: nextTag, page: null })}
         />
 
-        {state.loading ? (
+        {isPending ? (
           <AgendaListSkeleton />
-        ) : state.error ? (
+        ) : isError ? (
           <ErrorState description="No se pudieron cargar los eventos." />
-        ) : state.results.length ? (
-          <>
+        ) : data.results.length ? (
+          <div aria-busy={isPlaceholderData}>
             <div className="border-t border-line">
-              {state.results.map((evento) => {
+              {data.results.map((evento) => {
                 const dateItems = getEventDateItems(evento);
                 const primaryDate = getLocalDate(dateItems[0]?.fecha || evento.fecha_hora);
                 return (
@@ -110,12 +104,12 @@ function EventsPage() {
             </div>
             <PaginationControls
               page={page}
-              hasPrevious={Boolean(state.previous)}
-              hasNext={Boolean(state.next)}
+              hasPrevious={Boolean(data.previous)}
+              hasNext={Boolean(data.next)}
               onPrevious={() => updateParams({ page: page - 1 })}
               onNext={() => updateParams({ page: page + 1 })}
             />
-          </>
+          </div>
         ) : (
           <EmptyState description={tag ? `No hay eventos próximos con la etiqueta "${tag}".` : "No hay eventos próximos por ahora."} />
         )}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
 import Seo from "../../components/common/Seo";
@@ -9,33 +9,27 @@ import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import NewsList from "../../components/content/NewsList";
 import NewsListSkeleton from "../../components/content/NewsListSkeleton";
-import { getNoticias, getTags } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchNoticias, fetchTags } from "../../queries/fetchers";
 
 function NewsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const tag = searchParams.get("tag");
   const page = Number(searchParams.get("page")) || 1;
 
-  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
-  const [tags, setTags] = useState([]);
+  const params = { tag: tag || undefined, page };
+  const { data, isPending, isError, isPlaceholderData } = useQuery({
+    queryKey: qk.noticias.list(params),
+    queryFn: () => fetchNoticias(params),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    getTags().then((res) => setTags(res.results));
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    setState((prev) => ({ ...prev, loading: true }));
-
-    getNoticias({ tag: tag || undefined, page }).then((res) => {
-      if (cancelled) return;
-      setState({ loading: false, ...res });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [tag, page]);
+  const { data: tagsData } = useQuery({
+    queryKey: qk.tags(),
+    queryFn: () => fetchTags(),
+    staleTime: 30 * 60 * 1000,
+  });
+  const tags = tagsData?.results ?? [];
 
   const updateParams = (next) => {
     const params = new URLSearchParams(searchParams);
@@ -69,21 +63,21 @@ function NewsPage() {
           onSelect={(nextTag) => updateParams({ tag: nextTag, page: null })}
         />
 
-        {state.loading ? (
+        {isPending ? (
           <NewsListSkeleton />
-        ) : state.error ? (
+        ) : isError ? (
           <ErrorState description="No se pudieron cargar las noticias." />
-        ) : state.results.length ? (
-          <>
-            <NewsList noticias={state.results} />
+        ) : data.results.length ? (
+          <div aria-busy={isPlaceholderData}>
+            <NewsList noticias={data.results} />
             <PaginationControls
               page={page}
-              hasPrevious={Boolean(state.previous)}
-              hasNext={Boolean(state.next)}
+              hasPrevious={Boolean(data.previous)}
+              hasNext={Boolean(data.next)}
               onPrevious={() => updateParams({ page: page - 1 })}
               onNext={() => updateParams({ page: page + 1 })}
             />
-          </>
+          </div>
         ) : (
           <EmptyState description={tag ? `No hay noticias con la etiqueta "${tag}".` : "Todavía no hay noticias publicadas."} />
         )}

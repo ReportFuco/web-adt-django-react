@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
 import Seo from "../../components/common/Seo";
@@ -8,7 +8,8 @@ import EmptyState from "../../components/ui/EmptyState";
 import ErrorState from "../../components/ui/ErrorState";
 import Gallery from "../../components/home/Gallery";
 import GallerySkeleton from "../../components/home/GallerySkeleton";
-import { getGaleria } from "../../services/api";
+import { qk } from "../../queries/keys";
+import { fetchGaleria } from "../../queries/fetchers";
 
 /**
  * DECISIONES.md #6: "Cultura" es una página dedicada que reutiliza el
@@ -18,21 +19,13 @@ import { getGaleria } from "../../services/api";
 function CulturaPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
-  const [state, setState] = useState({ loading: true, results: [], count: 0, next: null, previous: null, error: null });
 
-  useEffect(() => {
-    let cancelled = false;
-    setState((prev) => ({ ...prev, loading: true }));
-
-    getGaleria({ page }).then((res) => {
-      if (cancelled) return;
-      setState({ loading: false, ...res });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [page]);
+  const params = { page };
+  const { data, isPending, isError, isPlaceholderData } = useQuery({
+    queryKey: qk.galeria(params),
+    queryFn: () => fetchGaleria(params),
+    placeholderData: keepPreviousData,
+  });
 
   const updatePage = (nextPage) => {
     const params = new URLSearchParams(searchParams);
@@ -58,21 +51,21 @@ function CulturaPage() {
       <section className="wrap py-16">
         <SectionHead kicker="Escena" title="Cultura" />
 
-        {state.loading ? (
+        {isPending ? (
           <GallerySkeleton />
-        ) : state.error ? (
+        ) : isError ? (
           <ErrorState description="No se pudo cargar la galería." />
-        ) : state.results.length ? (
-          <>
-            <Gallery fotos={state.results} />
+        ) : data.results.length ? (
+          <div aria-busy={isPlaceholderData}>
+            <Gallery fotos={data.results} />
             <PaginationControls
               page={page}
-              hasPrevious={Boolean(state.previous)}
-              hasNext={Boolean(state.next)}
+              hasPrevious={Boolean(data.previous)}
+              hasNext={Boolean(data.next)}
               onPrevious={() => updatePage(page - 1)}
               onNext={() => updatePage(page + 1)}
             />
-          </>
+          </div>
         ) : (
           <EmptyState description="Todavía no hay fotos publicadas." />
         )}
