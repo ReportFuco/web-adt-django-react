@@ -16,6 +16,7 @@ const SITE_LINKS = [
   { label: "Contacto", to: "/#contacto" },
   { label: "Política editorial", to: "/politica-editorial" },
   { label: "Créditos fotográficos", to: "/creditos-fotograficos" },
+  { label: "Política de privacidad", to: "/politica-de-privacidad" },
 ];
 
 /** Footer global del sitio (DESIGN.md §9.8). */

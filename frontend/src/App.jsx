@@ -20,6 +20,7 @@ const CulturaPage = lazyWithProgress(() => import("./pages/CulturaPage/CulturaPa
 const SearchResultsPage = lazyWithProgress(() => import("./pages/SearchPage/SearchResultsPage"));
 const PoliticaEditorialPage = lazyWithProgress(() => import("./pages/LegalPage/PoliticaEditorialPage"));
 const CreditosFotograficosPage = lazyWithProgress(() => import("./pages/LegalPage/CreditosFotograficosPage"));
+const PoliticaDePrivacidadPage = lazyWithProgress(() => import("./pages/LegalPage/PoliticaDePrivacidadPage"));
 // Harness de componentes de Fase 2 (docs/rediseño/PLAN.md) — solo dev, nunca en producción.
 const ComponentKit = import.meta.env.DEV ? lazyWithProgress(() => import("./dev/ComponentKit")) : null;
 
@@ -50,6 +51,7 @@ function App() {
               <Route path="/buscar" element={<SearchResultsPage />} />
               <Route path="/politica-editorial" element={<PoliticaEditorialPage />} />
               <Route path="/creditos-fotograficos" element={<CreditosFotograficosPage />} />
+              <Route path="/politica-de-privacidad" element={<PoliticaDePrivacidadPage />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
