@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'noticias',
     'users',
-    'store',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
@@ -177,6 +176,14 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_THROTTLE_RATES': {
+        'login': '5/min',
+        'registration': '3/hour',
+        'password_reset': '3/hour',
+        'contact': '5/hour',
+        'search': '30/min',
+        'metrics': '120/min',
+    },
 }
 
 SIMPLE_JWT = {
@@ -199,11 +206,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-MERCADO_PAGO = {
-    'ACCESS_TOKEN': config('MERCADO_PAGO_ACCESS_TOKEN', default=''),
-    'PUBLIC_KEY': config('MERCADO_PAGO_PUBLIC_KEY', default=''),
-}
 
 CSRF_TRUSTED_ORIGINS = [
     "https://adictosaltechno.com",
@@ -230,23 +232,31 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
-        },
-        "TIMEOUT": 60 * 15,
+if DEBUG:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "web-electro-development",
+            "TIMEOUT": 60 * 15,
+        }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": config("REDIS_URL", default="redis://127.0.0.1:6379/1"),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            },
+            "TIMEOUT": 60 * 15,
+        }
+    }
 
-EVOLUTION_API_URL=config("EVOLUTION_API_URL")
-
-EVOLUTION_API_TOKEN= config("EVOLUTION_API_TOKEN")
-
-ADMIN_NUMBER=config("ADMIN_NUMBER")
+EVOLUTION_API_URL = config("EVOLUTION_API_URL", default="")
+EVOLUTION_API_TOKEN = config("EVOLUTION_API_TOKEN", default="")
+ADMIN_NUMBER = config("ADMIN_NUMBER", default="")
+CONTACT_NOTIFICATION_TIMEOUT = config("CONTACT_NOTIFICATION_TIMEOUT", default=5, cast=float)
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

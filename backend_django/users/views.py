@@ -11,18 +11,25 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.throttling import ScopedRateThrottle
 from django.conf import settings
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'login'
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'registration'
 
 class PasswordResetRequestView(APIView):
     GENERIC_SUCCESS_MESSAGE = "Si el correo existe, enviaremos instrucciones para restablecer la contraseña."
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'password_reset'
 
     def post(self, request):
         email = request.data.get('email')
@@ -53,6 +60,9 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'password_reset'
+
     def post(self, request, uidb64, token):
         new_password = request.data.get('password')
         if not new_password:
@@ -67,6 +77,14 @@ class PasswordResetConfirmView(APIView):
         token_generator = PasswordResetTokenGenerator()
         if not token_generator.check_token(user, token):
             return Response({"error": "Token inválido o expirado"}, status=status.HTTP_400_BAD_REQUEST)
+
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError
+
+        try:
+            validate_password(new_password, user=user)
+        except ValidationError as error:
+            return Response({"password": list(error.messages)}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(new_password)
         user.save()

@@ -1,9 +1,12 @@
 from django.contrib.auth.models import User
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from unittest.mock import patch
 
 from .models import Contacto, Evento, FechaEvento, FotoEvento, FotoNoticia, Noticia, Tag
+from .utils import enviar_whatsapp_contacto
 
 
 class ContactoPrivacidadTests(APITestCase):
@@ -19,7 +22,8 @@ class ContactoPrivacidadTests(APITestCase):
         self.detail_url = reverse("contacto-detail", kwargs={"pk": self.contacto.pk})
         self.list_url = reverse("contacto-list")
 
-    def test_create_es_publico(self):
+    @patch('noticias.views.enviar_whatsapp_contacto')
+    def test_create_es_publico(self, mock_enviar_whatsapp_contacto):
         payload = {
             "nombre_contacto": "Luis",
             "apellido_contacto": "Gomez",
@@ -28,6 +32,7 @@ class ContactoPrivacidadTests(APITestCase):
         }
         response = self.client.post(self.list_url, payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        mock_enviar_whatsapp_contacto.assert_called_once()
 
     def test_retrieve_anonimo_es_rechazado(self):
         response = self.client.get(self.detail_url)
@@ -111,3 +116,20 @@ class BusquedaViewTests(APITestCase):
     def test_busqueda_por_tag(self):
         response = self.client.get(reverse("buscar"), {"q": "techno"})
         self.assertEqual(response.data["count"], 1)
+
+
+@override_settings(
+    EVOLUTION_API_URL='https://evolution.example/messages',
+    EVOLUTION_API_TOKEN='test-token',
+    ADMIN_NUMBER='56912345678',
+    CONTACT_NOTIFICATION_TIMEOUT=2.5,
+)
+class ContactoNotificationTests(TestCase):
+    @patch('noticias.utils.requests.post')
+    def test_notificacion_usa_timeout_configurado(self, mock_post):
+        mock_post.return_value.raise_for_status.return_value = None
+
+        enviada = enviar_whatsapp_contacto('Ana', 'ana@example.com', 'Mensaje de prueba')
+
+        self.assertTrue(enviada)
+        self.assertEqual(mock_post.call_args.kwargs['timeout'], 2.5)

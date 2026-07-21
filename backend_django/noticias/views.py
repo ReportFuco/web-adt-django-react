@@ -1,5 +1,4 @@
 import itertools
-import threading
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -9,6 +8,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import permissions, viewsets
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -160,6 +160,12 @@ class AnuncioViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
+    def get_throttles(self):
+        if self.action == 'track_click':
+            self.throttle_scope = 'metrics'
+            return [ScopedRateThrottle()]
+        return super().get_throttles()
+
     def get_queryset(self):
         qs = Anuncio.objects.all().order_by('orden', '-id')
         if self.action in ['list', 'retrieve']:
@@ -225,6 +231,12 @@ class FranjaSuperiorViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
+    def get_throttles(self):
+        if self.action == 'track_click':
+            self.throttle_scope = 'metrics'
+            return [ScopedRateThrottle()]
+        return super().get_throttles()
+
     @action(detail=False, methods=['get'], url_path='latest')
     def latest(self, request):
         franja = self.get_queryset().first()
@@ -266,19 +278,22 @@ class ContactoViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
+    def get_throttles(self):
+        if self.action == 'create':
+            self.throttle_scope = 'contact'
+            return [ScopedRateThrottle()]
+        return super().get_throttles()
+
     def perform_create(self, serializer):
         # Guarda el contacto en la base de datos
         contacto = serializer.save()
 
-        threading.Thread(
-            target=enviar_whatsapp_contacto,
-            args=(
-                contacto.nombre_contacto,
-                contacto.email,
-                f"Teléfono: {contacto.telefono or 'No indicado'}\n"
-                f"Apellido: {contacto.apellido_contacto or ''}"
-            )
-        ).start()
+        enviar_whatsapp_contacto(
+            contacto.nombre_contacto,
+            contacto.email,
+            f"Teléfono: {contacto.telefono or 'No indicado'}\n"
+            f"Apellido: {contacto.apellido_contacto or ''}",
+        )
 
 
 def _foto_url_publica(imagen_field, request=None):
@@ -369,6 +384,8 @@ class BusquedaView(APIView):
     """
     permission_classes = [permissions.AllowAny]
     pagination_class = PageNumberPagination
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'search'
 
     def get(self, request):
         query = (request.query_params.get('q') or '').strip()

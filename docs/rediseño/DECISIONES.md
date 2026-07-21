@@ -9,7 +9,7 @@ decisiones tienen precedencia sobre `PLAN.md`/`DESIGN.md` cuando difieran.
 | 1 | Tipografía | Migrar a **Archivo** en todo el sitio (reemplaza Space Grotesk + Inter). |
 | 1b | Acento | Ya resuelto en DESIGN.md: `--adt-signal` neutro (blanco/gris), no rojo. |
 | 2 | Gestor de paquetes | **pnpm** es el único gestor. Se borra `package-lock.json`, se conserva `pnpm-lock.yaml`. `CLAUDE.md` se actualiza para reflejar `pnpm install`/`pnpm run …`. |
-| 3 | Tienda/carrito | **Dormida.** El nuevo Header/AppShell/Home no montan `CartProvider` ni consultan productos. No se borra el código de `store/`; no se reactivan rutas. |
+| 3 | Tienda/carrito | **Descartada.** Su código, endpoints y dependencias se retiran de este repositorio; el comercio continuará en un proyecto separado. |
 | 4 | Búsqueda | **Se implementa.** Endpoint simple de búsqueda (título/tag) en el backend + modal/ruta de resultados accesible en el frontend. Botón del Header queda funcional. |
 | 5 | Métricas de comunidad | ~~Constante editable en el frontend, sin endpoint nuevo.~~ **Revisado el 20 jul 2026**: se agregó el modelo `RedSocial` (backend) con `url`, `contador` y `label` por red, editable desde el admin. El endpoint `/api/redes-sociales/` alimenta Header, Footer y el panel de Comunidad; `actualizado_en` (auto) reemplaza el footnote de fecha manual. |
 | 6 | Sección "Cultura" | **Página `/cultura` dedicada**, pero reutiliza el mismo agregado de fotos que la Galería del home (sin modelo de contenido propio). Es una vista "Galería completa" con su propia ruta. |

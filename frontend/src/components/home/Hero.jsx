@@ -37,7 +37,7 @@ function HeroSlide({ noticia, active, primed }) {
           src={noticia.imagen}
           alt=""
           loading="eager"
-          fetchpriority={active ? "high" : "low"}
+          fetchPriority={active ? "high" : "low"}
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />

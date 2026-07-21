@@ -2,6 +2,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -53,6 +55,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("Las contraseñas deben coincidir.")
+
+        user = User(
+            username=data.get('username', ''),
+            email=data.get('email', ''),
+            first_name=data.get('first_name', ''),
+            last_name=data.get('last_name', ''),
+        )
+        try:
+            validate_password(data['password'], user=user)
+        except ValidationError as error:
+            raise serializers.ValidationError({'password': list(error.messages)}) from error
         return data
     
     def create(self, validated_data):

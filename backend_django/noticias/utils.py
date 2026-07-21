@@ -4,32 +4,39 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 
-EVOLUTION_API_URL = getattr(settings, "EVOLUTION_API_URL")
-EVOLUTION_API_TOKEN = getattr(settings, "EVOLUTION_API_TOKEN")
-ADMIN_NUMBER = getattr(settings, "ADMIN_NUMBER")
 
 def enviar_whatsapp_contacto(nombre, email, mensaje):
     """
     Envía un mensaje de WhatsApp usando Evolution API con los datos del contacto.
     """
+    evolution_api_url = getattr(settings, "EVOLUTION_API_URL", "")
+    evolution_api_token = getattr(settings, "EVOLUTION_API_TOKEN", "")
+    admin_number = getattr(settings, "ADMIN_NUMBER", "")
+    timeout = getattr(settings, "CONTACT_NOTIFICATION_TIMEOUT", 5)
+    if not all((evolution_api_url, evolution_api_token, admin_number)):
+        logger.warning("Notificación de contacto omitida: Evolution API no configurada")
+        return False
+
     texto = f"📩 Nuevo contacto:\nNombre: {nombre}\nEmail: {email}\nMensaje: {mensaje}"
     headers = {
         "Content-Type": "application/json",
-        "apikey": EVOLUTION_API_TOKEN
+        "apikey": evolution_api_token
     }
     payload = {
-        "number": ADMIN_NUMBER,
+        "number": admin_number,
         "text": texto,
         "delay":1200
     }
     try:
-        r = requests.post(EVOLUTION_API_URL, json=payload, headers=headers)
+        r = requests.post(evolution_api_url, json=payload, headers=headers, timeout=timeout)
         r.raise_for_status()
         return True
     except requests.exceptions.RequestException as e:
-        print(f"Error enviando mensaje a Evolution API: {e}")
+        logger.warning("Error enviando mensaje a Evolution API: %s", e)
         return False
 
 
