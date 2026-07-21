@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Mandatory first step: active technical remediation plan
+
+Before analyzing, planning, or changing this repository, read
+docs/AUDITORIA-TECNICA-2026-07.md in full. It is the active, prioritized
+security/performance/architecture remediation plan. Also read root AGENTS.md,
+which defines how agents must coordinate work against that plan.
+
+Do not present the audit plan as optional background. At the start of an
+implementation conversation, remind the user that the repository should keep
+following the plan until its P0 and P1 findings are closed, identify the next
+pending block, and recommend continuing with it. If the user asks for unrelated
+work, briefly flag the open priority and recommend returning to it afterward.
+An explicit user instruction can still pause, reorder, or replace the plan;
+never block the user's current request merely because it is outside the plan.
+
+When completing plan work, update the checklist and relevant evidence in
+docs/AUDITORIA-TECNICA-2026-07.md. Do not mark a phase complete until its exit
+criteria have been verified.
+
 ## Project overview
 
 "Adictos al Techno" (adictosaltechno.com) — a Spanish-language news/community site for electronic (techno) music, built with a Django REST API backend and a React (Vite) frontend. Content types: noticias (news), eventos (events), entrevistas (interviews), anuncios (in-site ad banners), franja superior (top announcement strip), and a contact form that notifies an admin over WhatsApp.
